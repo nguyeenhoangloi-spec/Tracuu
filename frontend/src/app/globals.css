@@ -473,7 +473,7 @@ body::-webkit-scrollbar-button {
   position: relative;
   width: 100%;
   border-radius: 20px;
-  border: 1px solid rgba(226, 232, 240, 0.85);
+  border: 1.5px solid rgba(203, 213, 225, 0.85);
   background-color: #f1f4f9;
   box-shadow:
     inset 3px 3px 6px rgba(160, 175, 200, 0.35),
@@ -485,7 +485,7 @@ body::-webkit-scrollbar-button {
 }
 
 .lbi-box:hover {
-  border-color: rgba(203, 213, 225, 1);
+  border-color: rgba(148, 163, 184, 0.9);
   background-color: #edf2f7;
   box-shadow:
     inset 3px 3px 6px rgba(150, 165, 190, 0.4),
@@ -501,7 +501,7 @@ body::-webkit-scrollbar-button {
   z-index: 60;
 }
 
-/* Khi người dùng nhấn vào ô nhập (Focus / Active): Nền chuyển sang MÀU TRẮNG TINH (#ffffff), viền đỏ 2px, sạch bóng không đổ bóng mờ */
+/* Khi người dùng nhấn vào ô nhập (Focus / Active): Nền chuyển sang MÀU TRẮNG TINH (#ffffff), viền đỏ 2px sắc nét thương hiệu NCTU */
 .lbi[data-focus="true"] .lbi-box,
 .lbi[data-focus="true"] .lbi-box:hover,
 .lbi:focus-within .lbi-box,
@@ -516,13 +516,14 @@ body::-webkit-scrollbar-button {
 
 .lbi[data-focus="true"] .lbi-label,
 .lbi:focus-within .lbi-label {
-  color: #D72134;
+  color: #D72134 !important;
   font-weight: 600;
 }
 
 .lbi[data-filled="true"]:not([data-focus="true"]):not(:focus-within):not([data-error="true"]) .lbi-box {
   background-color: #f1f4f9;
-  border-color: rgba(226, 232, 240, 0.9);
+  border: 1.5px solid rgba(203, 213, 225, 0.85);
+  border-color: rgba(203, 213, 225, 0.85);
   box-shadow:
     inset 3px 3px 6px rgba(160, 175, 200, 0.35),
     inset -2px -2px 5px rgba(255, 255, 255, 0.9);
@@ -618,37 +619,34 @@ body::-webkit-scrollbar-button {
 
 /* ══ HIỆU ỨNG BUNG MỞ POPOVER SELECT & LỊCH CHUẨN APPLE FLUID MOTION ══ */
 .lbi-popover-shell {
+  background-color: #ffffff !important;
   will-change: transform, opacity;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
 
 .lbi-popover-open {
-  animation: lbiPopoverEnter 440ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  animation: lbiPopoverEnter 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
   pointer-events: auto !important;
 }
 
 .lbi-popover-open[data-placement="top"] {
-  animation: lbiPopoverEnterTop 440ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  animation: lbiPopoverEnterTop 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
 }
 
 .lbi-popover-closed {
-  animation: lbiPopoverExit 360ms cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+  animation: lbiPopoverExit 260ms cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
   pointer-events: none !important;
 }
 
 .lbi-popover-closed[data-placement="top"] {
-  animation: lbiPopoverExitTop 360ms cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
+  animation: lbiPopoverExitTop 260ms cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
 }
 
 @keyframes lbiPopoverEnter {
   0% {
     opacity: 0;
-    transform: translate3d(0, -14px, 0) scale(0.93);
-  }
-
-  60% {
-    opacity: 1;
+    transform: translate3d(0, -14px, 0) scale(0.95);
   }
 
   100% {
@@ -660,11 +658,7 @@ body::-webkit-scrollbar-button {
 @keyframes lbiPopoverEnterTop {
   0% {
     opacity: 0;
-    transform: translate3d(0, 14px, 0) scale(0.93);
-  }
-
-  60% {
-    opacity: 1;
+    transform: translate3d(0, 14px, 0) scale(0.95);
   }
 
   100% {
@@ -679,13 +673,9 @@ body::-webkit-scrollbar-button {
     transform: translate3d(0, 0, 0) scale(1);
   }
 
-  35% {
-    opacity: 0.95;
-  }
-
   100% {
     opacity: 0;
-    transform: translate3d(0, -12px, 0) scale(0.94);
+    transform: translate3d(0, -10px, 0) scale(0.96);
   }
 }
 
@@ -695,14 +685,27 @@ body::-webkit-scrollbar-button {
     transform: translate3d(0, 0, 0) scale(1);
   }
 
-  35% {
-    opacity: 0.95;
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0) scale(0.96);
+  }
+}
+
+@keyframes lbiViewEnter {
+  0% {
+    opacity: 0;
+    transform: scale(0.97);
   }
 
   100% {
-    opacity: 0;
-    transform: translate3d(0, 12px, 0) scale(0.94);
+    opacity: 1;
+    transform: scale(1);
   }
+}
+
+.animate-view-enter {
+  animation: lbiViewEnter 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
 }
 
 /* Remove SVG ring as borders are handled seamlessly and responsively by CSS */
@@ -1537,3 +1540,4 @@ body::-webkit-scrollbar-button {
     transform: none !important;
   }
 }
+

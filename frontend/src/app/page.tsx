@@ -510,16 +510,17 @@ export default function Home() {
         id="hero-stage"
         className="relative min-h-[285px] sm:min-h-[400px] lg:min-h-[430px] flex flex-col justify-start items-center pt-28 sm:pt-32 lg:pt-36 pb-12 sm:pb-24 lg:pb-26 px-4 sm:px-6 overflow-hidden bg-gradient-to-br from-[#0F275A] via-[#1E3A8A] to-[#1E40AF]"
       >
-        {/* 1. LỚP ẢNH KHUÔN VIÊN TRƯỜNG ĐH KIẾN TRÚC HỌC THUẬT SIÊU NÉT (SHARP CAMPUS ARCHITECTURE, ZERO TEXT) */}
+        {/* 1. LỚP ẢNH MINH HỌA HỌC THUẬT DNC (BR.PNG) Ở GÓC PHẢI */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 pointer-events-none bg-cover bg-center opacity-[0.14] mix-blend-luminosity select-none"
+          className="absolute inset-0 pointer-events-none bg-cover select-none mix-blend-luminosity"
           style={{
-            backgroundImage: "url('/campus_architecture_sharp.jpg')",
-            backgroundPosition: 'center 40%',
-            filter: 'contrast(125%) brightness(105%)',
-            maskImage: 'linear-gradient(to bottom, black 0%, black 65%, transparent 95%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 65%, transparent 95%)',
+            backgroundImage: "url('/br.png')",
+            backgroundPosition: 'right 35%',
+            opacity: 0.18,
+            filter: 'contrast(120%) brightness(110%)',
+            maskImage: 'linear-gradient(to bottom, black 0%, black 70%, transparent 95%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 70%, transparent 95%)',
           }}
         />
 
@@ -548,10 +549,10 @@ export default function Home() {
           </svg>
         </div>
 
-        {/* 3. BIỂU TRƯNG VÒNG NGUYỆT QUẾ TRI THỨC & NÓN CỬ NHÂN HỌC THUẬT ẨN CHÌM NGHỆ THUẬT */}
+        {/* 3. BIỂU TRƯNG VÒNG NGUYỆT QUẾ TRI THỨC & NÓN CỬ NHÂN: DỜI LẠI RA CHÍNH GIỮA PHẦN TRÊN BANNER */}
         <div
           aria-hidden="true"
-          className="absolute -top-10 right-1/2 translate-x-1/2 sm:translate-x-0 sm:right-10 lg:right-24 w-[320px] sm:w-[380px] h-[320px] sm:h-[380px] pointer-events-none opacity-[0.05] text-white select-none"
+          className="absolute top-2 sm:top-4 lg:top-6 left-1/2 -translate-x-1/2 w-[300px] sm:w-[400px] lg:w-[450px] h-[300px] sm:h-[400px] lg:h-[450px] pointer-events-none opacity-[0.06] text-white select-none z-0"
         >
           <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
             {/* Vòng tròn đồng tâm la bàn tri thức */}
@@ -569,16 +570,37 @@ export default function Home() {
           </svg>
         </div>
 
-        {/* 4. LUỒNG SÁNG HÀO QUANG DỊU MẮT TẬP TRUNG VÀO TIÊU ĐỀ */}
+        {/* 4. LUỒNG SÁNG HÀO QUANG DỊU MẮT TẬP TRUNG VÀO TRUNG TÂM */}
         <div
           aria-hidden="true"
-          className="absolute -top-32 left-1/2 -translate-x-1/2 w-[720px] h-[340px] bg-blue-400/20 rounded-full blur-3xl pointer-events-none"
+          className="absolute -top-28 left-1/2 -translate-x-1/2 w-[720px] h-[340px] bg-blue-400/20 rounded-full blur-3xl pointer-events-none"
         />
 
-        {/* Khối nội dung tiêu đề: Căn giữa sang trọng, chữ trắng sáng tinh khôi */}
-        <div className="w-full max-w-5xl mx-auto relative z-10 px-2 sm:px-4 flex flex-col items-center text-center mt-2 sm:mt-4 lg:mt-5">
-          {/* Slider Tiêu đề lớn & Đoạn giới thiệu súc tích trượt ngang đồng bộ khi đổi tab */}
-          <div className="w-full overflow-hidden max-w-4xl">
+        {/* Khối nội dung tiêu đề: Đặt ở góc dưới bên trái dóng thẳng hàng tuyệt đối với Logo DNC trên Navbar */}
+        <div className="w-full max-w-[1590px] mx-auto relative z-10 px-4 sm:px-6 flex flex-col items-start text-left mt-auto mb-2 sm:mb-4 lg:mb-6">
+          {/* Breadcrumb chuẩn phong cách cổng trường ĐH Nam Cần Thơ: [Trang chủ / Tra cứu] */}
+          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs sm:text-[13px] text-blue-200/90 font-medium mb-1.5 sm:mb-2 select-none">
+            <a
+              href="https://nctu.edu.vn"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1 text-white/90 hover:text-white hover:underline transition-all cursor-pointer"
+              title="Về Trang chủ Trường Đại học Nam Cần Thơ (nctu.edu.vn)"
+            >
+              <svg className="w-3.5 h-3.5 inline-block -mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+              </svg>
+              <span>Trang chủ</span>
+            </a>
+            <span className="text-blue-300/60">/</span>
+            <span className="text-white font-semibold">
+              Tra cứu
+            </span>
+          </nav>
+
+          {/* Slider Tiêu đề lớn: Bỏ chữ 'Tra cứu', chỉ ghi tên phân hệ như mẫu DNC, kích thước 56px, nét thanh lịch font-semibold */}
+          <div className="w-full overflow-hidden max-w-4xl lg:max-w-5xl">
             <div
               className="flex transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
               style={{
@@ -591,33 +613,24 @@ export default function Home() {
               }}
             >
               {/* Tab 1: Văn bằng tốt nghiệp */}
-              <div className="w-full flex-shrink-0 text-center px-1 sm:px-2">
-                <h1 className="animate-hero-title text-[22px] min-[360px]:text-[24px] min-[390px]:text-[26.5px] sm:text-[36px] md:text-[40px] lg:text-[44px] font-bold tracking-[-0.03em] sm:tracking-tight text-white leading-tight sm:leading-[1.18] [text-wrap:balance] drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)]">
-                  Tra cứu văn bằng tốt nghiệp
+              <div className="w-full flex-shrink-0 text-left pr-2">
+                <h1 className="animate-hero-title text-[28px] min-[360px]:text-[32px] min-[390px]:text-[34px] sm:text-[40px] md:text-[46px] lg:text-[52px] xl:text-[56px] font-semibold tracking-tight text-white leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]">
+                  Văn bằng tốt nghiệp
                 </h1>
-                <p className="animate-hero-desc text-[15px] sm:text-[16.5px] lg:text-[18px] text-blue-100/95 font-normal sm:font-medium mt-3 sm:mt-3.5 leading-relaxed max-w-4xl mx-auto [text-wrap:balance] drop-shadow-[0_1px_4px_rgba(0,0,0,0.2)]">
-                  Tra cứu thông tin và xác thực giá trị pháp lý văn bằng tốt nghiệp trực tuyến.
-                </p>
               </div>
 
               {/* Tab 2: CNTT */}
-              <div className="w-full flex-shrink-0 text-center px-1 sm:px-2">
-                <h1 className="animate-hero-title text-[22px] min-[360px]:text-[24px] min-[390px]:text-[26.5px] sm:text-[36px] md:text-[40px] lg:text-[44px] font-bold tracking-[-0.03em] sm:tracking-tight text-white leading-tight sm:leading-[1.18] [text-wrap:balance] drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)]">
-                  Tra cứu chứng chỉ CNTT
+              <div className="w-full flex-shrink-0 text-left pr-2">
+                <h1 className="animate-hero-title text-[28px] min-[360px]:text-[32px] min-[390px]:text-[34px] sm:text-[40px] md:text-[46px] lg:text-[52px] xl:text-[56px] font-semibold tracking-tight text-white leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]">
+                  Chứng chỉ CNTT
                 </h1>
-                <p className="animate-hero-desc text-[15px] sm:text-[16.5px] lg:text-[18px] text-blue-100/95 font-normal sm:font-medium mt-3 sm:mt-3.5 leading-relaxed max-w-4xl mx-auto [text-wrap:balance] drop-shadow-[0_1px_4px_rgba(0,0,0,0.2)]">
-                  Tra cứu thông tin và xác thực giá trị pháp lý chứng chỉ ứng dụng công nghệ thông tin.
-                </p>
               </div>
 
               {/* Tab 3: VSTEP */}
-              <div className="w-full flex-shrink-0 text-center px-1 sm:px-2">
-                <h1 className="animate-hero-title text-[22px] min-[360px]:text-[24px] min-[390px]:text-[26.5px] sm:text-[36px] md:text-[40px] lg:text-[44px] font-bold tracking-[-0.03em] sm:tracking-tight text-white leading-tight sm:leading-[1.18] [text-wrap:balance] drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)]">
-                  Tra cứu chứng chỉ VSTEP
+              <div className="w-full flex-shrink-0 text-left pr-2">
+                <h1 className="animate-hero-title text-[28px] min-[360px]:text-[32px] min-[390px]:text-[34px] sm:text-[40px] md:text-[46px] lg:text-[52px] xl:text-[56px] font-semibold tracking-tight text-white leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]">
+                  Chứng chỉ VSTEP
                 </h1>
-                <p className="animate-hero-desc text-[15px] sm:text-[16.5px] lg:text-[18px] text-blue-100/95 font-normal sm:font-medium mt-3 sm:mt-3.5 leading-relaxed max-w-4xl mx-auto [text-wrap:balance] drop-shadow-[0_1px_4px_rgba(0,0,0,0.2)]">
-                  Tra cứu thông tin và xác thực giá trị pháp lý chứng chỉ VSTEP trực tuyến.
-                </p>
               </div>
             </div>
           </div>
@@ -630,7 +643,7 @@ export default function Home() {
         ref={cardSectionRef}
         className="w-full bg-[#FFFFFF] relative z-20 pb-20 sm:pb-24 pt-0"
       >
-        <div className="w-full max-w-3xl lg:max-w-4xl xl:max-w-[980px] 2xl:max-w-[1020px] mx-auto px-4 sm:px-6 -mt-9 sm:-mt-12 lg:-mt-14 relative">
+        <div className="w-full max-w-[780px] mx-auto px-4 sm:px-6 -mt-9 sm:-mt-12 lg:-mt-14 relative">
           <div
             id="khung-tra-cuu-card"
             className={`card-wrapper form-card-reveal relative bg-white border-0 border-none shadow-[0_20px_50px_-15px_rgba(15,23,42,0.12),0_0_1px_1px_rgba(0,0,0,0.04)] ${isCardRevealed ? 'active' : ''
@@ -664,7 +677,7 @@ export default function Home() {
                 {/* PANE 1: VĂN BẰNG */}
                 <div
                   ref={vanbangPaneRef}
-                  className={`tab-carousel-pane px-1 pt-0.5 pb-1 transition-opacity duration-300 ${activeTab === 'vanbang'
+                  className={`tab-carousel-pane px-1.5 pt-0.5 pb-1 transition-opacity duration-300 ${activeTab === 'vanbang'
                     ? 'opacity-100'
                     : `opacity-0 pointer-events-none ${!isSwitchingTab ? 'max-h-0 overflow-hidden' : ''}`
                     }`}
@@ -681,7 +694,7 @@ export default function Home() {
                 {/* PANE 2: CNTT */}
                 <div
                   ref={cnttPaneRef}
-                  className={`tab-carousel-pane px-1 pt-0.5 pb-1 transition-opacity duration-300 ${activeTab === 'cntt'
+                  className={`tab-carousel-pane px-1.5 pt-0.5 pb-1 transition-opacity duration-300 ${activeTab === 'cntt'
                     ? 'opacity-100'
                     : `opacity-0 pointer-events-none ${!isSwitchingTab ? 'max-h-0 overflow-hidden' : ''}`
                     }`}
@@ -698,7 +711,7 @@ export default function Home() {
                 {/* PANE 3: VSTEP */}
                 <div
                   ref={vstepPaneRef}
-                  className={`tab-carousel-pane px-1 pt-0.5 pb-1 transition-opacity duration-300 ${activeTab === 'vstep'
+                  className={`tab-carousel-pane px-1.5 pt-0.5 pb-1 transition-opacity duration-300 ${activeTab === 'vstep'
                     ? 'opacity-100'
                     : `opacity-0 pointer-events-none ${!isSwitchingTab ? 'max-h-0 overflow-hidden' : ''}`
                     }`}
@@ -786,7 +799,7 @@ export default function Home() {
       {result && isResultVisible && (
         <div
           id="omninotch-overlay"
-          className={`fixed inset-0 z-[60] flex flex-col justify-end sm:justify-center items-center p-0 sm:p-5 md:p-6 overflow-hidden sm:overflow-y-auto no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-colors duration-300 ${isCardExpanded ? 'bg-slate-950/25' : 'bg-slate-950/15'
+          className={`fixed inset-0 z-[60] flex flex-col justify-end sm:justify-center items-center p-3.5 pb-4 sm:p-5 md:p-6 overflow-hidden sm:overflow-y-auto no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-colors duration-300 ${isCardExpanded ? 'bg-slate-950/25' : 'bg-slate-950/15'
             } ${isClosingResult ? 'animate-omninotch-backdrop-exit' : 'animate-omninotch-backdrop-enter'
             }`}
           onClick={(e) => {

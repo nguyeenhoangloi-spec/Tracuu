@@ -249,28 +249,8 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
               </button>
             </nav>
 
-            {/* Phía phải Navbar: Font Be Vietnam Pro / Momo Trust Sans Semibold */}
-            <div className="hidden xl:flex items-center space-x-6 font-google-sans font-semibold">
-              <a
-                href="https://nctu.edu.vn"
-                target="_blank"
-                rel="noreferrer"
-                data-ripple="rgba(215, 33, 52, 0.22)"
-                className="group/flip relative overflow-hidden inline-flex items-center px-3.5 py-1.5 rounded-full hover:bg-slate-100/80 active:scale-95 transition-all duration-200 cursor-pointer select-none outline-none"
-                title="Cổng thông tin Trường Đại học Nam Cần Thơ"
-              >
-                <span className="flip-roll-container font-google-sans text-[17px] lg:text-[18px] font-semibold tracking-[-0.01em] relative z-10 pointer-events-none">
-                  <span className="flip-roll-primary transition-colors duration-200 font-google-sans font-semibold text-slate-700">
-                    Cổng thông tin
-                  </span>
-                  <span className="flip-roll-secondary font-google-sans font-semibold transition-colors duration-200 !text-[#D72134]">
-                    Cổng thông tin
-                  </span>
-                </span>
-              </a>
-
-              <div className="h-5 w-px bg-slate-200"></div>
-
+            {/* Phía phải Navbar: Hotline */}
+            <div className="hidden xl:flex items-center font-google-sans font-semibold">
               <div className="flex items-center gap-1.5">
                 <span className="text-[14px] lg:text-[14.5px] font-normal text-slate-600 select-none">
                   Hotline:
@@ -304,13 +284,17 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
               >
                 <div className="relative w-6 h-6 flex items-center justify-center">
                   <Menu
-                    className={`w-6 h-6 stroke-[2.2] absolute transition-all duration-300 ease-out ${
-                      mobileMenuOpen ? 'opacity-0 rotate-90 scale-75' : 'opacity-100 rotate-0 scale-100'
+                    className={`w-6 h-6 stroke-[2.2] absolute transition-all ${
+                      mobileMenuOpen
+                        ? 'opacity-0 rotate-90 scale-75 duration-[450ms] ease-[cubic-bezier(0.16,1,0.3,1)]'
+                        : 'opacity-100 rotate-0 scale-100 duration-[680ms] ease-[cubic-bezier(0.35,0,0.25,1)]'
                     }`}
                   />
                   <X
-                    className={`w-6 h-6 stroke-[2.2] absolute transition-all duration-300 ease-out ${
-                      mobileMenuOpen ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-75'
+                    className={`w-6 h-6 stroke-[2.2] absolute transition-all ${
+                      mobileMenuOpen
+                        ? 'opacity-100 rotate-0 scale-100 duration-[450ms] ease-[cubic-bezier(0.16,1,0.3,1)]'
+                        : 'opacity-0 -rotate-90 scale-75 duration-[680ms] ease-[cubic-bezier(0.35,0,0.25,1)]'
                     }`}
                   />
                 </div>
@@ -409,126 +393,147 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
       <div className={`w-full max-w-[1590px] mx-auto relative ${mobileMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}>
         {/* Lớp mờ nền (Backdrop) khi mở menu trên Mobile: Fade in / Fade out mượt mà, Bấm ra ngoài để đóng */}
         <div
-          className={`fixed inset-0 bg-slate-950/40 backdrop-blur-[3px] z-40 lg:hidden transition-all duration-300 ease-out ${
-            mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          className={`fixed inset-0 bg-slate-950/40 backdrop-blur-[3px] z-40 lg:hidden transition-all ${
+            mobileMenuOpen
+              ? 'opacity-100 pointer-events-auto duration-[480ms] ease-[cubic-bezier(0.16,1,0.3,1)]'
+              : 'opacity-0 pointer-events-none duration-[720ms] ease-[cubic-bezier(0.35,0,0.25,1)]'
           }`}
           onClick={() => setMobileMenuOpen(false)}
           aria-hidden="true"
         />
 
-        {/* Card menu: Nền trắng thanh thoát, hiển thị chữ siêu sắc nét */}
+        {/* Card menu: Nền kính mờ sang trọng, chuyển động mở ra thu lại mượt mà êm ái */}
         <div
           ref={menuContainerRef}
-          className={`relative z-50 lg:hidden px-4 py-3.5 space-y-2 font-google-sans rounded-2xl mx-3 mt-2 origin-top backdrop-blur-2xl bg-white/98 text-slate-900 border border-slate-200/90 shadow-[0_24px_60px_-10px_rgba(15,23,42,0.18)] ${
+          className={`relative z-50 lg:hidden p-3.5 space-y-2 font-google-sans rounded-2xl mx-3 mt-2 origin-top backdrop-blur-2xl bg-gradient-to-b from-[rgba(14,59,117,0.92)] via-[rgba(24,78,144,0.85)] to-[rgba(255,255,255,0.96)] text-slate-900 border border-white/40 shadow-[0_24px_60px_-10px_rgba(15,23,42,0.35)] ${
             mobileMenuOpen
               ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto visible'
-              : 'opacity-0 scale-[0.95] -translate-y-2.5 pointer-events-none invisible'
+              : 'opacity-0 scale-[0.96] -translate-y-5 pointer-events-none invisible'
           }`}
           style={{
             WebkitBackdropFilter: 'blur(24px) saturate(180%)',
             backdropFilter: 'blur(24px) saturate(180%)',
             transition: mobileMenuOpen
-              ? 'transform 320ms cubic-bezier(0.16, 1, 0.3, 1), opacity 280ms cubic-bezier(0.16, 1, 0.3, 1)'
-              : 'transform 240ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms cubic-bezier(0.4, 0, 0.2, 1)',
+              ? 'transform 500ms cubic-bezier(0.16, 1, 0.3, 1), opacity 440ms cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0s'
+              : 'transform 720ms cubic-bezier(0.35, 0, 0.25, 1), opacity 600ms cubic-bezier(0.35, 0, 0.25, 1) 90ms, visibility 0s linear 720ms',
             willChange: 'transform, opacity',
           }}
         >
-          <div className="pb-2.5 mb-2 border-b border-slate-200 space-y-1">
-            <span className="text-[11.5px] font-bold uppercase tracking-wider px-3.5 text-slate-500">
+          {/* PHẦN 1: PHÂN HỆ TRA CỨU (CHỮ TRẮNG RÕ NÉT, TAB ĐANG CHỌN NỀN TRẮNG CHỮ ĐỎ) */}
+          <div className="pb-2.5 mb-2 border-b border-white/20 space-y-1">
+            <span className="block text-[11.5px] font-bold uppercase tracking-wider px-3.5 text-blue-100/90 font-google-sans">
               Phân hệ tra cứu
             </span>
+
+            {/* Tab 1: Văn bằng tốt nghiệp */}
             <button
               type="button"
-              data-ripple="rgba(215, 33, 52, 0.22)"
+              data-ripple={activeTab === 'vanbang' ? 'rgba(215, 33, 52, 0.18)' : 'rgba(255, 255, 255, 0.22)'}
               onClick={() => {
                 handleTabClick('vanbang');
                 setMobileMenuOpen(false);
               }}
-              className={`w-full text-left relative overflow-hidden px-3.5 py-2.5 rounded-xl text-[16px] font-google-sans font-[700] transition-colors outline-none cursor-pointer active:scale-[0.98] ${
+              className={`w-full text-left relative overflow-hidden px-3.5 py-2.5 rounded-xl text-[16px] font-google-sans font-bold transition-colors outline-none cursor-pointer active:scale-[0.98] select-none ${
                 activeTab === 'vanbang'
-                  ? 'bg-[#FFF0F2] text-[#D72134] border border-red-100'
-                  : 'text-slate-800 hover:text-[#D72134] hover:bg-slate-100/70'
+                  ? 'bg-white text-[#D72134] shadow-sm'
+                  : 'text-white/90 hover:text-white hover:bg-white/10'
               }`}
+              style={{ WebkitTapHighlightColor: 'transparent', outline: 'none' }}
             >
               <span className="relative z-10 pointer-events-none">Văn bằng tốt nghiệp</span>
             </button>
+
+            {/* Tab 2: CNTT */}
             <button
               type="button"
-              data-ripple="rgba(215, 33, 52, 0.22)"
+              data-ripple={activeTab === 'cntt' ? 'rgba(215, 33, 52, 0.18)' : 'rgba(255, 255, 255, 0.22)'}
               onClick={() => {
                 handleTabClick('cntt');
                 setMobileMenuOpen(false);
               }}
-              className={`w-full text-left relative overflow-hidden px-3.5 py-2.5 rounded-xl text-[16px] font-google-sans font-[700] transition-colors outline-none cursor-pointer active:scale-[0.98] ${
+              className={`w-full text-left relative overflow-hidden px-3.5 py-2.5 rounded-xl text-[16px] font-google-sans font-bold transition-colors outline-none cursor-pointer active:scale-[0.98] select-none ${
                 activeTab === 'cntt'
-                  ? 'bg-[#FFF0F2] text-[#D72134] border border-red-100'
-                  : 'text-slate-800 hover:text-[#D72134] hover:bg-slate-100/70'
+                  ? 'bg-white text-[#D72134] shadow-sm'
+                  : 'text-white/90 hover:text-white hover:bg-white/10'
               }`}
+              style={{ WebkitTapHighlightColor: 'transparent', outline: 'none' }}
             >
               <span className="relative z-10 pointer-events-none">Chứng chỉ CNTT</span>
             </button>
+
+            {/* Tab 3: VSTEP */}
             <button
               type="button"
-              data-ripple="rgba(215, 33, 52, 0.22)"
+              data-ripple={activeTab === 'vstep' ? 'rgba(215, 33, 52, 0.18)' : 'rgba(255, 255, 255, 0.22)'}
               onClick={() => {
                 handleTabClick('vstep');
                 setMobileMenuOpen(false);
               }}
-              className={`w-full text-left relative overflow-hidden px-3.5 py-2.5 rounded-xl text-[16px] font-google-sans font-[700] transition-colors outline-none cursor-pointer active:scale-[0.98] ${
+              className={`w-full text-left relative overflow-hidden px-3.5 py-2.5 rounded-xl text-[16px] font-google-sans font-bold transition-colors outline-none cursor-pointer active:scale-[0.98] select-none ${
                 activeTab === 'vstep'
-                  ? 'bg-[#FFF0F2] text-[#D72134] border border-red-100'
-                  : 'text-slate-800 hover:text-[#D72134] hover:bg-slate-100/70'
+                  ? 'bg-white text-[#D72134] shadow-sm'
+                  : 'text-white/90 hover:text-white hover:bg-white/10'
               }`}
+              style={{ WebkitTapHighlightColor: 'transparent', outline: 'none' }}
             >
               <span className="relative z-10 pointer-events-none">Chứng chỉ VSTEP</span>
             </button>
           </div>
 
-          {/* 4 liên kết cổng thông tin: ĐỒNG NHẤT CÙNG CỠ CHỮ 16PX, CÙNG MÀU CHỮ, CÙNG FONT VÀ PADDING */}
+          {/* PHẦN 2: 4 LIÊN KẾT CỔNG THÔNG TIN (CHỮ PHẲNG THANH LỊCH, KHÔNG ĐÓNG KHUNG, CHẠM KHÔNG BỊ VIỀN ĐEN) */}
           <div className="space-y-1">
             <a
               href="https://www.nctu.edu.vn/"
               target="_blank"
               rel="noreferrer"
-              data-ripple="rgba(215, 33, 52, 0.22)"
-              className="block relative overflow-hidden px-3.5 py-2.5 text-[16px] font-google-sans font-[600] rounded-xl text-slate-800 hover:text-[#D72134] hover:bg-slate-100/70 active:scale-[0.98] transition-all"
+              data-ripple="rgba(215, 33, 52, 0.15)"
+              className="block relative overflow-hidden px-3.5 py-2.5 text-[16px] font-google-sans font-semibold rounded-xl text-slate-800 hover:text-[#D72134] hover:bg-red-50/70 active:scale-[0.98] transition-all outline-none select-none"
+              style={{ WebkitTapHighlightColor: 'transparent', outline: 'none' }}
             >
               <span className="relative z-10 pointer-events-none">Trang chủ NCTU</span>
             </a>
+
             <a
               href="https://nctu.edu.vn/trang-sinh-vien"
               target="_blank"
               rel="noreferrer"
-              data-ripple="rgba(215, 33, 52, 0.22)"
-              className="block relative overflow-hidden px-3.5 py-2.5 text-[16px] font-google-sans font-[600] rounded-xl text-slate-800 hover:text-[#D72134] hover:bg-slate-100/70 active:scale-[0.98] transition-all"
+              data-ripple="rgba(215, 33, 52, 0.15)"
+              className="block relative overflow-hidden px-3.5 py-2.5 text-[16px] font-google-sans font-semibold rounded-xl text-slate-800 hover:text-[#D72134] hover:bg-red-50/70 active:scale-[0.98] transition-all outline-none select-none"
+              style={{ WebkitTapHighlightColor: 'transparent', outline: 'none' }}
             >
               <span className="relative z-10 pointer-events-none">Cổng Sinh viên</span>
             </a>
+
             <a
               href="https://alumni.nctu.edu.vn/"
               target="_blank"
               rel="noreferrer"
-              data-ripple="rgba(215, 33, 52, 0.22)"
-              className="block relative overflow-hidden px-3.5 py-2.5 text-[16px] font-google-sans font-[600] rounded-xl text-slate-800 hover:text-[#D72134] hover:bg-slate-100/70 active:scale-[0.98] transition-all"
+              data-ripple="rgba(215, 33, 52, 0.15)"
+              className="block relative overflow-hidden px-3.5 py-2.5 text-[16px] font-google-sans font-semibold rounded-xl text-slate-800 hover:text-[#D72134] hover:bg-red-50/70 active:scale-[0.98] transition-all outline-none select-none"
+              style={{ WebkitTapHighlightColor: 'transparent', outline: 'none' }}
             >
               <span className="relative z-10 pointer-events-none">Cựu sinh viên</span>
             </a>
+
             <a
               href="https://nctu.edu.vn/cb-gv"
               target="_blank"
               rel="noreferrer"
-              data-ripple="rgba(215, 33, 52, 0.22)"
-              className="block relative overflow-hidden px-3.5 py-2.5 text-[16px] font-google-sans font-[600] rounded-xl text-slate-800 hover:text-[#D72134] hover:bg-slate-100/70 active:scale-[0.98] transition-all"
+              data-ripple="rgba(215, 33, 52, 0.15)"
+              className="block relative overflow-hidden px-3.5 py-2.5 text-[16px] font-google-sans font-semibold rounded-xl text-slate-800 hover:text-[#D72134] hover:bg-red-50/70 active:scale-[0.98] transition-all outline-none select-none"
+              style={{ WebkitTapHighlightColor: 'transparent', outline: 'none' }}
             >
               <span className="relative z-10 pointer-events-none">Cán bộ - Giảng viên</span>
             </a>
           </div>
 
-          <div className="pt-2 border-t border-slate-200">
+          {/* PHẦN 3: HOTLINE CHỮ ĐỎ RÕ NÉT, KHÔNG ĐÓNG KHUNG */}
+          <div className="pt-2 border-t border-slate-200/80">
             <a
               href="tel:02923798798"
               data-ripple="rgba(215, 33, 52, 0.22)"
-              className="block relative overflow-hidden py-2 px-3.5 text-[16px] font-google-sans font-[700] text-[#D72134] hover:text-[#b71526] hover:bg-red-50/70 rounded-xl active:scale-[0.98] transition-all"
+              className="block relative overflow-hidden py-2 px-3.5 text-[16px] font-google-sans font-bold text-[#D72134] hover:text-[#b71526] hover:bg-red-50/60 rounded-xl active:scale-[0.98] transition-all outline-none select-none"
+              style={{ WebkitTapHighlightColor: 'transparent', outline: 'none' }}
             >
               <span className="relative z-10 pointer-events-none">Hotline: (0292) 3 798 798</span>
             </a>

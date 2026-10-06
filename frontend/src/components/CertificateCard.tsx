@@ -108,10 +108,10 @@ export default function CertificateCard({
     <div className="font-google-sans text-[#0F172A] w-full flex flex-col justify-end sm:justify-center my-auto">
       {/* THẺ KẾT QUẢ TRA CỨU: DRAWER THOÁNG ĐÃNG TRÊN MOBILE (~76VH), TRONG ĐÓ CUỘN NỘI DUNG, POPUP OMNINOTCH TRÊN DESKTOP */}
       <div
-        className={`bg-white rounded-t-[36px] rounded-b-none sm:rounded-[36px] border-0 transition-shadow duration-300 ${isExpanded
-            ? 'shadow-[0_32px_90px_-15px_rgba(15,23,42,0.28),0_12px_36px_-6px_rgba(15,23,42,0.10)]'
-            : 'shadow-[0_20px_60px_-15px_rgba(15,23,42,0.18),0_8px_24px_-4px_rgba(15,23,42,0.06)]'
-          } overflow-hidden certificate-card w-full h-[76vh] max-h-[84dvh] sm:h-auto sm:max-h-[88vh] flex flex-col no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}
+        className={`bg-white rounded-[32px] sm:rounded-[36px] border-0 transition-shadow duration-300 ${isExpanded
+            ? 'shadow-[0_32px_90px_-15px_rgba(15,23,42,0.32),0_12px_36px_-6px_rgba(15,23,42,0.12)]'
+            : 'shadow-[0_24px_65px_-15px_rgba(15,23,42,0.22),0_10px_26px_-4px_rgba(15,23,42,0.08)]'
+          } overflow-hidden certificate-card w-full h-[76vh] max-h-[82dvh] sm:h-auto sm:max-h-[88vh] flex flex-col no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}
       >
         {/* TIÊU ĐỀ KẾT QUẢ VĂN BẰNG / CHỨNG CHỈ (NỀN XÁM NHẸ, CỐ ĐỊNH TRÊN CÙNG DRAWER, LIỀN MẠCH KHÔNG VIỀN) */}
         <div className="bg-slate-50/95 backdrop-blur-xs relative px-4 min-[390px]:px-5 sm:px-10 lg:px-12 pt-3 sm:pt-6 pb-3.5 sm:pb-6 shrink-0 border-0 border-none z-10">
@@ -137,13 +137,13 @@ export default function CertificateCard({
                 <button
                   type="button"
                   onClick={onToggleExpand}
-                  className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-200/60 hover:bg-slate-300/80 active:bg-slate-300 text-slate-700 hover:text-slate-900 transition-all duration-150 cursor-pointer flex-shrink-0 active:scale-90 outline-none border-0 border-none backdrop-blur-xs hidden sm:flex"
+                  className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-slate-200/60 hover:bg-slate-300/80 active:bg-slate-300 text-slate-700 hover:text-slate-900 transition-all duration-150 cursor-pointer flex-shrink-0 active:scale-90 outline-none border-0 border-none backdrop-blur-xs hidden sm:flex"
                   title={isExpanded ? 'Thu nhỏ lại kích thước chuẩn' : 'Phóng to toàn màn hình'}
                 >
                   {isExpanded ? (
-                    <Minimize2 className="w-6 h-6 text-slate-700 transition-transform duration-200" strokeWidth={2.4} />
+                    <Minimize2 className="w-5 h-5 sm:w-6 sm:h-6 text-slate-700 transition-transform duration-200" strokeWidth={2.4} />
                   ) : (
-                    <Maximize2 className="w-6 h-6 text-slate-700 transition-transform duration-200" strokeWidth={2.4} />
+                    <Maximize2 className="w-5 h-5 sm:w-6 sm:h-6 text-slate-700 transition-transform duration-200" strokeWidth={2.4} />
                   )}
                 </button>
               )}
@@ -152,10 +152,10 @@ export default function CertificateCard({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-200/60 hover:bg-slate-300/80 active:bg-slate-300 text-slate-700 hover:text-slate-900 transition-all duration-150 cursor-pointer flex-shrink-0 active:scale-90 outline-none border-0 border-none backdrop-blur-xs"
+                  className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-slate-200/60 hover:bg-slate-300/80 active:bg-slate-300 text-slate-700 hover:text-slate-900 transition-all duration-150 cursor-pointer flex-shrink-0 active:scale-90 outline-none border-0 border-none backdrop-blur-xs"
                   title="Thu gọn (Esc)"
                 >
-                  <X className="w-6 h-6 text-slate-700" strokeWidth={2.5} />
+                  <X className="w-5 h-5 sm:w-6 sm:h-6 text-slate-700" strokeWidth={2.5} />
                 </button>
               )}
             </div>

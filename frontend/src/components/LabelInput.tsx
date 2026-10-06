@@ -214,7 +214,7 @@ export function LabelInput({
       const timer = setTimeout(() => {
         setPopoverRendered(false);
         setViewMode("days");
-      }, 380);
+      }, 270);
       return () => clearTimeout(timer);
     }
   }, [datePickerOpen, dropdownOpen]);
@@ -251,9 +251,7 @@ export function LabelInput({
     const placement = openUpward ? "top" : "bottom";
     setPopoverPlacement(placement);
 
-    const origin = openUpward
-      ? (isDate && !isMobile ? "bottom right" : "bottom center")
-      : (isDate && !isMobile ? "top right" : "top center");
+    const origin = openUpward ? "bottom center" : "top center";
 
     setPopoverCoords({
       top: Math.round(top),
@@ -387,8 +385,8 @@ export function LabelInput({
           "--lbi-half-h": `${(H / 2).toFixed(1)}px`,
           zIndex: datePickerOpen || dropdownOpen ? 70 : undefined,
           borderWidth: isFieldFocused || Boolean(error) ? "2px" : undefined,
-          backgroundColor: isFieldFocused || Boolean(error) ? "#ffffff" : undefined,
           borderColor: isFieldFocused || Boolean(error) ? "#D72134" : undefined,
+          backgroundColor: isFieldFocused || Boolean(error) ? "#ffffff" : undefined,
           boxShadow: isFieldFocused || Boolean(error) ? "none" : undefined,
         } as React.CSSProperties}
         onClick={
@@ -435,7 +433,7 @@ export function LabelInput({
               aria-label="Mở lịch chọn ngày"
               data-ripple="rgba(215, 33, 52, 0.22)"
               style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)' }}
-              className={`calendar-icon-btn absolute right-3.5 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-450 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer overflow-hidden z-10 hover:bg-red-50/60 active:scale-95 ${datePickerOpen
+              className={`calendar-icon-btn absolute right-3.5 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center cursor-pointer overflow-hidden z-10 hover:bg-red-50/60 active:scale-95 transition-all duration-[380ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${datePickerOpen
                 ? "text-[#D72134] scale-105 bg-red-50/40"
                 : "text-slate-400 group-hover:text-[#D72134] scale-100"
                 }`}
@@ -459,24 +457,25 @@ export function LabelInput({
                   width: `${popoverCoords.width}px`,
                   transformOrigin: popoverCoords.transformOrigin,
                   zIndex: 99999,
+                  backgroundColor: "#ffffff",
                 }}
-                className={`bg-white/98 backdrop-blur-2xl rounded-2xl border-0 border-none shadow-[0_24px_50px_-12px_rgba(15,23,42,0.18),0_10px_24px_-4px_rgba(15,23,42,0.08)] overflow-hidden select-none lbi-popover-shell ${datePickerOpen
+                className={`bg-white rounded-2xl border-0 border-none shadow-[0_24px_65px_-12px_rgba(15,23,42,0.25),0_10px_24px_-4px_rgba(15,23,42,0.10)] overflow-hidden select-none lbi-popover-shell ${datePickerOpen
                   ? "lbi-popover-open"
                   : "lbi-popover-closed"
                   }`}
                 role="dialog"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div ref={datePickerContentRef} className="p-4">
+                <div ref={datePickerContentRef} className="p-4 bg-white">
                   {/* Body depending on viewMode with synchronized transitions */}
                   {viewMode === "months" ? (
                     <div key="months" className="animate-view-enter space-y-2">
-                      <div className="flex items-center justify-between pb-2 mb-1 border-b border-slate-200/50">
-                        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Chọn tháng</span>
+                      <div className="flex items-center justify-between pb-2 mb-1 border-b border-slate-100">
+                        <span className="text-[12px] font-bold text-slate-500 uppercase tracking-wider">Chọn tháng</span>
                         <button
                           type="button"
                           onClick={() => setViewMode("days")}
-                          className="text-xs font-semibold text-[#D72134] hover:underline cursor-pointer flex items-center gap-1 py-0.5 px-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                          className="text-xs font-bold text-[#D72134] hover:underline cursor-pointer flex items-center gap-1 py-1 px-2 rounded-lg hover:bg-red-50 transition-colors"
                         >
                           Quay lại
                         </button>
@@ -492,9 +491,9 @@ export function LabelInput({
                                 setViewMonth(i);
                                 setViewMode("days");
                               }}
-                              className={`py-2.5 px-3 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer ${isCurrentMonth
+                              className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${isCurrentMonth
                                 ? "bg-[#D72134] text-white font-bold shadow-md shadow-red-600/30 scale-105"
-                                : "text-slate-700 hover:text-[#D72134] hover:bg-red-50 active:scale-95"
+                                : "text-slate-800 hover:text-[#D72134] hover:bg-red-50 active:scale-95"
                                 }`}
                             >
                               Tháng {i + 1}
@@ -505,12 +504,12 @@ export function LabelInput({
                     </div>
                   ) : viewMode === "years" ? (
                     <div key="years" className="animate-view-enter space-y-2">
-                      <div className="flex items-center justify-between pb-2 mb-1 border-b border-slate-200/50">
-                        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Chọn năm</span>
+                      <div className="flex items-center justify-between pb-2 mb-1 border-b border-slate-100">
+                        <span className="text-[12px] font-bold text-slate-500 uppercase tracking-wider">Chọn năm</span>
                         <button
                           type="button"
                           onClick={() => setViewMode("days")}
-                          className="text-xs font-semibold text-[#D72134] hover:underline cursor-pointer flex items-center gap-1 py-0.5 px-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                          className="text-xs font-bold text-[#D72134] hover:underline cursor-pointer flex items-center gap-1 py-1 px-2 rounded-lg hover:bg-red-50 transition-colors"
                         >
                           Quay lại
                         </button>
@@ -529,9 +528,9 @@ export function LabelInput({
                                 setViewYear(y);
                                 setViewMode("days");
                               }}
-                              className={`py-2 rounded-xl text-xs font-medium transition-all duration-150 cursor-pointer ${isCurrentYear
+                              className={`py-2 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${isCurrentYear
                                 ? "bg-[#D72134] text-white font-bold shadow-md shadow-red-600/30 scale-105"
-                                : "text-slate-700 hover:text-[#D72134] hover:bg-red-50 active:scale-95"
+                                : "text-slate-800 hover:text-[#D72134] hover:bg-red-50 active:scale-95"
                                 }`}
                             >
                               {y}
@@ -543,7 +542,7 @@ export function LabelInput({
                   ) : (
                     <div key="days" className="animate-view-enter">
                       {/* Header */}
-                      <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200/50">
+                      <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
                         <button
                           type="button"
                           onClick={() => {
@@ -554,7 +553,7 @@ export function LabelInput({
                               setViewMonth((m) => m - 1);
                             }
                           }}
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-500 hover:text-[#D72134] hover:bg-red-50 transition-colors cursor-pointer active:scale-95"
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 hover:text-[#D72134] hover:bg-red-50 transition-colors cursor-pointer active:scale-95"
                           title="Tháng trước"
                         >
                           <ChevronLeft size={18} strokeWidth={2.5} />
@@ -564,19 +563,19 @@ export function LabelInput({
                           <button
                             type="button"
                             onClick={() => setViewMode("months")}
-                            className="w-[96px] h-8 rounded-lg text-sm font-bold transition-all duration-150 flex items-center justify-center gap-1 cursor-pointer active:scale-95 text-slate-800 hover:text-[#D72134] hover:bg-red-50 tabular-nums shrink-0"
+                            className="w-[96px] h-8 rounded-lg text-sm font-bold transition-all duration-150 flex items-center justify-center gap-1 cursor-pointer active:scale-95 text-slate-900 hover:text-[#D72134] hover:bg-red-50 tabular-nums shrink-0"
                           >
                             <span>Tháng {viewMonth + 1}</span>
-                            <ChevronDown size={14} strokeWidth={2.5} className="shrink-0 text-slate-400" />
+                            <ChevronDown size={14} strokeWidth={2.5} className="shrink-0 text-slate-500" />
                           </button>
 
                           <button
                             type="button"
                             onClick={() => setViewMode("years")}
-                            className="w-[74px] h-8 rounded-lg text-sm font-bold transition-all duration-150 flex items-center justify-center gap-1 cursor-pointer active:scale-95 text-slate-800 hover:text-[#D72134] hover:bg-red-50 tabular-nums shrink-0"
+                            className="w-[74px] h-8 rounded-lg text-sm font-bold transition-all duration-150 flex items-center justify-center gap-1 cursor-pointer active:scale-95 text-slate-900 hover:text-[#D72134] hover:bg-red-50 tabular-nums shrink-0"
                           >
                             <span>{viewYear}</span>
-                            <ChevronDown size={14} strokeWidth={2.5} className="shrink-0 text-slate-400" />
+                            <ChevronDown size={14} strokeWidth={2.5} className="shrink-0 text-slate-500" />
                           </button>
                         </div>
 
@@ -590,7 +589,7 @@ export function LabelInput({
                               setViewMonth((m) => m + 1);
                             }
                           }}
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-500 hover:text-[#D72134] hover:bg-red-50 transition-colors cursor-pointer active:scale-95"
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 hover:text-[#D72134] hover:bg-red-50 transition-colors cursor-pointer active:scale-95"
                           title="Tháng sau"
                         >
                           <ChevronRight size={18} strokeWidth={2.5} />
@@ -598,11 +597,11 @@ export function LabelInput({
                       </div>
 
                       {/* Days of week header */}
-                      <div className="grid grid-cols-7 gap-1 text-center mb-1">
+                      <div className="grid grid-cols-7 gap-1 text-center mb-1.5 pb-1 border-b border-slate-100">
                         {["T2", "T3", "T4", "T5", "T6", "T7", "CN"].map((dayName, idx) => (
                           <div
                             key={dayName}
-                            className={`text-[11px] font-semibold py-1 ${idx >= 5 ? "text-red-400 font-bold" : "text-slate-400"}`}
+                            className={`text-[11.5px] font-bold py-0.5 ${idx >= 5 ? "text-red-500" : "text-slate-500"}`}
                           >
                             {dayName}
                           </div>
@@ -623,7 +622,9 @@ export function LabelInput({
                           for (let d = 1; d <= daysInMonth; d++) {
                             cells.push({ day: d, isCurrent: true, monthOffset: 0 });
                           }
-                          const remaining = 42 - cells.length;
+                          // Tối ưu số hàng hiển thị: nếu đủ trong 5 hàng (<= 35 ô) thì không cố sinh thêm hàng thứ 6 thừa thãi
+                          const totalSlots = cells.length > 35 ? 42 : 35;
+                          const remaining = totalSlots - cells.length;
                           for (let d = 1; d <= remaining; d++) {
                             cells.push({ day: d, isCurrent: false, monthOffset: 1 });
                           }
@@ -663,19 +664,17 @@ export function LabelInput({
                                       target: { value: valStr, name: name || id },
                                     } as any);
                                   }
-                                  setTimeout(() => {
-                                    setDatePickerOpen(false);
-                                    setFocus(false);
-                                  }, 130);
+                                  setDatePickerOpen(false);
+                                  setFocus(false);
                                 }}
                                 data-ripple="rgba(215, 33, 52, 0.22)"
-                                className={`w-9 h-9 rounded-xl text-[13px] flex items-center justify-center transition-all duration-150 cursor-pointer relative overflow-hidden ${isSelected
+                                className={`w-9 h-9 rounded-xl text-[13px] flex items-center justify-center transition-all duration-150 cursor-pointer relative overflow-hidden select-none ${isSelected
                                   ? "bg-[#D72134] text-white font-bold shadow-md shadow-red-600/30 scale-105"
                                   : isToday
-                                    ? "border border-[#D72134] text-[#D72134] font-semibold hover:bg-red-100/70"
+                                    ? "text-[#D72134] font-bold bg-red-50/50 hover:bg-red-100/70 hover:scale-105 active:scale-95"
                                     : cell.isCurrent
-                                      ? "text-slate-800 hover:bg-red-50 hover:text-[#D72134] font-medium active:scale-95"
-                                      : "text-slate-300 hover:bg-slate-100 hover:text-slate-500"
+                                      ? "text-slate-800 hover:bg-red-50 hover:text-[#D72134] font-semibold active:scale-95 hover:scale-105"
+                                      : "text-slate-400 font-medium hover:bg-red-50 hover:text-[#D72134] hover:font-bold hover:scale-105 active:scale-95"
                                   }`}
                               >
                                 {cell.day}
@@ -691,18 +690,20 @@ export function LabelInput({
                   <div className="flex items-center justify-between pt-2.5 mt-2 border-t border-slate-100">
                     <button
                       type="button"
+                      data-ripple="rgba(215, 33, 52, 0.12)"
                       onClick={() => {
                         setDatePickerOpen(false);
                         setFocus(false);
                       }}
-                      className="px-2.5 py-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 transition-colors duration-150 cursor-pointer active:scale-95"
+                      className="relative overflow-hidden px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-500 hover:text-[#D72134] hover:bg-red-50/70 transition-all duration-150 cursor-pointer active:scale-95 border-0 border-none outline-none select-none"
                     >
                       Hủy
                     </button>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       <button
                         type="button"
+                        data-ripple="rgba(215, 33, 52, 0.15)"
                         onClick={() => {
                           const today = new Date();
                           const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
@@ -715,18 +716,27 @@ export function LabelInput({
                           setViewYear(today.getFullYear());
                           setViewMonth(today.getMonth());
                         }}
-                        className="px-2.5 py-1.5 text-xs font-medium text-slate-500 hover:text-[#D72134] transition-colors cursor-pointer"
+                        className="relative overflow-hidden px-3 py-1.5 rounded-lg text-xs font-semibold text-[#D72134] hover:text-[#b71526] hover:bg-red-50/80 transition-all duration-150 cursor-pointer active:scale-95 border-0 border-none outline-none select-none"
                       >
                         Hôm nay
                       </button>
 
                       <button
                         type="button"
+                        data-ripple="rgba(255, 255, 255, 0.35)"
                         onClick={() => {
+                          const currentDay = parsedDate?.day || (viewMonth === new Date().getMonth() && viewYear === new Date().getFullYear() ? new Date().getDate() : 1);
+                          const valStr = `${viewYear}-${String(viewMonth + 1).padStart(2, "0")}-${String(currentDay).padStart(2, "0")}`;
+                          if (!isControlled) setUncontrolledValue(valStr);
+                          if (onChange) {
+                            onChange({
+                              target: { value: valStr, name: name || id },
+                            } as any);
+                          }
                           setDatePickerOpen(false);
                           setFocus(false);
                         }}
-                        className="px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-[#D72134] hover:bg-[#b81728] shadow-sm shadow-red-600/25 transition-all duration-150 cursor-pointer active:scale-95"
+                        className="relative overflow-hidden px-4 py-1.5 rounded-xl text-xs font-bold text-white bg-[#D72134] hover:bg-[#b81728] shadow-sm shadow-red-600/30 transition-all duration-150 cursor-pointer active:scale-95 border-0 border-none outline-none select-none"
                       >
                         Xác nhận
                       </button>
@@ -762,7 +772,7 @@ export function LabelInput({
 
             {/* Sleek Chevron Arrow (No background box) */}
             <div
-              className={`absolute right-5 top-1/2 -translate-y-1/2 transition-[transform,color] duration-450 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none ${dropdownOpen
+              className={`absolute right-5 top-1/2 -translate-y-1/2 transition-[transform,color] duration-[380ms] ease-[cubic-bezier(0.32,0.72,0,1)] pointer-events-none ${dropdownOpen
                 ? "text-[#D72134] rotate-180 scale-110"
                 : "text-slate-400 group-hover:text-slate-600 rotate-0 scale-100"
                 }`}
@@ -785,15 +795,16 @@ export function LabelInput({
                   width: `${popoverCoords.width}px`,
                   transformOrigin: popoverCoords.transformOrigin,
                   zIndex: 99999,
+                  backgroundColor: "#ffffff",
                 }}
-                className={`bg-white/98 backdrop-blur-2xl rounded-2xl border-0 border-none shadow-[0_24px_50px_-12px_rgba(15,23,42,0.18),0_10px_24px_-4px_rgba(15,23,42,0.08)] p-2 select-none lbi-popover-shell ${dropdownOpen
+                className={`bg-white rounded-2xl border-0 border-none shadow-[0_24px_65px_-12px_rgba(15,23,42,0.25),0_10px_24px_-4px_rgba(15,23,42,0.10)] overflow-hidden p-2 select-none lbi-popover-shell ${dropdownOpen
                   ? "lbi-popover-open"
                   : "lbi-popover-closed"
                   }`}
                 role="listbox"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="space-y-1.5 max-h-72 overflow-y-auto pr-1.5 custom-scrollbar">
+                <div className="space-y-1 max-h-72 overflow-y-auto pr-1 custom-scrollbar">
                   {options!.map((opt) => {
                     const isSelected = String(opt.value) === String(value);
                     return (
@@ -809,40 +820,24 @@ export function LabelInput({
                               target: { value: opt.value, name: name || id },
                             } as any);
                           }
-                          setTimeout(() => {
-                            setDropdownOpen(false);
-                            setFocus(false);
-                          }, 130);
+                          setDropdownOpen(false);
+                          setFocus(false);
                         }}
-                        className={`group/item relative overflow-hidden flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer transition-all duration-200 ease-out select-none border-0 border-none ${isSelected
-                          ? "bg-gradient-to-r from-red-50 to-rose-50/80 text-[#D72134] shadow-2xs font-semibold"
-                          : "bg-transparent hover:bg-red-50/75 hover:translate-x-1 active:scale-[0.98]"
+                        className={`group/item relative overflow-hidden flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer transition-all duration-150 select-none border-0 border-none outline-none ${isSelected
+                          ? "bg-red-50 text-[#D72134] font-semibold"
+                          : "text-slate-800 hover:bg-red-50 hover:text-[#D72134] font-medium active:scale-[0.99]"
                           }`}
                       >
-                        <div className="flex items-center gap-3 min-w-0 pr-2">
-                          {/* Checkmark or soft bullet indicator */}
-                          <div
-                            className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-all duration-150 ${isSelected
-                              ? "bg-[#D72134] text-white shadow-xs"
-                              : "bg-slate-100 text-slate-400 group-hover/item:bg-red-100 group-hover/item:text-[#D72134]"
-                              }`}
-                          >
-                            {isSelected ? (
-                              <Check className="w-3.5 h-3.5" strokeWidth={3} />
-                            ) : (
-                              <span className="w-1.5 h-1.5 rounded-full bg-slate-300 group-hover/item:bg-[#D72134] transition-colors" />
-                            )}
-                          </div>
+                        <span
+                          className={`text-[15px] truncate transition-colors ${isSelected ? "text-[#D72134] font-semibold" : "text-slate-800 group-hover/item:text-[#D72134]"
+                            }`}
+                        >
+                          {opt.label}
+                        </span>
 
-                          <div className="min-w-0 flex-1">
-                            <div
-                              className={`text-[16px] font-semibold leading-normal truncate transition-colors ${isSelected ? "text-[#D72134]" : "text-slate-800 group-hover/item:text-[#D72134]"
-                                }`}
-                            >
-                              {opt.label}
-                            </div>
-                          </div>
-                        </div>
+                        {isSelected && (
+                          <Check className="w-4 h-4 text-[#D72134] stroke-[2.5] shrink-0 ml-2.5" />
+                        )}
                       </div>
                     );
                   })}

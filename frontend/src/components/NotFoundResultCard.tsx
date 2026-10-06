@@ -27,8 +27,8 @@ export default function NotFoundResultCard({
 
   return (
     <div className="font-google-sans text-[#0F172A] w-full max-w-lg mx-auto flex flex-col justify-end sm:justify-center my-auto">
-      {/* THẺ THÔNG BÁO KHÔNG TÌM THẤY KẾT QUẢ - DRAWER TRÊN MOBILE, POPUP TRÊN DESKTOP */}
-      <div className="bg-white rounded-t-[36px] rounded-b-none sm:rounded-[36px] shadow-[0_24px_70px_-15px_rgba(15,23,42,0.22),0_10px_28px_-4px_rgba(15,23,42,0.08)] overflow-hidden border-0 relative px-4 min-[390px]:px-6 sm:px-10 pt-4 pb-6 sm:py-12 text-center w-full">
+      {/* THẺ THÔNG BÁO KHÔNG TÌM THẤY KẾT QUẢ - FLOATING CARD TRÊN MOBILE, POPUP TRÊN DESKTOP */}
+      <div className="bg-white rounded-[32px] sm:rounded-[36px] shadow-[0_24px_70px_-15px_rgba(15,23,42,0.28),0_10px_28px_-4px_rgba(15,23,42,0.12)] overflow-hidden border-0 relative px-4 min-[390px]:px-6 sm:px-10 pt-4 pb-6 sm:py-12 text-center w-full">
         {/* Thanh gạt Drawer trên mobile: Nhấn hoặc vuốt để đóng */}
         <div
           onClick={handleClose}
@@ -40,10 +40,10 @@ export default function NotFoundResultCard({
         <button
           type="button"
           onClick={handleClose}
-          className="absolute top-4 right-4 sm:top-5 sm:right-5 w-12 h-12 flex items-center justify-center rounded-full bg-slate-200/60 hover:bg-slate-300/80 active:bg-slate-300 text-slate-700 hover:text-slate-900 transition-all duration-150 cursor-pointer active:scale-90 no-print outline-none border-0 border-none backdrop-blur-xs"
+          className="absolute top-4 right-4 sm:top-5 sm:right-5 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-slate-200/60 hover:bg-slate-300/80 active:bg-slate-300 text-slate-700 hover:text-slate-900 transition-all duration-150 cursor-pointer active:scale-90 no-print outline-none border-0 border-none backdrop-blur-xs"
           title="Đóng (Esc)"
         >
-          <X className="w-6 h-6 text-slate-700" strokeWidth={2.5} />
+          <X className="w-5 h-5 sm:w-6 sm:h-6 text-slate-700" strokeWidth={2.5} />
         </button>
 
         {/* HÌNH MINH HỌA: HAI VĂN BẰNG CÙNG KÍNH LÚP VÀ DẤU X ĐỎ */}

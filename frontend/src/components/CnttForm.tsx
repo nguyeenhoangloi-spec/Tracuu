@@ -304,7 +304,7 @@ export default function CnttForm({
           >
             <div
               data-ripple="rgba(215, 33, 52, 0.24)"
-              className="checkbox-ripple-target relative w-9 h-9 -m-2 flex items-center justify-center rounded-full overflow-hidden flex-shrink-0 group-hover:bg-red-50/40 transition-colors"
+              className="checkbox-ripple-target relative w-9 h-9 -my-2 -mr-2 ml-0 flex items-center justify-center rounded-full overflow-hidden flex-shrink-0 group-hover:bg-red-50/40 transition-colors"
             >
               <div
                 className={`w-5 h-5 rounded-[6px] flex items-center justify-center border-2 transition-all duration-200 flex-shrink-0 ${
