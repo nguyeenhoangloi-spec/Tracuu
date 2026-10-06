@@ -277,16 +277,16 @@ body::-webkit-scrollbar-button {
   padding-top: 6px;
 }
 
-/* Custom Card Wrapper provided by user */
+/* Custom Card Wrapper: Đổ bóng lan tỏa đa tầng siêu êm, màu xanh navy loãng chuẩn Stripe/Apple, triệt tiêu hoàn toàn viền đen giả */
 .card-wrapper {
   background: #ffffff;
   border-radius: 38px;
   padding: 22px 24px 18px 24px;
 
-  /* Đổ bóng lan tỏa mềm, đa tầng tạo cảm giác nổi bồng bềnh */
+  /* Đổ bóng đa tầng xanh navy siêu dịu mắt: Không có viền đen, không lem mép, nhìn xa bồng bềnh tự nhiên */
   box-shadow:
-    0 20px 40px -15px rgba(15, 23, 42, 0.12),
-    0 0 1px 1px rgba(0, 0, 0, 0.04);
+    0 26px 70px -16px rgba(15, 39, 90, 0.09),
+    0 12px 32px -10px rgba(15, 39, 90, 0.05);
 }
 
 @media (max-width: 640px) {
@@ -759,7 +759,7 @@ body::-webkit-scrollbar-button {
 }
 
 .lbi[data-up="true"] .lbi-label {
-  transform: translateY(calc(-50% - 12.5px)) scale(0.882);
+  transform: translateY(calc(-50% - 13px)) scale(0.824);
   color: #64748b;
   font-weight: 500;
   background: transparent !important;
@@ -828,7 +828,7 @@ body::-webkit-scrollbar-button {
 /* Support browser autofill gracefully */
 .lbi:has(.lbi-field:-webkit-autofill) .lbi-label,
 .lbi:has(.lbi-field:autofill) .lbi-label {
-  transform: translateY(calc(-50% - 12.5px)) scale(0.882) !important;
+  transform: translateY(calc(-50% - 13px)) scale(0.824) !important;
   color: #64748b !important;
   font-weight: 600 !important;
 }

@@ -508,14 +508,14 @@ export default function Home() {
       {/* 2. HERO STAGE - NỀN XANH HỌC THUẬT DNC CHUYỂN SẮC SANG TRỌNG, ĐẦY ĐỦ NỀN TRÊN CẢ MOBILE VÀ DESKTOP */}
       <section
         id="hero-stage"
-        className="relative min-h-[230px] min-[390px]:min-h-[245px] sm:min-h-[320px] lg:min-h-[360px] flex flex-col justify-end items-center pt-20 sm:pt-24 lg:pt-28 pb-10 sm:pb-14 lg:pb-16 px-4 sm:px-6 overflow-hidden bg-gradient-to-br from-[#0F275A] via-[#1E3A8A] to-[#1E40AF]"
+        className="relative min-h-[225px] min-[390px]:min-h-[235px] sm:min-h-[330px] lg:min-h-[370px] xl:min-h-[385px] flex flex-col justify-start items-center pt-[88px] min-[390px]:pt-[92px] sm:pt-[110px] lg:pt-[122px] xl:pt-[128px] pb-11 min-[390px]:pb-12 sm:pb-[72px] lg:pb-[86px] xl:pb-[100px] px-4 sm:px-6 overflow-hidden bg-gradient-to-br from-[#0F275A] via-[#1E3A8A] to-[#1E40AF]"
       >
-        {/* 1. LỚP ẢNH NỀN HỌC THUẬT DNC (BR.PNG) Ở GÓC PHẢI - ÊM DỊU, THANH THOÁT, KHÔNG ĐÈ LÊN CHỮ */}
+        {/* 1. LỚP ẢNH NỀN HỌC THUẬT DNC Ở GÓC PHẢI - ÊM DỊU, THANH THOÁT, KHÔNG ĐÈ LÊN CHỮ */}
         <div
           aria-hidden="true"
           className="absolute inset-0 pointer-events-none bg-cover select-none mix-blend-luminosity opacity-[0.20] sm:opacity-[0.22] bg-[position:95%_20%] sm:bg-[position:right_35%]"
           style={{
-            backgroundImage: "url('/br.png')",
+            backgroundImage: "url('/images/hero/dnc-hero-campus-banner.png')",
             filter: 'contrast(115%) brightness(115%)',
             maskImage: 'linear-gradient(to bottom, black 0%, black 75%, transparent 100%)',
             WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 75%, transparent 100%)',
@@ -581,7 +581,7 @@ export default function Home() {
         />
 
         {/* Khối nội dung tiêu đề: Căn trái đồng bộ cả Mobile và Desktop, dóng thẳng hàng Logo DNC, khoảng thở thoáng đãng tinh tế */}
-        <div className="w-full max-w-[1590px] mx-auto relative z-10 px-4 min-[360px]:px-5 sm:px-6 flex flex-col items-start text-left sm:mt-auto mb-2.5 sm:mb-4 lg:mb-5">
+        <div className="w-full max-w-[1590px] mx-auto relative z-10 px-4 min-[360px]:px-5 sm:px-6 flex flex-col items-start text-left mb-0">
           {/* Breadcrumb chuẩn phong cách cổng trường ĐH Nam Cần Thơ: [Trang chủ > Tra cứu] nền kính mờ không viền tinh tế */}
           <nav aria-label="Breadcrumb" className="inline-flex items-center gap-2 text-[12px] min-[360px]:text-[12.5px] sm:text-[14.5px] text-blue-50 font-medium mb-2 sm:mb-3.5 select-none px-3 py-1 sm:px-5 sm:py-2 rounded-full bg-white/[0.12] hover:bg-white/[0.18] backdrop-blur-md shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-all">
             <a
@@ -649,10 +649,10 @@ export default function Home() {
         ref={cardSectionRef}
         className="w-full bg-[#FFFFFF] relative z-20 pb-20 sm:pb-24 pt-0"
       >
-        <div className="w-full max-w-[780px] mx-auto px-4 sm:px-6 -mt-9 sm:-mt-12 lg:-mt-14 relative">
+        <div className="w-full max-w-[780px] mx-auto px-4 sm:px-6 -mt-12 sm:-mt-16 lg:-mt-20 xl:-mt-24 relative">
           <div
             id="khung-tra-cuu-card"
-            className={`card-wrapper form-card-reveal relative bg-white border-0 border-none shadow-[0_20px_50px_-15px_rgba(15,23,42,0.12),0_0_1px_1px_rgba(0,0,0,0.04)] ${isCardRevealed ? 'active' : ''
+            className={`card-wrapper form-card-reveal relative bg-white border-0 border-none ${isCardRevealed ? 'active' : ''
               }`}
           >
             {/* LỚP BÓNG TRONG PHẢN CHIẾU ÁNH SÁNG MẶT KÍNH TRÊN NỀN TRẮNG (GLOSSY CRYSTAL SHEEN) */}
@@ -805,7 +805,7 @@ export default function Home() {
       {result && isResultVisible && (
         <div
           id="omninotch-overlay"
-          className={`fixed inset-0 z-[60] flex flex-col justify-end sm:justify-center items-center p-3.5 pb-4 sm:p-5 md:p-6 overflow-hidden sm:overflow-y-auto no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-colors duration-300 ${isCardExpanded ? 'bg-slate-950/25' : 'bg-slate-950/15'
+          className={`fixed inset-0 z-[60] flex flex-col justify-end sm:justify-center items-center p-0 sm:p-5 md:p-6 overflow-hidden sm:overflow-y-auto no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-colors duration-300 ${isCardExpanded ? 'bg-slate-950/25' : 'bg-slate-950/15'
             } ${isClosingResult ? 'animate-omninotch-backdrop-exit' : 'animate-omninotch-backdrop-enter'
             }`}
           onClick={(e) => {

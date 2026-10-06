@@ -67,7 +67,7 @@ export default function VanBangForm({
       hasError = true;
     }
     if (!soVaoSo.trim()) {
-      newErrors.soVaoSo = 'Vui lòng điền số vào sổ cấp bằng';
+      newErrors.soVaoSo = 'Vui lòng điền số vào sổ';
       hasError = true;
     }
     setFieldErrors(newErrors);
@@ -172,7 +172,7 @@ export default function VanBangForm({
       ngay_sinh: '2001-05-15',
       loai_dao_tao: 'dh',
       so_hieu_phoi: 'B6829104',
-      so_vao_so: 'DNC-CNTT-2023/142',
+      so_vao_so: 'NCTU-CNTT-2023/142',
     },
     {
       label: 'Trần Thị Ngọc Mai (Dược học - Bằng ĐH)',
@@ -180,7 +180,7 @@ export default function VanBangForm({
       ngay_sinh: '2002-11-20',
       loai_dao_tao: 'dh',
       so_hieu_phoi: 'B7910245',
-      so_vao_so: 'DNC-DH-2024/098',
+      so_vao_so: 'NCTU-DH-2024/098',
     },
     {
       label: 'Phạm Minh Đức (Thạc sĩ)',
@@ -188,7 +188,7 @@ export default function VanBangForm({
       ngay_sinh: '1995-03-25',
       loai_dao_tao: 'ths',
       so_hieu_phoi: 'TS203918',
-      so_vao_so: 'DNC-THS-2023/045',
+      so_vao_so: 'NCTU-THS-2023/045',
     },
   ];
 
@@ -224,11 +224,11 @@ export default function VanBangForm({
       noValidate
       className="space-y-3 sm:space-y-3.5"
     >
-      {/* Loại đào tạo & Họ tên */}
+      {/* Loại văn bằng & Số hiệu phôi */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
         <div>
           <LabelInput
-            label="Loại đào tạo"
+            label="Loại văn bằng"
             options={[
               {
                 value: 'dh',
@@ -262,6 +262,25 @@ export default function VanBangForm({
 
         <div>
           <LabelInput
+            label="Số hiệu phôi"
+            placeholder="Ví dụ: B6829104"
+            value={soHieuPhoi}
+            onChange={(e) => {
+              setSoHieuPhoi(e.target.value.toUpperCase());
+              if (fieldErrors.soHieuPhoi) {
+                setFieldErrors((prev) => ({ ...prev, soHieuPhoi: undefined }));
+              }
+            }}
+            error={fieldErrors.soHieuPhoi}
+            required
+          />
+        </div>
+      </div>
+
+      {/* Họ tên & Ngày sinh */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
+        <div>
+          <LabelInput
             label="Họ tên"
             placeholder="Ví dụ: Nguyễn Văn An"
             value={hoTen}
@@ -275,10 +294,7 @@ export default function VanBangForm({
             required
           />
         </div>
-      </div>
 
-      {/* Ngày sinh & Số hiệu phôi */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
         <div>
           <LabelInput
             label="Ngày sinh"
@@ -295,28 +311,12 @@ export default function VanBangForm({
             error={fieldErrors.ngaySinh}
           />
         </div>
-
-        <div>
-          <LabelInput
-            label="Số hiệu phôi"
-            placeholder="Ví dụ: B6829104"
-            value={soHieuPhoi}
-            onChange={(e) => {
-              setSoHieuPhoi(e.target.value.toUpperCase());
-              if (fieldErrors.soHieuPhoi) {
-                setFieldErrors((prev) => ({ ...prev, soHieuPhoi: undefined }));
-              }
-            }}
-            error={fieldErrors.soHieuPhoi}
-            required
-          />
-        </div>
       </div>
 
-      {/* Số vào sổ cấp bằng */}
+      {/* Số vào sổ */}
       <div>
         <LabelInput
-          label="Số vào sổ cấp bằng"
+          label="Số vào sổ"
           placeholder="Ví dụ: DNC-CNTT-2023/142"
           value={soVaoSo}
           onChange={(e) => {

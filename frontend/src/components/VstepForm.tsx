@@ -43,7 +43,7 @@ export default function VstepForm({
     let hasError = false;
     const newErrors: { soHieuPhoi?: string; hoTen?: string; ngaySinh?: string } = {};
     if (!soHieuPhoi.trim()) {
-      newErrors.soHieuPhoi = 'Vui lòng điền số hiệu phôi hoặc số báo danh';
+      newErrors.soHieuPhoi = 'Vui lòng điền số hiệu phôi';
       hasError = true;
     }
     if (!hoTen.trim()) {
@@ -188,6 +188,21 @@ export default function VstepForm({
       noValidate
       className="space-y-3 sm:space-y-3.5"
     >
+      {/* Số hiệu phôi */}
+      <div>
+        <LabelInput
+          label="Số hiệu phôi"
+          placeholder="Ví dụ: VSTEP-881923 hoặc Số báo danh"
+          value={soHieuPhoi}
+          onChange={(e) => {
+            setSoHieuPhoi(e.target.value.toUpperCase());
+            if (fieldErrors.soHieuPhoi) setFieldErrors((prev) => ({ ...prev, soHieuPhoi: undefined }));
+          }}
+          error={fieldErrors.soHieuPhoi}
+          required
+        />
+      </div>
+
       {/* Họ tên & Ngày sinh */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-3.5">
         <div>
@@ -218,21 +233,6 @@ export default function VstepForm({
             required
           />
         </div>
-      </div>
-
-      {/* Số hiệu phôi hoặc số báo danh */}
-      <div>
-        <LabelInput
-          label="Số hiệu phôi hoặc số báo danh"
-          placeholder="Ví dụ: VSTEP-881923, DNC-VSTEP-2024-0489"
-          value={soHieuPhoi}
-          onChange={(e) => {
-            setSoHieuPhoi(e.target.value.toUpperCase());
-            if (fieldErrors.soHieuPhoi) setFieldErrors((prev) => ({ ...prev, soHieuPhoi: undefined }));
-          }}
-          error={fieldErrors.soHieuPhoi}
-          required
-        />
       </div>
 
       {/* Xác thực bảo mật CAPTCHA */}

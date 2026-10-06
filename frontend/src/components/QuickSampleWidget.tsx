@@ -30,7 +30,7 @@ const FALLBACK_SAMPLES = {
       ngay_sinh: '2001-05-15',
       loai_dao_tao: 'dh',
       so_hieu_phoi: 'B6829104',
-      so_vao_so: 'DNC-CNTT-2023/142',
+      so_vao_so: 'NCTU-CNTT-2023/142',
       badge: 'Đại học',
     },
     {
@@ -39,7 +39,7 @@ const FALLBACK_SAMPLES = {
       ngay_sinh: '2002-11-20',
       loai_dao_tao: 'dh',
       so_hieu_phoi: 'B7910245',
-      so_vao_so: 'DNC-DH-2024/098',
+      so_vao_so: 'NCTU-DH-2024/098',
       badge: 'Đại học',
     },
     {
@@ -48,7 +48,7 @@ const FALLBACK_SAMPLES = {
       ngay_sinh: '1995-03-25',
       loai_dao_tao: 'ths',
       so_hieu_phoi: 'TS203918',
-      so_vao_so: 'DNC-THS-2023/045',
+      so_vao_so: 'NCTU-THS-2023/045',
       badge: 'Thạc sĩ',
     },
   ],
@@ -153,7 +153,7 @@ export default function QuickSampleWidget({
   };
 
   return (
-    <aside aria-label="Khối dữ liệu mẫu thử nghiệm" ref={widgetRef} className="fixed bottom-20 right-3.5 sm:bottom-6 sm:right-6 z-40 select-none">
+    <aside aria-label="Khối dữ liệu mẫu thử nghiệm" ref={widgetRef} className="fixed bottom-20 right-3.5 sm:bottom-6 sm:right-6 z-40 select-none no-print">
       {/* PANEL DANH SÁCH MẪU (BUNG LÊN TỪ NÚT GÓC DƯỚI) */}
       {isOpen && (
         <div className="absolute bottom-12 right-0 w-[calc(100vw-32px)] max-w-[340px] sm:max-w-[380px] sm:w-[380px] bg-white/95 backdrop-blur-xl border border-slate-200/90 rounded-2xl shadow-[0_20px_60px_-15px_rgba(15,23,42,0.25),0_0_0_1px_rgba(0,0,0,0.04)] p-4 sm:p-5 space-y-3.5 transition-all duration-200 origin-bottom-right">
@@ -218,7 +218,7 @@ export default function QuickSampleWidget({
                     <div className="text-[11.5px] text-slate-500 flex items-center gap-2">
                       {sample.so_hieu_phoi && (
                         <span>
-                          Số phôi: <strong className="text-slate-700 font-medium">{sample.so_hieu_phoi}</strong>
+                          Số hiệu phôi: <strong className="text-slate-700 font-medium">{sample.so_hieu_phoi}</strong>
                         </span>
                       )}
                       {sample.ngay_sinh && (

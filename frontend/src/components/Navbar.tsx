@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { Menu, X, Phone, ArrowUp } from 'lucide-react';
+import { Menu, X, ArrowUp } from 'lucide-react';
 
 interface NavbarProps {
   activeTab: 'vanbang' | 'cntt' | 'vstep';
@@ -197,22 +197,25 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
       >
         <div className="max-w-[1590px] mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-[64px] lg:h-[72px]">
-            {/* Logo trường chuẩn kích cỡ ổn định, giữ nguyên màu sắc gốc của trường */}
-            <Link href="/" className="flex-shrink-0 flex items-center py-1 group">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://nctu.edu.vn/images/png/logo_truong_3.png"
-                alt="Nam Can Tho University"
-                className="w-auto h-[38px] lg:h-[46px] object-contain transition-all duration-200 group-hover:opacity-95"
-              />
-            </Link>
+            {/* Cột 1 (Trái): Logo trường */}
+            <div className="flex-1 flex items-center justify-start">
+              <Link href="/" className="flex-shrink-0 flex items-center py-1 group">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="https://nctu.edu.vn/images/png/logo_truong_3.png"
+                  alt="Nam Can Tho University"
+                  className="w-auto h-[38px] lg:h-[46px] object-contain transition-all duration-200 group-hover:opacity-95"
+                />
+              </Link>
+            </div>
 
-            {/* Phân hệ tra cứu dạng menu phẳng thanh lịch chuẩn Đại học */}
+            {/* Cột 2 (Giữa): Phân hệ tra cứu dạng menu phẳng thanh lịch chuẩn Đại học */}
             <nav className="hidden lg:flex items-center gap-1 h-11 my-auto relative font-google-sans">
-              {/* Thanh gạch đỏ lướt mượt mà chuẩn 3px cố định */}
+              {/* Thanh gạch đỏ lướt mượt mà chuẩn 3px cố định - neo chuẩn left: 0 */}
               <div
-                className="absolute bottom-0 h-[3px] rounded-none pointer-events-none"
+                className="absolute left-0 bottom-0 h-[3px] rounded-none pointer-events-none"
                 style={{
+                  left: 0,
                   transform: `translate3d(${sliderStyle.left}px, 0, 0)`,
                   width: `${sliderStyle.width}px`,
                   opacity: sliderStyle.opacity,
@@ -274,23 +277,8 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
               </button>
             </nav>
 
-            {/* Phía phải Navbar: Hotline */}
-            <div className="hidden xl:flex items-center font-google-sans font-semibold">
-              <div className="flex items-center gap-1.5">
-                <span className="text-[14px] lg:text-[14.5px] font-normal text-slate-600 select-none">
-                  Hotline:
-                </span>
-                <a
-                  href="tel:02923798798"
-                  data-ripple="rgba(215, 33, 52, 0.22)"
-                  className="font-medium tracking-tight whitespace-nowrap relative overflow-hidden px-2.5 py-1 rounded-full hover:bg-red-50/70 active:scale-95 transition-all duration-200 flex items-center gap-1.5 text-[#D72134] text-[16.5px] lg:text-[17.5px]"
-                  title="Gọi Hotline: (0292) 3 798 798"
-                >
-                  <Phone className="w-4 h-4 stroke-[1.8] relative z-10 pointer-events-none text-[#D72134]" />
-                  <span className="relative z-10 pointer-events-none font-medium">(0292) 3 798 798</span>
-                </a>
-              </div>
-            </div>
+            {/* Cột 3 (Phải): Khoảng đệm cân bằng đối xứng giúp Menu luôn nằm chính giữa tuyệt đối */}
+            <div className="hidden lg:flex flex-1 items-center justify-end" />
 
             {/* Mobile & Tablet hamburger */}
             <div className="flex lg:hidden">
@@ -350,8 +338,9 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
           <div className="relative flex items-center p-0.5 rounded-full bg-slate-100/90">
             {/* Animated Red Pill Indicator */}
             <div
-              className="absolute top-0.5 bottom-0.5 rounded-full bg-[#D72134] shadow-[0_2px_8px_rgba(215,33,52,0.38)] pointer-events-none"
+              className="absolute left-0 top-0.5 bottom-0.5 rounded-full bg-[#D72134] shadow-[0_2px_8px_rgba(215,33,52,0.38)] pointer-events-none"
               style={{
+                left: 0,
                 transform: `translate3d(${pillSliderStyle.left}px, 0, 0)`,
                 width: `${pillSliderStyle.width}px`,
                 opacity: pillSliderStyle.opacity,

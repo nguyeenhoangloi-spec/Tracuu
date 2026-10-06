@@ -108,10 +108,10 @@ export default function CertificateCard({
     <div className="font-google-sans text-[#0F172A] w-full flex flex-col justify-end sm:justify-center my-auto">
       {/* THẺ KẾT QUẢ TRA CỨU: DRAWER THOÁNG ĐÃNG TRÊN MOBILE (~76VH), TRONG ĐÓ CUỘN NỘI DUNG, POPUP OMNINOTCH TRÊN DESKTOP */}
       <div
-        className={`bg-white rounded-[32px] sm:rounded-[36px] border-0 transition-shadow duration-300 ${isExpanded
+        className={`bg-white rounded-t-[32px] rounded-b-none sm:rounded-[38px] sm:rounded-b-[38px] border-0 transition-shadow duration-300 ${isExpanded
           ? 'shadow-[0_32px_90px_-15px_rgba(15,23,42,0.32),0_12px_36px_-6px_rgba(15,23,42,0.12)]'
           : 'shadow-[0_24px_65px_-15px_rgba(15,23,42,0.22),0_10px_26px_-4px_rgba(15,23,42,0.08)]'
-          } overflow-hidden certificate-card w-full h-[76vh] max-h-[82dvh] sm:h-auto sm:max-h-[88vh] flex flex-col no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}
+          } overflow-hidden certificate-card w-full h-[71vh] max-h-[75dvh] sm:h-auto sm:max-h-[88vh] flex flex-col no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}
       >
         {/* TIÊU ĐỀ KẾT QUẢ VĂN BẰNG / CHỨNG CHỈ (NỀN XÁM NHẸ, CỐ ĐỊNH TRÊN CÙNG DRAWER, LIỀN MẠCH KHÔNG VIỀN) */}
         <div className="bg-slate-50/95 backdrop-blur-xs relative px-4 min-[390px]:px-5 sm:px-10 lg:px-12 pt-3 sm:pt-6 pb-3.5 sm:pb-6 shrink-0 border-0 border-none z-10">
@@ -163,11 +163,11 @@ export default function CertificateCard({
         </div>
 
         {/* BẢNG THÔNG TIN TOÀN DIỆN - NỀN TRẮNG TINH KHÔI, CUỘN TRONG PHẠM VI DRAWER TRÊN MOBILE, CHUẨN 20PX TRÊN DESKTOP */}
-        <div className="bg-white px-4 min-[390px]:px-5 sm:px-10 lg:px-12 pt-3 pb-8 sm:py-8 overflow-y-auto overscroll-contain flex-1 touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="bg-white px-4 min-[390px]:px-5 sm:px-10 lg:px-12 pt-3 pb-[calc(2.5rem+env(safe-area-inset-bottom,0px))] sm:py-8 overflow-y-auto overscroll-contain flex-1 touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <div>
-            {/* 1. HỌ VÀ TÊN */}
+            {/* 1. HỌ TÊN */}
             <div className="flex items-start gap-2.5 sm:gap-3 py-2 sm:py-3.5">
-              <span className={labelClass}>Họ và tên:</span>
+              <span className={labelClass}>Họ tên:</span>
               <span className="text-[18px] min-[390px]:text-[20px] sm:text-[24px] md:text-[26px] lg:text-[28px] font-bold text-[#142B6F] uppercase tracking-wide break-words min-w-0 flex-1 leading-tight sm:leading-snug">
                 {data.ho_ten}
               </span>
@@ -403,10 +403,10 @@ export default function CertificateCard({
               </>
             ) : (
               <>
-                {/* VĂN BẰNG & CNTT: Số hiệu văn bằng/phôi & Số vào sổ cấp bằng */}
+                {/* VĂN BẰNG & CNTT: Số hiệu phôi & Số vào sổ */}
                 <div className={gridRowClass}>
                   <div className={itemRowClass}>
-                    <span className={labelClass}>{type === 'vanbang' ? 'Số hiệu văn bằng:' : 'Số hiệu phôi:'}</span>
+                    <span className={labelClass}>Số hiệu phôi:</span>
                     <span className={`${boldValueClass} tracking-wider`}>
                       {data.so_hieu_phoi}
                     </span>

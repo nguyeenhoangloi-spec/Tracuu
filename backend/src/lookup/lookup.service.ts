@@ -389,8 +389,10 @@ export class LookupService {
       // 4. Số hiệu phôi: Nếu có nhập thì bắt buộc PHẢI KHỚP CHÍNH XÁC
       const matchPhoi = qPhoi ? item.so_hieu_phoi.toLowerCase() === qPhoi : true;
 
-      // 5. Số vào sổ: Nếu có nhập thì bắt buộc PHẢI KHỚP CHÍNH XÁC
-      const matchSo = qSo ? item.so_vao_so.toLowerCase() === qSo : true;
+      // 5. Số vào sổ: Nếu có nhập thì bắt buộc PHẢI KHỚP CHÍNH XÁC (linh hoạt cả NCTU- và DNC-)
+      const normDbSo = item.so_vao_so.toLowerCase().replace(/^(nctu|dnc)-/, '');
+      const normQSo = qSo ? qSo.replace(/^(nctu|dnc)-/, '') : '';
+      const matchSo = qSo ? (item.so_vao_so.toLowerCase() === qSo || normDbSo === normQSo) : true;
 
       return matchName && matchBirth && matchLoai && matchPhoi && matchSo;
     });

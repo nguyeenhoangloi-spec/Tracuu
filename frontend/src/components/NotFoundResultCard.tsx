@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { X, RotateCcw } from 'lucide-react';
+import { X } from 'lucide-react';
 
 interface NotFoundResultCardProps {
   type: 'vanbang' | 'cntt' | 'vstep';
@@ -27,8 +27,8 @@ export default function NotFoundResultCard({
 
   return (
     <div className="font-google-sans text-[#0F172A] w-full max-w-lg mx-auto flex flex-col justify-end sm:justify-center my-auto">
-      {/* THẺ THÔNG BÁO KHÔNG TÌM THẤY KẾT QUẢ - FLOATING CARD TRÊN MOBILE, POPUP TRÊN DESKTOP */}
-      <div className="bg-white rounded-[32px] sm:rounded-[36px] shadow-[0_24px_70px_-15px_rgba(15,23,42,0.28),0_10px_28px_-4px_rgba(15,23,42,0.12)] overflow-hidden border-0 relative px-4 min-[390px]:px-6 sm:px-10 pt-4 pb-6 sm:py-12 text-center w-full">
+      {/* THẺ THÔNG BÁO KHÔNG TÌM THẤY KẾT QUẢ - BOTTOM SHEET TRÊN MOBILE, POPUP BO TRÒN 38PX ĐỒNG BỘ TRÊN DESKTOP */}
+      <div className="bg-white rounded-t-[32px] rounded-b-none sm:rounded-[38px] sm:rounded-b-[38px] shadow-[0_24px_70px_-15px_rgba(15,23,42,0.28),0_10px_28px_-4px_rgba(15,23,42,0.12)] overflow-hidden border-0 relative px-4 min-[390px]:px-6 sm:px-10 pt-4 pb-[calc(2rem+env(safe-area-inset-bottom,0px))] sm:py-12 text-center w-full">
         {/* Thanh gạt Drawer trên mobile: Nhấn hoặc vuốt để đóng */}
         <div
           onClick={handleClose}
@@ -49,7 +49,7 @@ export default function NotFoundResultCard({
         {/* HÌNH MINH HỌA: HAI VĂN BẰNG CÙNG KÍNH LÚP VÀ DẤU X ĐỎ */}
         <div className="flex justify-center mb-4 sm:mb-6">
           <img
-            src="/not-found-illustration.png"
+            src="/images/illustrations/search-not-found.png"
             alt="Không tìm thấy kết quả tra cứu"
             className="w-28 sm:w-40 h-auto object-contain select-none pointer-events-none"
           />
@@ -65,15 +65,15 @@ export default function NotFoundResultCard({
           {displayMsg}
         </p>
 
-        {/* NÚT QUAY LẠI TRA CỨU: DẠNG VIỀN NÉT THANH THOÁT, ĐỒNG BỘ NÚT PHỤ THẺ KẾT QUẢ */}
-        <div className="hidden sm:flex justify-center no-print">
+        {/* NÚT HÀNH ĐỘNG CHÍNH: "ĐÃ HIỂU" - HIỆN ĐẠI, GỌN GÀNG CHUẨN APPLE / GOOGLE */}
+        <div className="flex justify-center no-print mt-3 sm:mt-0">
           <button
             type="button"
+            data-ripple="rgba(255, 255, 255, 0.3)"
             onClick={handleClose}
-            className="inline-flex items-center justify-center gap-2.5 w-full sm:w-auto px-6 sm:px-7 py-3 rounded-xl border border-slate-200/90 hover:border-slate-300 bg-white hover:bg-slate-50/90 text-slate-700 hover:text-slate-900 text-[16px] font-semibold transition-all duration-150 shadow-[0_2px_8px_-2px_rgba(15,23,42,0.06)] hover:shadow-[0_4px_12px_-2px_rgba(15,23,42,0.08)] active:scale-95 cursor-pointer select-none"
+            className="w-full sm:w-auto min-w-[160px] px-8 py-3 rounded-full bg-[#D72134] hover:bg-[#b71526] text-white text-[16px] font-semibold transition-all duration-200 shadow-[0_4px_14px_-2px_rgba(215,33,52,0.35)] hover:shadow-[0_6px_20px_-3px_rgba(215,33,52,0.45)] active:scale-95 cursor-pointer select-none outline-none border-0"
           >
-            <RotateCcw className="w-4.5 h-4.5 stroke-[2.2] text-slate-500" />
-            <span>Quay lại tra cứu</span>
+            Đã hiểu
           </button>
         </div>
       </div>

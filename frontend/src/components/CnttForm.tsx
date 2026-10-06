@@ -202,11 +202,11 @@ export default function CnttForm({
       noValidate
       className="space-y-3 sm:space-y-3.5"
     >
-      {/* Cấp độ chứng chỉ & Số hiệu phôi */}
+      {/* Loại chứng chỉ & Số hiệu phôi */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-3.5">
         <div>
           <LabelInput
-            label="Cấp độ chứng chỉ"
+            label="Loại chứng chỉ"
             options={[
               {
                 value: 'coban',
@@ -228,8 +228,8 @@ export default function CnttForm({
 
         <div>
           <LabelInput
-            label="Số hiệu phôi chứng chỉ"
-            placeholder="Nhập 6 chữ số phôi (Ví dụ: 001300)"
+            label="Số hiệu phôi"
+            placeholder="Ví dụ: 001300, NC-452109"
             value={soHieuPhoi}
             onChange={(e) => {
               setSoHieuPhoi(e.target.value);
