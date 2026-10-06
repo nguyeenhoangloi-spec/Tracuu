@@ -8,6 +8,7 @@ import SecurityCaptcha from '@/components/SecurityCaptcha';
 interface CnttFormProps {
   onSuccess: (data: any) => void;
   onNotFound?: (data: { query: any; message?: string }) => void;
+  onLoading?: (isLoading: boolean) => void;
   sampleData?: any[];
   resetTrigger?: number;
   sampleToApply?: any;
@@ -16,6 +17,7 @@ interface CnttFormProps {
 export default function CnttForm({
   onSuccess,
   onNotFound,
+  onLoading,
   sampleData,
   resetTrigger,
   sampleToApply,
@@ -75,6 +77,7 @@ export default function CnttForm({
 
     const startTime = Date.now();
     setLoading(true);
+    onLoading?.(true);
     try {
       const res = await fetch('/api/tracuu/cntt', {
         method: 'POST',
@@ -120,6 +123,7 @@ export default function CnttForm({
       }
     } finally {
       setLoading(false);
+      onLoading?.(false);
     }
   };
 

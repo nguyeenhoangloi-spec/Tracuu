@@ -281,7 +281,7 @@ body::-webkit-scrollbar-button {
 .card-wrapper {
   background: #ffffff;
   border-radius: 38px;
-  padding: 34px 36px 26px 36px;
+  padding: 22px 24px 18px 24px;
 
   /* Đổ bóng lan tỏa mềm, đa tầng tạo cảm giác nổi bồng bềnh */
   box-shadow:
@@ -292,7 +292,7 @@ body::-webkit-scrollbar-button {
 @media (max-width: 640px) {
   .card-wrapper {
     border-radius: 36px;
-    padding: 24px 20px 20px 20px;
+    padding: 16px 14px 12px 14px;
   }
 }
 
@@ -302,6 +302,7 @@ body::-webkit-scrollbar-button {
     opacity: 0;
     transform: translate3d(0, 16px, 0) scale(0.992);
   }
+
   100% {
     opacity: 1;
     transform: translate3d(0, 0, 0) scale(1);
@@ -348,9 +349,11 @@ body::-webkit-scrollbar-button {
     transform: translate3d(-140%, 0, 0) skewX(-25deg);
     opacity: 0;
   }
+
   32% {
     opacity: 0.42;
   }
+
   100% {
     transform: translate3d(340%, 0, 0) skewX(-25deg);
     opacity: 0;
@@ -363,6 +366,7 @@ body::-webkit-scrollbar-button {
       opacity: 0;
       transform: translate3d(0, 10px, 0) scale(0.995);
     }
+
     100% {
       opacity: 1;
       transform: translate3d(0, 0, 0) scale(1);
@@ -413,10 +417,8 @@ body::-webkit-scrollbar-button {
 .input-custom:focus,
 .input-custom:focus:hover {
   background-color: #ffffff !important;
-  border-color: #D72134;
-  box-shadow:
-    0 0 0 3px rgba(215, 33, 52, 0.15),
-    inset 1px 1px 3px rgba(0, 0, 0, 0.05);
+  border-color: #D72134 !important;
+  box-shadow: none !important;
 }
 
 /* Custom Submit Button Style provided by user */
@@ -470,13 +472,15 @@ body::-webkit-scrollbar-button {
 .lbi-box {
   position: relative;
   width: 100%;
-  border-radius: 22px;
+  border-radius: 20px;
   border: 1px solid rgba(226, 232, 240, 0.85);
   background-color: #f1f4f9;
   box-shadow:
     inset 3px 3px 6px rgba(160, 175, 200, 0.35),
     inset -2px -2px 5px rgba(255, 255, 255, 0.9);
-  transition: all 0.2s ease;
+  transition: border-color 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 300ms cubic-bezier(0.22, 1, 0.36, 1);
   cursor: text;
 }
 
@@ -497,7 +501,7 @@ body::-webkit-scrollbar-button {
   z-index: 60;
 }
 
-/* Khi người dùng nhấn vào ô nhập (Focus): Nền chuyển sang TRẮNG TINH (#ffffff), hoàn toàn sạch bóng bên trong */
+/* Khi người dùng nhấn vào ô nhập (Focus / Active): Nền chuyển sang MÀU TRẮNG TINH (#ffffff), viền đỏ 2px, sạch bóng không đổ bóng mờ */
 .lbi[data-focus="true"] .lbi-box,
 .lbi[data-focus="true"] .lbi-box:hover,
 .lbi:focus-within .lbi-box,
@@ -505,8 +509,9 @@ body::-webkit-scrollbar-button {
 .lbi-box:focus-within,
 .lbi-box:focus-within:hover {
   background-color: #ffffff !important;
+  border: 2px solid #D72134 !important;
   border-color: #D72134 !important;
-  box-shadow: 0 0 0 3.5px rgba(215, 33, 52, 0.18) !important;
+  box-shadow: none !important;
 }
 
 .lbi[data-focus="true"] .lbi-label,
@@ -518,42 +523,47 @@ body::-webkit-scrollbar-button {
 .lbi[data-filled="true"]:not([data-focus="true"]):not(:focus-within):not([data-error="true"]) .lbi-box {
   background-color: #f1f4f9;
   border-color: rgba(226, 232, 240, 0.9);
-}
-
-.lbi[data-error="true"] .lbi-box {
-  background-color: #fff8f8;
-  border-color: #D72134;
   box-shadow:
-    0 0 0 3px rgba(215, 33, 52, 0.15),
-    inset 1px 1px 3px rgba(0, 0, 0, 0.05);
+    inset 3px 3px 6px rgba(160, 175, 200, 0.35),
+    inset -2px -2px 5px rgba(255, 255, 255, 0.9);
 }
 
-.lbi[data-error="true"] .lbi-label {
-  color: #D72134;
-}
-
+/* Khi ô bị lỗi (Error): Nền TRẮNG TINH (#ffffff), viền đỏ 2px sắc nét, sạch bóng không đổ bóng loang mờ */
+.lbi[data-error="true"] .lbi-box,
+.lbi[data-error="true"] .lbi-box:hover,
 .lbi[data-error="true"][data-focus="true"] .lbi-box,
 .lbi[data-error="true"][data-focus="true"] .lbi-box:hover,
 .lbi[data-error="true"]:focus-within .lbi-box,
 .lbi[data-error="true"]:focus-within .lbi-box:hover {
   background-color: #ffffff !important;
+  border: 2px solid #D72134 !important;
   border-color: #D72134 !important;
-  box-shadow: 0 0 0 3.5px rgba(215, 33, 52, 0.22) !important;
+  box-shadow: none !important;
 }
 
-/* ══ HIỆU ỨNG HIỂN THỊ DÒNG LỖI CỰC KỲ MƯỢT MÀ (ZERO LAYOUT JUMP, ACCORDION HEIGHT) ══ */
+.lbi[data-error="true"] .lbi-label {
+  color: #D72134 !important;
+  font-weight: 600;
+}
+
+/* ══ HIỆU ỨNG HIỂN THỊ DÒNG LỖI CỰC KỲ MƯỢT MÀ (APPLE & LINEAR GRADE ACCORDION MOTION) ══ */
+/* ══ HIỆU ỨNG HIỂN THỊ DÒNG LỖI CỰC KỲ MƯỢT MÀ (APPLE & LINEAR GRADE ACCORDION MOTION) ══ */
 .lbi-error-wrapper {
   display: grid;
   grid-template-rows: 0fr;
   opacity: 0;
-  transition: grid-template-rows 280ms cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 240ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    grid-template-rows 200ms cubic-bezier(0.25, 1, 0.5, 1),
+    opacity 140ms cubic-bezier(0.4, 0, 0.2, 1);
   will-change: grid-template-rows, opacity;
 }
 
 .lbi-error-wrapper[data-show="true"] {
   grid-template-rows: 1fr;
   opacity: 1;
+  transition:
+    grid-template-rows 340ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 260ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .lbi-error-inner {
@@ -564,20 +574,46 @@ body::-webkit-scrollbar-button {
 .lbi-error-msg {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 6.5px;
   padding-top: 6px;
+  padding-bottom: 2px;
   padding-left: 8px;
   font-size: 13.5px;
   font-weight: 500;
   color: #D72134;
-  line-height: 1.3;
-  transform: translateY(-6px);
-  transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
+  line-height: 1.35;
+  transform: translateY(-3px) scale(0.98);
+  transform-origin: top left;
+  opacity: 0;
+  transition:
+    transform 180ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 130ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
 }
 
 .lbi-error-wrapper[data-show="true"] .lbi-error-msg {
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  transition:
+    transform 340ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lbi-error-icon {
+  transform: scale(0.85);
+  opacity: 0;
+  transition:
+    transform 160ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 130ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.lbi-error-wrapper[data-show="true"] .lbi-error-icon {
+  transform: scale(1);
+  opacity: 1;
+  transition:
+    transform 340ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 240ms ease-out;
 }
 
 /* ══ HIỆU ỨNG BUNG MỞ POPOVER SELECT & LỊCH CHUẨN APPLE FLUID MOTION ══ */
@@ -684,7 +720,7 @@ body::-webkit-scrollbar-button {
   top: 50%;
   transform: translateY(-50%) scale(1);
   transform-origin: left center;
-  font-size: 16.5px;
+  font-size: 17px;
   font-weight: 500;
   line-height: 1;
   letter-spacing: -0.01em;
@@ -695,17 +731,17 @@ body::-webkit-scrollbar-button {
   user-select: none;
   pointer-events: none;
   z-index: 5;
-  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1),
-              color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 280ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform, color;
   backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
 .lbi[data-up="true"] .lbi-label {
-  transform: translateY(calc(-50% - 17px)) scale(0.76);
+  transform: translateY(calc(-50% - 12.5px)) scale(0.882);
   color: #64748b;
-  font-weight: 600;
+  font-weight: 500;
   background: transparent !important;
   padding: 0 !important;
   border-radius: 0 !important;
@@ -715,12 +751,12 @@ body::-webkit-scrollbar-button {
 .lbi[data-focus="true"] .lbi-label,
 .lbi:focus-within .lbi-label {
   color: #D72134 !important;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .lbi[data-error="true"] .lbi-label {
   color: #D72134 !important;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .lbi-label span {
@@ -738,20 +774,20 @@ body::-webkit-scrollbar-button {
   width: 100%;
   height: 100%;
   padding-left: var(--lbi-x, 24px);
-  padding-top: 20px;
-  padding-bottom: 4px;
+  padding-top: 24px;
+  padding-bottom: 6px;
   border: 0;
   border-radius: inherit;
   background: transparent;
   font: inherit;
-  font-size: 16.5px;
+  font-size: 16px;
   font-weight: 550;
   letter-spacing: -0.01em;
   color: #0f172a;
   outline: none;
   z-index: 2;
-  transition: opacity 220ms cubic-bezier(0.16, 1, 0.3, 1),
-              color 180ms ease;
+  transition: opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 200ms ease;
 }
 
 .lbi:not([data-up="true"]) .lbi-field {
@@ -764,7 +800,7 @@ body::-webkit-scrollbar-button {
 
 .lbi-field::placeholder {
   color: #94a3b8;
-  font-size: 16.5px;
+  font-size: 16px;
   font-weight: 400;
   opacity: 0.85;
 }
@@ -772,7 +808,7 @@ body::-webkit-scrollbar-button {
 /* Support browser autofill gracefully */
 .lbi:has(.lbi-field:-webkit-autofill) .lbi-label,
 .lbi:has(.lbi-field:autofill) .lbi-label {
-  transform: translateY(calc(-50% - 17px)) scale(0.76) !important;
+  transform: translateY(calc(-50% - 12.5px)) scale(0.882) !important;
   color: #64748b !important;
   font-weight: 600 !important;
 }

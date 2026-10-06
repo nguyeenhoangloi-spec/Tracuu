@@ -137,13 +137,13 @@ export default function CertificateCard({
                 <button
                   type="button"
                   onClick={onToggleExpand}
-                  className="w-10 h-10 sm:w-10.5 sm:h-10.5 flex items-center justify-center rounded-full bg-slate-200/70 hover:bg-slate-300/80 active:bg-slate-300 text-slate-700 hover:text-slate-900 transition-all duration-150 cursor-pointer flex-shrink-0 active:scale-90 outline-none border-0 border-none backdrop-blur-xs hidden sm:flex"
+                  className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-200/60 hover:bg-slate-300/80 active:bg-slate-300 text-slate-700 hover:text-slate-900 transition-all duration-150 cursor-pointer flex-shrink-0 active:scale-90 outline-none border-0 border-none backdrop-blur-xs hidden sm:flex"
                   title={isExpanded ? 'Thu nhỏ lại kích thước chuẩn' : 'Phóng to toàn màn hình'}
                 >
                   {isExpanded ? (
-                    <Minimize2 className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-slate-700 transition-transform duration-200" strokeWidth={2.4} />
+                    <Minimize2 className="w-6 h-6 text-slate-700 transition-transform duration-200" strokeWidth={2.4} />
                   ) : (
-                    <Maximize2 className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-slate-700 transition-transform duration-200" strokeWidth={2.4} />
+                    <Maximize2 className="w-6 h-6 text-slate-700 transition-transform duration-200" strokeWidth={2.4} />
                   )}
                 </button>
               )}
@@ -152,10 +152,10 @@ export default function CertificateCard({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="w-10 h-10 sm:w-10.5 sm:h-10.5 flex items-center justify-center rounded-full bg-slate-200/70 hover:bg-slate-300/80 active:bg-slate-300 text-slate-700 hover:text-slate-900 transition-all duration-150 cursor-pointer flex-shrink-0 active:scale-90 outline-none border-0 border-none backdrop-blur-xs"
+                  className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-200/60 hover:bg-slate-300/80 active:bg-slate-300 text-slate-700 hover:text-slate-900 transition-all duration-150 cursor-pointer flex-shrink-0 active:scale-90 outline-none border-0 border-none backdrop-blur-xs"
                   title="Thu gọn (Esc)"
                 >
-                  <X className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-slate-700" strokeWidth={2.5} />
+                  <X className="w-6 h-6 text-slate-700" strokeWidth={2.5} />
                 </button>
               )}
             </div>

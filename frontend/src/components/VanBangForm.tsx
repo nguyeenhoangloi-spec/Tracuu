@@ -8,6 +8,7 @@ import SecurityCaptcha from '@/components/SecurityCaptcha';
 interface VanBangFormProps {
   onSuccess: (data: any) => void;
   onNotFound?: (data: { query: any; message?: string }) => void;
+  onLoading?: (isLoading: boolean) => void;
   sampleData?: any[];
   resetTrigger?: number;
   sampleToApply?: any;
@@ -16,6 +17,7 @@ interface VanBangFormProps {
 export default function VanBangForm({
   onSuccess,
   onNotFound,
+  onLoading,
   sampleData,
   resetTrigger,
   sampleToApply,
@@ -90,6 +92,7 @@ export default function VanBangForm({
 
     const startTime = Date.now();
     setLoading(true);
+    onLoading?.(true);
     try {
       const res = await fetch('/api/tracuu/vanbang', {
         method: 'POST',
@@ -137,6 +140,7 @@ export default function VanBangForm({
       }
     } finally {
       setLoading(false);
+      onLoading?.(false);
     }
   };
 

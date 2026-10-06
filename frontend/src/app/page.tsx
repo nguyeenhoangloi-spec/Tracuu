@@ -58,7 +58,6 @@ export default function Home() {
   const [isCardRevealed, setIsCardRevealed] = useState(true);
 
   useEffect(() => {
-    // Card luôn sẵn sàng ngay khi vào trang
     setIsCardRevealed(true);
   }, []);
 
@@ -422,8 +421,6 @@ export default function Home() {
     };
   }, [result, isResultVisible]);
 
-
-
   const handleLookupSuccess = (type: 'vanbang' | 'cntt' | 'vstep', data: any) => {
     setResultType(type);
     setResult(data);
@@ -511,7 +508,7 @@ export default function Home() {
       {/* 2. HERO STAGE - NỀN XANH HỌC THUẬT DNC CHUYỂN SẮC SANG TRỌNG, NÂNG TONE TRẮNG SÁNG, KHÔNG DÙNG HÌNH 3D CẮT CỤT */}
       <section
         id="hero-stage"
-        className="relative min-h-[360px] sm:min-h-[400px] lg:min-h-[430px] flex flex-col justify-start items-center pt-28 sm:pt-32 lg:pt-36 pb-20 sm:pb-24 lg:pb-26 px-4 sm:px-6 overflow-hidden bg-gradient-to-br from-[#0F275A] via-[#1E3A8A] to-[#1E40AF]"
+        className="relative min-h-[285px] sm:min-h-[400px] lg:min-h-[430px] flex flex-col justify-start items-center pt-28 sm:pt-32 lg:pt-36 pb-12 sm:pb-24 lg:pb-26 px-4 sm:px-6 overflow-hidden bg-gradient-to-br from-[#0F275A] via-[#1E3A8A] to-[#1E40AF]"
       >
         {/* 1. LỚP ẢNH KHUÔN VIÊN TRƯỜNG ĐH KIẾN TRÚC HỌC THUẬT SIÊU NÉT (SHARP CAMPUS ARCHITECTURE, ZERO TEXT) */}
         <div
@@ -594,8 +591,8 @@ export default function Home() {
               }}
             >
               {/* Tab 1: Văn bằng tốt nghiệp */}
-              <div className="w-full flex-shrink-0 text-center px-0.5 sm:px-2">
-                <h1 className="animate-hero-title text-[26.5px] min-[390px]:text-[27px] sm:text-[36px] md:text-[40px] lg:text-[44px] font-bold tracking-[-0.03em] sm:tracking-tight text-white leading-tight sm:leading-[1.18] whitespace-nowrap sm:whitespace-normal drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)]">
+              <div className="w-full flex-shrink-0 text-center px-1 sm:px-2">
+                <h1 className="animate-hero-title text-[22px] min-[360px]:text-[24px] min-[390px]:text-[26.5px] sm:text-[36px] md:text-[40px] lg:text-[44px] font-bold tracking-[-0.03em] sm:tracking-tight text-white leading-tight sm:leading-[1.18] [text-wrap:balance] drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)]">
                   Tra cứu văn bằng tốt nghiệp
                 </h1>
                 <p className="animate-hero-desc text-[15px] sm:text-[16.5px] lg:text-[18px] text-blue-100/95 font-normal sm:font-medium mt-3 sm:mt-3.5 leading-relaxed max-w-4xl mx-auto [text-wrap:balance] drop-shadow-[0_1px_4px_rgba(0,0,0,0.2)]">
@@ -604,8 +601,8 @@ export default function Home() {
               </div>
 
               {/* Tab 2: CNTT */}
-              <div className="w-full flex-shrink-0 text-center px-0.5 sm:px-2">
-                <h1 className="animate-hero-title text-[26.5px] min-[390px]:text-[27px] sm:text-[36px] md:text-[40px] lg:text-[44px] font-bold tracking-[-0.03em] sm:tracking-tight text-white leading-tight sm:leading-[1.18] whitespace-nowrap sm:whitespace-normal drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)]">
+              <div className="w-full flex-shrink-0 text-center px-1 sm:px-2">
+                <h1 className="animate-hero-title text-[22px] min-[360px]:text-[24px] min-[390px]:text-[26.5px] sm:text-[36px] md:text-[40px] lg:text-[44px] font-bold tracking-[-0.03em] sm:tracking-tight text-white leading-tight sm:leading-[1.18] [text-wrap:balance] drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)]">
                   Tra cứu chứng chỉ CNTT
                 </h1>
                 <p className="animate-hero-desc text-[15px] sm:text-[16.5px] lg:text-[18px] text-blue-100/95 font-normal sm:font-medium mt-3 sm:mt-3.5 leading-relaxed max-w-4xl mx-auto [text-wrap:balance] drop-shadow-[0_1px_4px_rgba(0,0,0,0.2)]">
@@ -614,8 +611,8 @@ export default function Home() {
               </div>
 
               {/* Tab 3: VSTEP */}
-              <div className="w-full flex-shrink-0 text-center px-0.5 sm:px-2">
-                <h1 className="animate-hero-title text-[26.5px] min-[390px]:text-[27px] sm:text-[36px] md:text-[40px] lg:text-[44px] font-bold tracking-[-0.03em] sm:tracking-tight text-white leading-tight sm:leading-[1.18] whitespace-nowrap sm:whitespace-normal drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)]">
+              <div className="w-full flex-shrink-0 text-center px-1 sm:px-2">
+                <h1 className="animate-hero-title text-[22px] min-[360px]:text-[24px] min-[390px]:text-[26.5px] sm:text-[36px] md:text-[40px] lg:text-[44px] font-bold tracking-[-0.03em] sm:tracking-tight text-white leading-tight sm:leading-[1.18] [text-wrap:balance] drop-shadow-[0_2px_12px_rgba(0,0,0,0.3)]">
                   Tra cứu chứng chỉ VSTEP
                 </h1>
                 <p className="animate-hero-desc text-[15px] sm:text-[16.5px] lg:text-[18px] text-blue-100/95 font-normal sm:font-medium mt-3 sm:mt-3.5 leading-relaxed max-w-4xl mx-auto [text-wrap:balance] drop-shadow-[0_1px_4px_rgba(0,0,0,0.2)]">
@@ -633,7 +630,7 @@ export default function Home() {
         ref={cardSectionRef}
         className="w-full bg-[#FFFFFF] relative z-20 pb-20 sm:pb-24 pt-0"
       >
-        <div className="w-full max-w-3xl lg:max-w-4xl xl:max-w-[980px] 2xl:max-w-[1020px] mx-auto px-4 sm:px-6 -mt-10 sm:-mt-12 lg:-mt-14 relative">
+        <div className="w-full max-w-3xl lg:max-w-4xl xl:max-w-[980px] 2xl:max-w-[1020px] mx-auto px-4 sm:px-6 -mt-9 sm:-mt-12 lg:-mt-14 relative">
           <div
             id="khung-tra-cuu-card"
             className={`card-wrapper form-card-reveal relative bg-white border-0 border-none shadow-[0_20px_50px_-15px_rgba(15,23,42,0.12),0_0_1px_1px_rgba(0,0,0,0.04)] ${isCardRevealed ? 'active' : ''
@@ -667,7 +664,7 @@ export default function Home() {
                 {/* PANE 1: VĂN BẰNG */}
                 <div
                   ref={vanbangPaneRef}
-                  className={`tab-carousel-pane px-3 pt-1 pb-4 transition-opacity duration-300 ${activeTab === 'vanbang'
+                  className={`tab-carousel-pane px-1 pt-0.5 pb-1 transition-opacity duration-300 ${activeTab === 'vanbang'
                     ? 'opacity-100'
                     : `opacity-0 pointer-events-none ${!isSwitchingTab ? 'max-h-0 overflow-hidden' : ''}`
                     }`}
@@ -684,7 +681,7 @@ export default function Home() {
                 {/* PANE 2: CNTT */}
                 <div
                   ref={cnttPaneRef}
-                  className={`tab-carousel-pane px-3 pt-1 pb-4 transition-opacity duration-300 ${activeTab === 'cntt'
+                  className={`tab-carousel-pane px-1 pt-0.5 pb-1 transition-opacity duration-300 ${activeTab === 'cntt'
                     ? 'opacity-100'
                     : `opacity-0 pointer-events-none ${!isSwitchingTab ? 'max-h-0 overflow-hidden' : ''}`
                     }`}
@@ -701,7 +698,7 @@ export default function Home() {
                 {/* PANE 3: VSTEP */}
                 <div
                   ref={vstepPaneRef}
-                  className={`tab-carousel-pane px-3 pt-1 pb-4 transition-opacity duration-300 ${activeTab === 'vstep'
+                  className={`tab-carousel-pane px-1 pt-0.5 pb-1 transition-opacity duration-300 ${activeTab === 'vstep'
                     ? 'opacity-100'
                     : `opacity-0 pointer-events-none ${!isSwitchingTab ? 'max-h-0 overflow-hidden' : ''}`
                     }`}
@@ -827,7 +824,7 @@ export default function Home() {
           >
             {/* SHELL PHÓNG TO / THU NHỎ ĐỘC LẬP SIÊU MƯỢT (RỘNG RÃI THOÁNG ĐÃNG CHỨA ĐỦ CỠ CHỮ 20PX) */}
             <div
-              className={`w-full relative certificate-expand-shell pointer-events-auto ${result.notFound
+              className={`w-full relative certificate-expand-shell pointer-events-auto ${result?.notFound
                 ? 'max-w-lg'
                 : 'max-w-4xl lg:max-w-5xl xl:max-w-[1100px] 2xl:max-w-[1160px]'
                 } ${isCardExpanded
@@ -835,14 +832,14 @@ export default function Home() {
                   : 'scale-100'
                 }`}
             >
-              {result.notFound ? (
+              {result?.notFound ? (
                 <NotFoundResultCard
                   type={resultType}
                   data={result}
                   onClose={handleResetResult}
                   onReset={handleResetResult}
                 />
-              ) : (
+              ) : result ? (
                 <CertificateCard
                   type={resultType}
                   data={result}
@@ -851,7 +848,7 @@ export default function Home() {
                   onReset={handleResetResult}
                   onClose={handleMinimizeResult}
                 />
-              )}
+              ) : null}
             </div>
           </div>
         </div>

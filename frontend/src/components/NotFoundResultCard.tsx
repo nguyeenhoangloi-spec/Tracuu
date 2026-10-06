@@ -40,10 +40,10 @@ export default function NotFoundResultCard({
         <button
           type="button"
           onClick={handleClose}
-          className="absolute top-4 right-4 sm:top-5 sm:right-5 w-10 h-10 sm:w-10.5 sm:h-10.5 flex items-center justify-center rounded-full bg-slate-200/70 hover:bg-slate-300/80 active:bg-slate-300 text-slate-700 hover:text-slate-900 transition-all duration-150 cursor-pointer active:scale-90 no-print outline-none border-0 border-none backdrop-blur-xs"
+          className="absolute top-4 right-4 sm:top-5 sm:right-5 w-12 h-12 flex items-center justify-center rounded-full bg-slate-200/60 hover:bg-slate-300/80 active:bg-slate-300 text-slate-700 hover:text-slate-900 transition-all duration-150 cursor-pointer active:scale-90 no-print outline-none border-0 border-none backdrop-blur-xs"
           title="Đóng (Esc)"
         >
-          <X className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-slate-700" strokeWidth={2.5} />
+          <X className="w-6 h-6 text-slate-700" strokeWidth={2.5} />
         </button>
 
         {/* HÌNH MINH HỌA: HAI VĂN BẰNG CÙNG KÍNH LÚP VÀ DẤU X ĐỎ */}

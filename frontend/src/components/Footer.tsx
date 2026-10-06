@@ -154,7 +154,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 py-5 sm:py-6 border-b border-slate-200/90">
           {/* CỘT 1: Trung tâm chuẩn đầu ra */}
           <div className="space-y-3.5">
-            <div className="min-h-[56px] sm:min-h-[62px] flex flex-col justify-start">
+            <div className="min-h-0 md:min-h-[56px] lg:min-h-[62px] flex flex-col justify-start">
               <h3 className="text-[20px] sm:text-[22px] font-bold text-slate-900 leading-snug">
                 Trung tâm chuẩn đầu ra và Phát triển nguồn nhân lực
               </h3>
@@ -210,7 +210,7 @@ export default function Footer() {
 
           {/* CỘT 2: Phòng Quản lý đào tạo */}
           <div className="space-y-3.5">
-            <div className="min-h-[56px] sm:min-h-[62px] flex flex-col justify-start">
+            <div className="min-h-0 md:min-h-[56px] lg:min-h-[62px] flex flex-col justify-start">
               <h3 className="text-[20px] sm:text-[22px] font-bold text-slate-900 leading-snug">
                 Phòng Quản lý đào tạo
               </h3>
@@ -266,7 +266,7 @@ export default function Footer() {
 
           {/* CỘT 3: Trung tâm Phát triển & Ứng dụng phần mềm */}
           <div className="space-y-3.5">
-            <div className="min-h-[56px] sm:min-h-[62px] flex flex-col justify-start">
+            <div className="min-h-0 md:min-h-[56px] lg:min-h-[62px] flex flex-col justify-start">
               <h3 className="text-[20px] sm:text-[22px] font-bold text-slate-900 leading-snug">
                 Trung tâm Phát triển &amp; Ứng dụng phần mềm
               </h3>

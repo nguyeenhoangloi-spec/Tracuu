@@ -8,6 +8,7 @@ import SecurityCaptcha from '@/components/SecurityCaptcha';
 interface VstepFormProps {
   onSuccess: (data: any) => void;
   onNotFound?: (data: { query: any; message?: string }) => void;
+  onLoading?: (isLoading: boolean) => void;
   sampleData?: any[];
   resetTrigger?: number;
   sampleToApply?: any;
@@ -16,6 +17,7 @@ interface VstepFormProps {
 export default function VstepForm({
   onSuccess,
   onNotFound,
+  onLoading,
   sampleData,
   resetTrigger,
   sampleToApply,
@@ -74,6 +76,7 @@ export default function VstepForm({
 
     const startTime = Date.now();
     setLoading(true);
+    onLoading?.(true);
     try {
       const res = await fetch('/api/tracuu/vstep', {
         method: 'POST',
@@ -117,6 +120,7 @@ export default function VstepForm({
       }
     } finally {
       setLoading(false);
+      onLoading?.(false);
     }
   };
 

@@ -43,7 +43,7 @@ export default function SecurityCaptcha({
     if (captchaError) {
       setLastCaptchaError(captchaError);
     } else {
-      const timer = setTimeout(() => setLastCaptchaError(undefined), 320);
+      const timer = setTimeout(() => setLastCaptchaError(undefined), 240);
       return () => clearTimeout(timer);
     }
   }, [captchaError]);
@@ -97,15 +97,16 @@ export default function SecurityCaptcha({
           className="lbi-box relative flex items-center group cursor-text"
           style={{
             height: 70,
-            borderRadius: 22,
-            '--lbi-x': '24px',
+            borderRadius: 20,
+            '--lbi-x': '22px',
             '--lbi-half-h': '35px',
-            backgroundColor: focus ? '#ffffff' : undefined,
-            borderColor: focus ? '#D72134' : undefined,
-            boxShadow: focus ? '0 0 0 3.5px rgba(215, 33, 52, 0.18)' : undefined,
+            borderWidth: focus || Boolean(captchaError) ? '2px' : undefined,
+            backgroundColor: focus || Boolean(captchaError) ? '#ffffff' : undefined,
+            borderColor: focus || Boolean(captchaError) ? '#D72134' : undefined,
+            boxShadow: focus || Boolean(captchaError) ? 'none' : undefined,
           } as React.CSSProperties}
           onClick={() => {
-            inputRef.current?.focus();
+            inputRef.current?.focus({ preventScroll: true });
           }}
         >
           {/* Nhãn nổi Floating Label nhấc lên viền notch mượt mà */}
@@ -128,7 +129,7 @@ export default function SecurityCaptcha({
             onFocus={() => setFocus(true)}
             onBlur={() => setFocus(false)}
             placeholder={up ? 'Nhập mã bên phải' : ''}
-            className="lbi-field uppercase tracking-widest font-bold text-[17px] text-slate-800 placeholder:normal-case placeholder:tracking-normal placeholder:font-normal placeholder:text-slate-400 pl-6 pr-[100px] sm:pr-[185px]"
+            className="lbi-field uppercase tracking-widest font-bold text-[16px] text-slate-800 placeholder:normal-case placeholder:tracking-normal placeholder:font-normal placeholder:text-slate-400 pl-6 pr-[100px] sm:pr-[185px]"
             autoComplete="off"
             spellCheck={false}
           />
@@ -195,7 +196,7 @@ export default function SecurityCaptcha({
         <div className="lbi-error-wrapper" data-show={Boolean(captchaError)} aria-live="polite">
           <div className="lbi-error-inner">
             <div className="lbi-error-msg" role="alert">
-              <AlertCircle className="w-3.5 h-3.5 shrink-0 text-[#D72134]" strokeWidth={2.4} aria-hidden="true" />
+              <AlertCircle className="w-3.5 h-3.5 shrink-0 text-[#D72134] lbi-error-icon" strokeWidth={2.4} aria-hidden="true" />
               <span>{captchaError || lastCaptchaError || ''}</span>
             </div>
           </div>

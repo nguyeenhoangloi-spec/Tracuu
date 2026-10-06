@@ -72,7 +72,7 @@ export function LabelInput({
   name,
   id: customId,
   subLabel,
-  corner = 22,
+  corner = 20,
   height: customH = 70,
   showcase = false,
   className = "",
@@ -121,7 +121,7 @@ export function LabelInput({
     if (error) {
       setLastError(error);
     } else {
-      const timer = setTimeout(() => setLastError(undefined), 320);
+      const timer = setTimeout(() => setLastError(undefined), 240);
       return () => clearTimeout(timer);
     }
   }, [error]);
@@ -386,9 +386,10 @@ export function LabelInput({
           "--lbi-x": `${lx}px`,
           "--lbi-half-h": `${(H / 2).toFixed(1)}px`,
           zIndex: datePickerOpen || dropdownOpen ? 70 : undefined,
-          backgroundColor: isFieldFocused ? "#ffffff" : undefined,
-          borderColor: isFieldFocused ? "#D72134" : undefined,
-          boxShadow: isFieldFocused ? "0 0 0 3.5px rgba(215, 33, 52, 0.18)" : undefined,
+          borderWidth: isFieldFocused || Boolean(error) ? "2px" : undefined,
+          backgroundColor: isFieldFocused || Boolean(error) ? "#ffffff" : undefined,
+          borderColor: isFieldFocused || Boolean(error) ? "#D72134" : undefined,
+          boxShadow: isFieldFocused || Boolean(error) ? "none" : undefined,
         } as React.CSSProperties}
         onClick={
           isSelect
@@ -396,7 +397,7 @@ export function LabelInput({
             : isDate
               ? (e) => handleToggleDatePicker(e)
               : () => {
-                input.current?.focus();
+                input.current?.focus({ preventScroll: true });
               }
         }
       >
@@ -422,7 +423,7 @@ export function LabelInput({
               aria-haspopup="dialog"
               aria-expanded={datePickerOpen}
             >
-              <span className={`truncate text-[16.5px] ${displayDate ? "font-semibold text-slate-800" : "text-slate-400 font-normal"}`}>
+              <span className={`truncate text-[16px] ${displayDate ? "font-semibold text-slate-800" : "text-slate-400 font-normal"}`}>
                 {displayDate || (up ? placeholder || "dd/mm/yyyy" : "")}
               </span>
             </button>
@@ -435,8 +436,8 @@ export function LabelInput({
               data-ripple="rgba(215, 33, 52, 0.22)"
               style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)' }}
               className={`calendar-icon-btn absolute right-3.5 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-450 ease-[cubic-bezier(0.16,1,0.3,1)] cursor-pointer overflow-hidden z-10 hover:bg-red-50/60 active:scale-95 ${datePickerOpen
-                  ? "text-[#D72134] scale-105 bg-red-50/40"
-                  : "text-slate-400 group-hover:text-[#D72134] scale-100"
+                ? "text-[#D72134] scale-105 bg-red-50/40"
+                : "text-slate-400 group-hover:text-[#D72134] scale-100"
                 }`}
               onClick={(e) => handleToggleDatePicker(e)}
             >
@@ -460,8 +461,8 @@ export function LabelInput({
                   zIndex: 99999,
                 }}
                 className={`bg-white/98 backdrop-blur-2xl rounded-2xl border-0 border-none shadow-[0_24px_50px_-12px_rgba(15,23,42,0.18),0_10px_24px_-4px_rgba(15,23,42,0.08)] overflow-hidden select-none lbi-popover-shell ${datePickerOpen
-                    ? "lbi-popover-open"
-                    : "lbi-popover-closed"
+                  ? "lbi-popover-open"
+                  : "lbi-popover-closed"
                   }`}
                 role="dialog"
                 onClick={(e) => e.stopPropagation()}
@@ -492,8 +493,8 @@ export function LabelInput({
                                 setViewMode("days");
                               }}
                               className={`py-2.5 px-3 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer ${isCurrentMonth
-                                  ? "bg-[#D72134] text-white font-bold shadow-md shadow-red-600/30 scale-105"
-                                  : "text-slate-700 hover:text-[#D72134] hover:bg-red-50 active:scale-95"
+                                ? "bg-[#D72134] text-white font-bold shadow-md shadow-red-600/30 scale-105"
+                                : "text-slate-700 hover:text-[#D72134] hover:bg-red-50 active:scale-95"
                                 }`}
                             >
                               Tháng {i + 1}
@@ -529,8 +530,8 @@ export function LabelInput({
                                 setViewMode("days");
                               }}
                               className={`py-2 rounded-xl text-xs font-medium transition-all duration-150 cursor-pointer ${isCurrentYear
-                                  ? "bg-[#D72134] text-white font-bold shadow-md shadow-red-600/30 scale-105"
-                                  : "text-slate-700 hover:text-[#D72134] hover:bg-red-50 active:scale-95"
+                                ? "bg-[#D72134] text-white font-bold shadow-md shadow-red-600/30 scale-105"
+                                : "text-slate-700 hover:text-[#D72134] hover:bg-red-50 active:scale-95"
                                 }`}
                             >
                               {y}
@@ -669,12 +670,12 @@ export function LabelInput({
                                 }}
                                 data-ripple="rgba(215, 33, 52, 0.22)"
                                 className={`w-9 h-9 rounded-xl text-[13px] flex items-center justify-center transition-all duration-150 cursor-pointer relative overflow-hidden ${isSelected
-                                    ? "bg-[#D72134] text-white font-bold shadow-md shadow-red-600/30 scale-105"
-                                    : isToday
-                                      ? "border border-[#D72134] text-[#D72134] font-semibold hover:bg-red-100/70"
-                                      : cell.isCurrent
-                                        ? "text-slate-800 hover:bg-red-50 hover:text-[#D72134] font-medium active:scale-95"
-                                        : "text-slate-300 hover:bg-slate-100 hover:text-slate-500"
+                                  ? "bg-[#D72134] text-white font-bold shadow-md shadow-red-600/30 scale-105"
+                                  : isToday
+                                    ? "border border-[#D72134] text-[#D72134] font-semibold hover:bg-red-100/70"
+                                    : cell.isCurrent
+                                      ? "text-slate-800 hover:bg-red-50 hover:text-[#D72134] font-medium active:scale-95"
+                                      : "text-slate-300 hover:bg-slate-100 hover:text-slate-500"
                                   }`}
                               >
                                 {cell.day}
@@ -753,7 +754,7 @@ export function LabelInput({
               aria-expanded={dropdownOpen}
             >
               <div className="flex items-center min-w-0 w-full pr-1">
-                <span className={`truncate text-[16.5px] ${selectedOption ? "font-semibold text-slate-800" : "text-slate-400 font-normal"}`}>
+                <span className={`truncate text-[16px] ${selectedOption ? "font-semibold text-slate-800" : "text-slate-400 font-normal"}`}>
                   {up ? selectedOption?.label || placeholder || "" : ""}
                 </span>
               </div>
@@ -762,8 +763,8 @@ export function LabelInput({
             {/* Sleek Chevron Arrow (No background box) */}
             <div
               className={`absolute right-5 top-1/2 -translate-y-1/2 transition-[transform,color] duration-450 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none ${dropdownOpen
-                  ? "text-[#D72134] rotate-180 scale-110"
-                  : "text-slate-400 group-hover:text-slate-600 rotate-0 scale-100"
+                ? "text-[#D72134] rotate-180 scale-110"
+                : "text-slate-400 group-hover:text-slate-600 rotate-0 scale-100"
                 }`}
             >
               <ChevronDown size={20} strokeWidth={2.4} />
@@ -786,8 +787,8 @@ export function LabelInput({
                   zIndex: 99999,
                 }}
                 className={`bg-white/98 backdrop-blur-2xl rounded-2xl border-0 border-none shadow-[0_24px_50px_-12px_rgba(15,23,42,0.18),0_10px_24px_-4px_rgba(15,23,42,0.08)] p-2 select-none lbi-popover-shell ${dropdownOpen
-                    ? "lbi-popover-open"
-                    : "lbi-popover-closed"
+                  ? "lbi-popover-open"
+                  : "lbi-popover-closed"
                   }`}
                 role="listbox"
                 onClick={(e) => e.stopPropagation()}
@@ -814,16 +815,16 @@ export function LabelInput({
                           }, 130);
                         }}
                         className={`group/item relative overflow-hidden flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer transition-all duration-200 ease-out select-none border-0 border-none ${isSelected
-                            ? "bg-gradient-to-r from-red-50 to-rose-50/80 text-[#D72134] shadow-2xs font-semibold"
-                            : "bg-transparent hover:bg-red-50/75 hover:translate-x-1 active:scale-[0.98]"
+                          ? "bg-gradient-to-r from-red-50 to-rose-50/80 text-[#D72134] shadow-2xs font-semibold"
+                          : "bg-transparent hover:bg-red-50/75 hover:translate-x-1 active:scale-[0.98]"
                           }`}
                       >
                         <div className="flex items-center gap-3 min-w-0 pr-2">
                           {/* Checkmark or soft bullet indicator */}
                           <div
                             className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 transition-all duration-150 ${isSelected
-                                ? "bg-[#D72134] text-white shadow-xs"
-                                : "bg-slate-100 text-slate-400 group-hover/item:bg-red-100 group-hover/item:text-[#D72134]"
+                              ? "bg-[#D72134] text-white shadow-xs"
+                              : "bg-slate-100 text-slate-400 group-hover/item:bg-red-100 group-hover/item:text-[#D72134]"
                               }`}
                           >
                             {isSelected ? (
@@ -906,7 +907,7 @@ export function LabelInput({
       <div className="lbi-error-wrapper" data-show={Boolean(error)} aria-live="polite">
         <div className="lbi-error-inner">
           <div className="lbi-error-msg" role="alert">
-            <AlertCircle className="w-3.5 h-3.5 shrink-0 text-[#D72134]" strokeWidth={2.4} aria-hidden="true" />
+            <AlertCircle className="w-3.5 h-3.5 shrink-0 text-[#D72134] lbi-error-icon" strokeWidth={2.4} aria-hidden="true" />
             <span>{error || lastError || ""}</span>
           </div>
         </div>
