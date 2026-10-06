@@ -1,0 +1,58 @@
+% 45%;
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+    clip-path: polygon(0% 0, 100% 0%, 100% 100%, 30% 100%);
+    z-index: -2;
+}
+</style>
+<section class="footertc position-relative" style="padding-bottom: 50px; padding-top: 50px; box-shadow: 5px 5px 15px 0px rgba(0, 0, 0, 0.15);">
+    <div class="abso-block"></div>
+    <div class="container">
+        <div class="row gy-4">
+
+
+            <div class="col-lg-4 d-lg-block d-none">
+                <h6 class="title d-lg-flex d-none align-items-end">Trung tâm chuẩn đầu ra và<br>Phát triển nguồn nhân lực</h6>
+            </div>
+
+            <div class="col-lg-4 d-lg-block d-none">
+                <h6 class="title d-lg-flex d-none align-items-end">Phòng Quản lý đào tạo</h6>
+            </div>
+
+            <div class="col-lg-4 d-lg-block d-none">
+                <h6 class="title d-lg-flex d-none align-items-end">Trung tâm Phát triển & Ứng dụng phần mềm</h6>
+            </div>
+
+            <div class="col-12 mt-3 d-lg-block d-none">
+                <div class="border-top"></div>
+            </div>
+            <!-- <div class="col-lg-4 mt-5 mt-lg-4">
+                <h6 class="mb-3 title">Trung tâm chuẩn đầu ra và<br>Phát triển nguồn nhân lực</h6>
+                <div class="content fs-6 mb-2"><i class="fa-solid fa-house me-2"></i> Khu C, phòng C2-14</div>
+                <div class="content fs-6 mb-2"><i class="fa-solid fa-phone me-2"></i> 02923 798 798</div>
+                <div class="content fs-6"><i class="fa-solid fa-envelope me-2"></i> ttchuandaura@nctu.edu.vn</div>
+            </div> -->
+            <!-- <div class="col-lg-4 mt-5 mt-lg-4">
+                <h6 class="mb-3 title">Phòng Quản lý đào tạo</h6>
+                <div class="content fs-6 mb-2"><i class="fa-solid fa-house me-2"></i> Khu C, phòng C2-11</div>
+                <div class="content fs-6 mb-2"><i class="fa-solid fa-phone me-2"></i> 02923 798 999</div>
+                <div class="content fs-6"><i class="fa-solid fa-envelope me-2"></i> phongdaotao@nctu.edu.vn</div>
+                <div class="content fs-6 d-flex align-items-center">
+                    <img class="me-2" alt="logo zalo" height="16" width="16" src="https://tracuu.nctu.edu.vn/assets/images/zalo-icon-gray.png">
+                    <a href="https://zalo.me/2022657121671332850" class="text-decoration-none mt-1" style="color: #717680;"> Phòng Quản lý đào tạo</a>
+                </div>
+            </div>https://zalo.me/0848991914 -->
+
+
+             <div class="col-lg-4 mt-5 mt-lg-4">
+                <h6 class="mb-3 title d-lg-none d-flex align-items-end">Trung tâm chuẩn đầu ra và<br>Phát triển nguồn nhân lực</h6>
+
+                <div class="content fs-6 mb-2 d-flex align-items-center">
+                    <i class="fa-solid fa-house me-2"></i>
+                    <span>Khu C, phòng C2-14</span>
+                </div>
+
+                <div class="content fs-6 mb-2 d-flex align-items-center">
+                    <i class="fa-solid fa-phone me-2"></i>
+                    <span>
