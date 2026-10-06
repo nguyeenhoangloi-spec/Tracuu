@@ -73,17 +73,31 @@ Bạn có thể mở trình duyệt vào **`http://localhost:3000`** và bấm v
 
 ---
 
-## 🛠️ CÁCH KHỞI ĐỘNG LẠI HỆ THỐNG TRONG TƯƠNG LAI
+## 🛠️ HƯỚNG DẪN CÀI ĐẶT & KHỞI CHẠY DỰ ÁN (SETUP & RUN)
 
-Nếu bạn tắt máy tính hoặc muốn khởi động lại, chỉ cần chạy tệp [start.bat](file:///d:/Antigravity%20IDE/TraCuu/start.bat) hoặc gõ các lệnh sau:
+> 📖 Xem tài liệu đầy đủ chi tiết từng bước tại: [HUONG_DAN_CAI_DAT_VA_CHAY.md](file:///d:/Antigravity%20IDE/TraCuu/HUONG_DAN_CAI_DAT_VA_CHAY.md)
 
+### Cách 1: Khởi chạy 1-Click tự động (Windows)
+1. Double-click tệp [start.bat](file:///d:/Antigravity%20IDE/TraCuu/start.bat) ở thư mục gốc.
+2. Tệp sẽ tự động nhận diện nếu thiếu `node_modules` để chạy `npm install` và biên dịch tự động, sau đó mở đồng thời 2 dịch vụ.
+3. Mở trình duyệt tại: **`http://localhost:3000`**
+
+### Cách 2: Khởi chạy thủ công từ dòng lệnh (Terminal)
+
+#### 1. Cài đặt và khởi chạy Backend (NestJS):
 ```bash
-# Terminal 1: Khởi động Backend NestJS
 cd backend
+npm install
+npm run build
 npm run start
-
-# Terminal 2: Khởi động Frontend Next.js
-cd frontend
-npm run dev
+# Backend chạy tại: http://localhost:3001
 ```
-Truy cập giao diện tại: **`http://localhost:3000`**
+
+#### 2. Cài đặt và khởi chạy Frontend (Next.js):
+```bash
+cd frontend
+npm install
+npm run dev
+# Frontend chạy tại: http://localhost:3000
+```
+
