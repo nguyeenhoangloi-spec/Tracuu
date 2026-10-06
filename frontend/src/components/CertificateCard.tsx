@@ -105,16 +105,40 @@ export default function CertificateCard({
   const gridRowClass = 'grid grid-cols-1 md:grid-cols-2 gap-x-6 lg:gap-x-12 sm:py-3 lg:py-3.5';
 
   return (
-    <div className="font-google-sans text-[#0F172A] w-full flex flex-col justify-end sm:justify-center my-auto">
+    <div className="font-google-sans text-[#0F172A] w-full flex flex-col justify-end sm:justify-center my-auto print:my-0 print:w-full">
       {/* THẺ KẾT QUẢ TRA CỨU: DRAWER THOÁNG ĐÃNG TRÊN MOBILE (~76VH), TRONG ĐÓ CUỘN NỘI DUNG, POPUP OMNINOTCH TRÊN DESKTOP */}
       <div
         className={`bg-white rounded-t-[32px] rounded-b-none sm:rounded-[38px] sm:rounded-b-[38px] border-0 transition-shadow duration-300 ${isExpanded
           ? 'shadow-[0_32px_90px_-15px_rgba(15,23,42,0.32),0_12px_36px_-6px_rgba(15,23,42,0.12)]'
           : 'shadow-[0_24px_65px_-15px_rgba(15,23,42,0.22),0_10px_26px_-4px_rgba(15,23,42,0.08)]'
-          } overflow-hidden certificate-card w-full h-[71vh] max-h-[75dvh] sm:h-auto sm:max-h-[88vh] flex flex-col no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}
+          } overflow-hidden certificate-card w-full h-[71vh] max-h-[75dvh] sm:h-auto sm:max-h-[88vh] flex flex-col no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden print:rounded-none print:shadow-none print:border-none print:overflow-visible print:h-auto print:max-h-none`}
       >
-        {/* TIÊU ĐỀ KẾT QUẢ VĂN BẰNG / CHỨNG CHỈ (NỀN XÁM NHẸ, CỐ ĐỊNH TRÊN CÙNG DRAWER, LIỀN MẠCH KHÔNG VIỀN) */}
-        <div className="bg-slate-50/95 backdrop-blur-xs relative px-4 min-[390px]:px-5 sm:px-10 lg:px-12 pt-3 sm:pt-6 pb-3.5 sm:pb-6 shrink-0 border-0 border-none z-10">
+        {/* TIÊU ĐỀ KẾT QUẢ VĂN BẰNG / CHỨNG CHỈ (NỀN XÁM NHẸ TRÊN MÀN HÌNH, NỀN TRẮNG KHI IN) */}
+        <div className="bg-slate-50/95 print:bg-white backdrop-blur-xs relative px-4 min-[390px]:px-5 sm:px-10 lg:px-12 pt-3 sm:pt-6 pb-3.5 sm:pb-6 print:pb-2 print:pt-0 print:px-0 shrink-0 border-0 border-none z-10">
+          {/* Header Quốc hiệu / Tên trường chuẩn hóa (Chỉ xuất hiện khi In) */}
+          <div className="hidden print:flex items-center justify-between pb-3 mb-3 border-b-2 border-[#142B6F]">
+            <div className="flex items-center gap-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="https://nctu.edu.vn/images/png/logo_truong_3.png"
+                alt="Logo DNC"
+                className="h-11 w-auto object-contain"
+              />
+              <div>
+                <h1 className="text-[13.5px] font-bold text-[#142B6F] uppercase tracking-wider leading-tight">
+                  TRƯỜNG ĐẠI HỌC NAM CẦN THƠ
+                </h1>
+                <p className="text-[11px] font-semibold text-slate-600 uppercase tracking-wide leading-tight">
+                  CỔNG TRA CỨU & XÁC THỰC VĂN BẰNG - CHỨNG CHỈ ĐIỆN TỬ
+                </p>
+              </div>
+            </div>
+            <div className="text-right text-[11px] text-slate-500 leading-tight">
+              <div>Hệ thống xác thực:</div>
+              <div className="font-semibold text-slate-800">tracuu.nctu.edu.vn</div>
+            </div>
+          </div>
+
           {/* Thanh gạt Drawer trên mobile: Chỉ hiển thị trên mobile, ẩn hoàn toàn trên desktop */}
           <div
             onClick={onClose}
@@ -125,7 +149,7 @@ export default function CertificateCard({
           <div className="flex items-center justify-between gap-2.5 sm:gap-3">
             <div className="min-w-0 flex-1">
               <h2
-                className="text-[18.5px] min-[360px]:text-[19.5px] min-[390px]:text-[21px] sm:text-[28px] font-bold text-[#0F172A] leading-tight tracking-tight"
+                className="text-[18.5px] min-[360px]:text-[19.5px] min-[390px]:text-[21px] sm:text-[28px] font-bold text-[#0F172A] leading-tight tracking-tight print:text-[22px] print:text-[#142B6F]"
                 title={fullLegalTitle}
               >
                 {certificateTitle}
@@ -163,7 +187,7 @@ export default function CertificateCard({
         </div>
 
         {/* BẢNG THÔNG TIN TOÀN DIỆN - NỀN TRẮNG TINH KHÔI, CUỘN TRONG PHẠM VI DRAWER TRÊN MOBILE, CHUẨN 20PX TRÊN DESKTOP */}
-        <div className="bg-white px-4 min-[390px]:px-5 sm:px-10 lg:px-12 pt-3 pb-[calc(2.5rem+env(safe-area-inset-bottom,0px))] sm:py-8 overflow-y-auto overscroll-contain flex-1 touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="bg-white px-4 min-[390px]:px-5 sm:px-10 lg:px-12 pt-3 pb-[calc(2.5rem+env(safe-area-inset-bottom,0px))] sm:py-8 overflow-y-auto overscroll-contain flex-1 touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden print:px-0 print:py-2 print:overflow-visible">
           <div>
             {/* 1. HỌ TÊN */}
             <div className="flex items-start gap-2.5 sm:gap-3 py-2 sm:py-3.5">
@@ -440,7 +464,7 @@ export default function CertificateCard({
             )}
 
             {/* MÃ QR ĐỐI CHIẾU DỮ LIỆU GỐC TRÊN MOBILE (NẰM Ở CUỐI NỘI DUNG CUỘN) */}
-            <div className="sm:hidden pt-4 pb-2 flex items-center gap-3.5 mt-3 border-t border-slate-100">
+            <div className="sm:hidden print:hidden pt-4 pb-2 flex items-center gap-3.5 mt-3 border-t border-slate-100">
               <div className="p-1.5 bg-slate-50 border border-slate-200/90 rounded-xl shadow-2xs shrink-0">
                 <QRCodeSVG value={verificationUrl || 'https://tracuu.nctu.edu.vn'} size={44} />
               </div>
@@ -456,10 +480,10 @@ export default function CertificateCard({
           </div>
         </div>
 
-        {/* CHÂN THẺ GỌN GÀNG: TRÊN PC HIỂN THỊ ĐẦY ĐỦ QR VÀ CÁC NÚT THAO TÁC */}
-        <div className="hidden sm:flex bg-slate-50/95 backdrop-blur-xs flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 no-print px-5 sm:px-10 lg:px-12 py-3.5 sm:py-5 border-0 border-none shrink-0 z-10">
+        {/* CHÂN THẺ GỌN GÀNG: TRÊN PC VÀ KHI IN HIỂN THỊ ĐẦY ĐỦ QR */}
+        <div className="hidden sm:flex print:flex bg-slate-50/95 print:bg-white backdrop-blur-xs flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 px-5 sm:px-10 lg:px-12 py-3.5 sm:py-5 print:py-3 print:px-0 border-0 border-none print:border-t print:border-slate-200 shrink-0 z-10 print:mt-4">
           <div className="flex items-center gap-3 justify-start">
-            <div className="p-1.5 bg-white border border-slate-200/80 rounded-xl shadow-2xs shrink-0">
+            <div className="p-1.5 bg-white border border-slate-200/80 print:border-slate-300 rounded-xl shadow-2xs shrink-0">
               <QRCodeSVG value={verificationUrl || 'https://tracuu.nctu.edu.vn'} size={46} />
             </div>
             <div className="flex flex-col">
@@ -467,12 +491,12 @@ export default function CertificateCard({
                 Mã QR đối chiếu dữ liệu gốc
               </span>
               <span className="text-[12px] text-[#64748B] font-normal leading-tight mt-0.5">
-                Quét để thẩm tra trực tuyến
+                Quét để thẩm tra tính xác thực trực tuyến tại tracuu.nctu.edu.vn
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="flex items-center gap-3 w-full sm:w-auto no-print">
             <button
               type="button"
               onClick={handlePrint}

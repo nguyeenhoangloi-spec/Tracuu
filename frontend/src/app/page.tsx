@@ -500,7 +500,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8FAFC] text-gray-900 relative">
+    <div className="min-h-screen print:min-h-0 print:h-auto flex flex-col bg-[#F8FAFC] print:bg-white text-gray-900 relative">
 
       {/* 1. NAVBAR */}
       <Navbar activeTab={activeTab} onTabChange={handleTabChange} />
@@ -508,7 +508,7 @@ export default function Home() {
       {/* 2. HERO STAGE - NỀN XANH HỌC THUẬT DNC CHUYỂN SẮC SANG TRỌNG, ĐẦY ĐỦ NỀN TRÊN CẢ MOBILE VÀ DESKTOP */}
       <section
         id="hero-stage"
-        className="relative min-h-[225px] min-[390px]:min-h-[235px] sm:min-h-[330px] lg:min-h-[370px] xl:min-h-[385px] flex flex-col justify-start items-center pt-[88px] min-[390px]:pt-[92px] sm:pt-[110px] lg:pt-[122px] xl:pt-[128px] pb-11 min-[390px]:pb-12 sm:pb-[72px] lg:pb-[86px] xl:pb-[100px] px-4 sm:px-6 overflow-hidden bg-gradient-to-br from-[#0F275A] via-[#1E3A8A] to-[#1E40AF]"
+        className="relative min-h-[225px] min-[390px]:min-h-[235px] sm:min-h-[330px] lg:min-h-[370px] xl:min-h-[385px] flex flex-col justify-start items-center pt-[88px] min-[390px]:pt-[92px] sm:pt-[110px] lg:pt-[122px] xl:pt-[128px] pb-11 min-[390px]:pb-12 sm:pb-[72px] lg:pb-[86px] xl:pb-[100px] px-4 sm:px-6 overflow-hidden bg-gradient-to-br from-[#0F275A] via-[#1E3A8A] to-[#1E40AF] no-print"
       >
         {/* 1. LỚP ẢNH NỀN HỌC THUẬT DNC Ở GÓC PHẢI - ÊM DỊU, THANH THOÁT, KHÔNG ĐÈ LÊN CHỮ */}
         <div
@@ -647,7 +647,7 @@ export default function Home() {
       <main
         id="khung-tra-cuu"
         ref={cardSectionRef}
-        className="w-full bg-[#FFFFFF] relative z-20 pb-20 sm:pb-24 pt-0"
+        className="w-full bg-[#FFFFFF] relative z-20 pb-20 sm:pb-24 pt-0 no-print"
       >
         <div className="w-full max-w-[780px] mx-auto px-4 sm:px-6 -mt-12 sm:-mt-16 lg:-mt-20 xl:-mt-24 relative">
           <div
@@ -816,7 +816,7 @@ export default function Home() {
         >
           {/* LỚP BACKDROP BẤM RA NGOÀI ĐỂ THU GỌN / ĐÓNG (BẢO ĐẢM 100% HOẠT ĐỘNG CẢ MOBILE VÀ DESKTOP, CÓ CHỐNG GHOST-CLICK) */}
           <div
-            className="absolute inset-0 z-0 cursor-pointer select-none"
+            className="absolute inset-0 z-0 cursor-pointer select-none no-print"
             onClick={handleBackdropClick}
             aria-label="Bấm ra ngoài để đóng"
           />

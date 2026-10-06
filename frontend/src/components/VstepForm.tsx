@@ -281,7 +281,7 @@ export default function VstepForm({
               </div>
             </div>
             <span
-              className={`text-[13.5px] sm:text-[14px] leading-tight transition-colors ${
+              className={`text-[14px] sm:text-[15px] leading-tight transition-colors ${
                 showValidation && !confirmed
                   ? 'text-red-600 font-semibold'
                   : 'text-slate-700 group-hover:text-slate-900 font-medium'
@@ -290,7 +290,7 @@ export default function VstepForm({
               Tôi xác nhận rằng tất cả thông tin trên là đúng sự thật
               <span
                 style={{ verticalAlign: '-3px' }}
-                className={`text-[13px] text-red-500 font-normal ml-1.5 transition-all duration-200 inline-flex items-center gap-1 ${
+                className={`text-[13px] sm:text-[13.5px] text-red-500 font-normal ml-1.5 transition-all duration-200 inline-flex items-center gap-1 ${
                   showValidation && !confirmed
                     ? 'opacity-100 translate-x-0'
                     : 'opacity-0 -translate-x-1 pointer-events-none'

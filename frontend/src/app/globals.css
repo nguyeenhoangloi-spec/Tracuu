@@ -218,14 +218,51 @@ body::-webkit-scrollbar-button {
   background-size: 16px 16px;
 }
 
-/* Print optimizations */
+/* Print optimizations - Chuẩn hóa in ấn chỉ xuất bản phiếu kết quả tra cứu, ẩn sạch nền và form */
 @media print {
-  body {
-    background: white !important;
-    color: black !important;
+  @page {
+    size: A4 portrait;
+    margin: 12mm 15mm;
   }
 
-  .no-print {
+  html, body {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    height: auto !important;
+    min-height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Triệt tiêu 100% tất cả màu nền xám, viền hộp và bóng đổ trên mọi container khi in */
+  body,
+  #__next,
+  main,
+  div,
+  section,
+  article,
+  header,
+  footer {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Ẩn triệt để tất cả các khối ngoài phiếu kết quả */
+  .no-print,
+  .no-print *,
+  header,
+  footer,
+  aside,
+  #hero-stage,
+  #khung-tra-cuu,
+  #khung-tra-cuu-card,
+  nav,
+  .ripple-effect-wave {
     display: none !important;
   }
 
@@ -233,20 +270,78 @@ body::-webkit-scrollbar-button {
     display: block !important;
   }
 
+  /* Khung chứa popup kết quả trở thành khối văn bản tĩnh trên trang in */
+  #omninotch-overlay {
+    position: static !important;
+    display: block !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    overflow: visible !important;
+    inset: auto !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  #omninotch-overlay > div {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    transform: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .certificate-expand-shell {
+    max-width: 100% !important;
+    width: 100% !important;
+    transform: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* Thẻ kết quả chứng chỉ: bỏ sạch viền hộp, bo góc và bóng, trở thành văn bản in học thuật phẳng trang trọng */
   .certificate-card {
     box-shadow: none !important;
     border: none !important;
-    page-break-inside: avoid;
+    outline: none !important;
+    border-radius: 0 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
     width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
     margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
   }
 
-  #omninotch-overlay {
-    position: static !important;
-    background: white !important;
-    padding: 0 !important;
-    display: block !important;
+  .certificate-card > div,
+  .certificate-card div {
     overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
+  }
+
+  /* Giữ màu chữ và độ tương phản cao khi in */
+  .certificate-card span,
+  .certificate-card strong,
+  .certificate-card h2 {
+    color: #0f172a !important;
+  }
+
+  .certificate-card .text-\[\#142B6F\] {
+    color: #142B6F !important;
   }
 }
 
