@@ -128,7 +128,7 @@ export default function SecurityCaptcha({
             onFocus={() => setFocus(true)}
             onBlur={() => setFocus(false)}
             placeholder={up ? 'Nhập mã bên phải' : ''}
-            className="lbi-field uppercase tracking-widest font-bold text-[17px] text-slate-800 placeholder:normal-case placeholder:tracking-normal placeholder:font-normal placeholder:text-slate-400 pl-5 pr-[100px] sm:pr-[185px]"
+            className="lbi-field uppercase tracking-widest font-bold text-[17px] text-slate-800 placeholder:normal-case placeholder:tracking-normal placeholder:font-normal placeholder:text-slate-400 pl-6 pr-[100px] sm:pr-[185px]"
             autoComplete="off"
             spellCheck={false}
           />

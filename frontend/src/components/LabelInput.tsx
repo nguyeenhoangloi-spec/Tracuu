@@ -339,11 +339,12 @@ export function LabelInput({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [dropdownOpen, datePickerOpen]);
 
-  /* A select or date input always has lifted label state so value is legible, or when there is an error */
-  const up = isSelect || isDate || focus || dropdownOpen || datePickerOpen || (value ? value.length > 0 : false) || Boolean(error);
+  /* Only lift label when field is focused, popover is open, has value, or has an error */
+  const hasValue = Boolean(value !== undefined && value !== null && String(value).trim().length > 0);
+  const up = Boolean(focus || dropdownOpen || datePickerOpen || hasValue || error);
 
   const selectedOption = isSelect
-    ? options!.find((opt) => String(opt.value) === String(value)) || options![0]
+    ? options!.find((opt) => String(opt.value) === String(value)) || (hasValue ? options![0] : null)
     : null;
 
   /* ── where the label sits ────────────────────────────────
@@ -421,8 +422,8 @@ export function LabelInput({
               aria-haspopup="dialog"
               aria-expanded={datePickerOpen}
             >
-              <span className={`truncate text-[17px] ${displayDate ? "font-medium text-slate-800" : "text-[#64748b] font-normal"}`}>
-                {displayDate || (up ? placeholder || "Chọn ngày sinh (Ngày/Tháng/Năm)" : "")}
+              <span className={`truncate text-[16.5px] ${displayDate ? "font-semibold text-slate-800" : "text-slate-400 font-normal"}`}>
+                {displayDate || (up ? placeholder || "dd/mm/yyyy" : "")}
               </span>
             </button>
 
@@ -752,8 +753,8 @@ export function LabelInput({
               aria-expanded={dropdownOpen}
             >
               <div className="flex items-center min-w-0 w-full pr-1">
-                <span className="truncate text-[17px] font-medium text-slate-800">
-                  {selectedOption?.label || ""}
+                <span className={`truncate text-[16.5px] ${selectedOption ? "font-semibold text-slate-800" : "text-slate-400 font-normal"}`}>
+                  {up ? selectedOption?.label || placeholder || "" : ""}
                 </span>
               </div>
             </button>
