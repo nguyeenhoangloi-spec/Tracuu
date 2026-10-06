@@ -19,6 +19,20 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
   const vstepRef = useRef<HTMLButtonElement | null>(null);
   const menuContainerRef = useRef<HTMLDivElement | null>(null);
   const toggleBtnRef = useRef<HTMLButtonElement | null>(null);
+  const lastToggleTimeRef = useRef<number>(0);
+
+  const handleToggleMobileMenu = (e?: React.MouseEvent | React.TouchEvent) => {
+    if (e) {
+      e.stopPropagation();
+    }
+    const now = Date.now();
+    // Ngăn chặn hiện tượng double-trigger / ghost-click do touchstart và click liên tiếp trên mobile
+    if (now - lastToggleTimeRef.current < 280) {
+      return;
+    }
+    lastToggleTimeRef.current = now;
+    setMobileMenuOpen((prev) => !prev);
+  };
 
   // Refs cho 3 tab trong Thanh Viên Thuốc (Floating Pill)
   const pillVanbangRef = useRef<HTMLButtonElement | null>(null);
@@ -131,13 +145,24 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
     if (!mobileMenuOpen) return;
 
     const handlePointerDown = (e: MouseEvent | TouchEvent) => {
+      // Nếu vừa mới bấm nút toggle (trong vòng 300ms) thì không can thiệp
+      if (Date.now() - lastToggleTimeRef.current < 300) {
+        return;
+      }
+
       const target = e.target as Node;
+      if (!target) return;
+
+      // Nếu bấm vào nút toggle (hoặc icon/con bên trong nút) thì để nút tự xử lý
       if (
-        menuContainerRef.current &&
-        !menuContainerRef.current.contains(target) &&
         toggleBtnRef.current &&
-        !toggleBtnRef.current.contains(target)
+        (toggleBtnRef.current === target || toggleBtnRef.current.contains(target))
       ) {
+        return;
+      }
+
+      // Nếu bấm ngoài menu container thì mới đóng menu
+      if (menuContainerRef.current && !menuContainerRef.current.contains(target)) {
         setMobileMenuOpen(false);
       }
     };
@@ -163,7 +188,7 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
     <header className="fixed top-0 left-0 right-0 w-full z-[55] no-print antialiased pointer-events-none">
       {/* 1. THANH TOP BAR ĐẦY ĐỦ Ở ĐẦU TRANG: NỀN TRẮNG TINH THANH LỊCH (CHUẨN TRƯỜNG ĐH NAM CẦN THƠ) */}
       <div
-        className={`w-full transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] border-b border-slate-100 bg-white shadow-[0_2px_12px_rgba(0,0,0,0.05)] ${
+        className={`w-full relative z-[60] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] border-b border-slate-100 bg-white shadow-[0_2px_12px_rgba(0,0,0,0.05)] ${
           !isScrolled
             ? 'opacity-100 translate-y-0 pointer-events-auto'
             : 'opacity-0 -translate-y-full pointer-events-none'
@@ -259,7 +284,7 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
                   href="tel:02923798798"
                   data-ripple="rgba(215, 33, 52, 0.22)"
                   className="font-medium tracking-tight whitespace-nowrap relative overflow-hidden px-2.5 py-1 rounded-full hover:bg-red-50/70 active:scale-95 transition-all duration-200 flex items-center gap-1.5 text-[#D72134] text-[16.5px] lg:text-[17.5px]"
-                  title="Gọi Hotline NCTU: (0292) 3 798 798"
+                  title="Gọi Hotline: (0292) 3 798 798"
                 >
                   <Phone className="w-4 h-4 stroke-[1.8] relative z-10 pointer-events-none text-[#D72134]" />
                   <span className="relative z-10 pointer-events-none font-medium">(0292) 3 798 798</span>
@@ -272,8 +297,9 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
               <button
                 ref={toggleBtnRef}
                 type="button"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-xl transition-all duration-200 outline-none focus:outline-none ring-0 border-0 border-none select-none active:scale-90 text-slate-700 hover:text-[#D72134] active:bg-slate-100"
+                onClick={handleToggleMobileMenu}
+                onPointerDown={(e) => e.stopPropagation()}
+                className="p-2 rounded-xl transition-all duration-200 outline-none focus:outline-none ring-0 border-0 border-none select-none text-slate-700 hover:text-[#D72134] active:bg-slate-100"
                 style={{
                   border: 'none',
                   outline: 'none',
@@ -282,19 +308,19 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
                 }}
                 aria-label="Toggle Navigation"
               >
-                <div className="relative w-6 h-6 flex items-center justify-center">
+                <div className="relative w-6 h-6 flex items-center justify-center pointer-events-none">
                   <Menu
-                    className={`w-6 h-6 stroke-[2.2] absolute transition-all ${
+                    className={`w-6 h-6 stroke-[2.2] absolute transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
                       mobileMenuOpen
-                        ? 'opacity-0 rotate-90 scale-75 duration-[450ms] ease-[cubic-bezier(0.16,1,0.3,1)]'
-                        : 'opacity-100 rotate-0 scale-100 duration-[680ms] ease-[cubic-bezier(0.35,0,0.25,1)]'
+                        ? 'opacity-0 rotate-90 scale-75'
+                        : 'opacity-100 rotate-0 scale-100'
                     }`}
                   />
                   <X
-                    className={`w-6 h-6 stroke-[2.2] absolute transition-all ${
+                    className={`w-6 h-6 stroke-[2.2] absolute transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
                       mobileMenuOpen
-                        ? 'opacity-100 rotate-0 scale-100 duration-[450ms] ease-[cubic-bezier(0.16,1,0.3,1)]'
-                        : 'opacity-0 -rotate-90 scale-75 duration-[680ms] ease-[cubic-bezier(0.35,0,0.25,1)]'
+                        ? 'opacity-100 rotate-0 scale-100'
+                        : 'opacity-0 -rotate-90 scale-75'
                     }`}
                   />
                 </div>
@@ -304,12 +330,12 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
         </div>
       </div>
 
-      {/* 2. THANH VIÊN THUỐC CỐ ĐỊNH (FLOATING PILL NAVIGATION): NỔI Ở ĐÁY MÀN HÌNH CHO CẢ MOBILE & DESKTOP (KHÔNG CHE TIÊU ĐỀ/HERO) */}
+      {/* 2. THANH VIÊN THUỐC CỐ ĐỊNH (FLOATING PILL NAVIGATION): DỜI LÊN ĐẦU TRANG (DYNAMIC ISLAND) CHO CẢ MOBILE & DESKTOP (KHÔNG CHE NÚT TRA CỨU) */}
       <div
-        className={`fixed left-1/2 -translate-x-1/2 z-[55] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] bottom-[calc(1rem+env(safe-area-inset-bottom,0px))] sm:bottom-6 lg:bottom-7 ${
+        className={`fixed left-1/2 -translate-x-1/2 z-[55] transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] top-[calc(0.75rem+env(safe-area-inset-top,0px))] sm:top-4 lg:top-5 ${
           isScrolled
             ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto'
-            : 'opacity-0 translate-y-8 scale-[0.94] pointer-events-none'
+            : 'opacity-0 -translate-y-8 scale-[0.94] pointer-events-none'
         }`}
         style={{ willChange: 'transform, opacity' }}
       >
@@ -393,29 +419,41 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
       <div className={`w-full max-w-[1590px] mx-auto relative ${mobileMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}>
         {/* Lớp mờ nền (Backdrop) khi mở menu trên Mobile: Fade in / Fade out mượt mà, Bấm ra ngoài để đóng */}
         <div
-          className={`fixed inset-0 bg-slate-950/40 backdrop-blur-[3px] z-40 lg:hidden transition-all ${
+          className={`fixed inset-0 bg-slate-950/40 backdrop-blur-[4px] z-40 lg:hidden transition-all ease-out ${
             mobileMenuOpen
-              ? 'opacity-100 pointer-events-auto duration-[480ms] ease-[cubic-bezier(0.16,1,0.3,1)]'
-              : 'opacity-0 pointer-events-none duration-[720ms] ease-[cubic-bezier(0.35,0,0.25,1)]'
+              ? 'opacity-100 pointer-events-auto duration-350'
+              : 'opacity-0 pointer-events-none duration-280'
           }`}
-          onClick={() => setMobileMenuOpen(false)}
+          onClick={(e) => {
+            e.stopPropagation();
+            const now = Date.now();
+            if (now - lastToggleTimeRef.current < 280) return;
+            lastToggleTimeRef.current = now;
+            setMobileMenuOpen(false);
+          }}
           aria-hidden="true"
         />
 
-        {/* Card menu: Nền kính mờ sang trọng, chuyển động mở ra thu lại mượt mà êm ái */}
+        {/* Card menu: Nền kính mờ sang trọng, chuyển động mở ra thu lại mượt mà êm ái tuyệt đối chuẩn Apple */}
         <div
           ref={menuContainerRef}
-          className={`relative z-50 lg:hidden p-3.5 space-y-2 font-google-sans rounded-2xl mx-3 mt-2 origin-top backdrop-blur-2xl bg-gradient-to-b from-[rgba(14,59,117,0.92)] via-[rgba(24,78,144,0.85)] to-[rgba(255,255,255,0.96)] text-slate-900 border border-white/40 shadow-[0_24px_60px_-10px_rgba(15,23,42,0.35)] ${
-            mobileMenuOpen
-              ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto visible'
-              : 'opacity-0 scale-[0.96] -translate-y-5 pointer-events-none invisible'
+          className={`relative z-50 lg:hidden p-3.5 space-y-2 font-google-sans rounded-2xl mx-3 mt-2 backdrop-blur-2xl bg-gradient-to-b from-[rgba(14,59,117,0.92)] via-[rgba(24,78,144,0.85)] to-[rgba(255,255,255,0.96)] text-slate-900 border border-white/40 shadow-[0_24px_60px_-10px_rgba(15,23,42,0.35)] ${
+            mobileMenuOpen ? 'pointer-events-auto' : 'pointer-events-none'
           }`}
           style={{
             WebkitBackdropFilter: 'blur(24px) saturate(180%)',
             backdropFilter: 'blur(24px) saturate(180%)',
+            WebkitBackfaceVisibility: 'hidden',
+            backfaceVisibility: 'hidden',
+            transformOrigin: 'top right',
+            transform: mobileMenuOpen
+              ? 'translate3d(0, 0, 0) scale(1)'
+              : 'translate3d(0, -18px, 0) scale(0.95)',
+            opacity: mobileMenuOpen ? 1 : 0,
+            visibility: mobileMenuOpen ? 'visible' : 'hidden',
             transition: mobileMenuOpen
-              ? 'transform 500ms cubic-bezier(0.16, 1, 0.3, 1), opacity 440ms cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0s'
-              : 'transform 720ms cubic-bezier(0.35, 0, 0.25, 1), opacity 600ms cubic-bezier(0.35, 0, 0.25, 1) 90ms, visibility 0s linear 720ms',
+              ? 'transform 420ms cubic-bezier(0.16, 1, 0.3, 1), opacity 320ms cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0s'
+              : 'transform 300ms cubic-bezier(0.25, 1, 0.5, 1), opacity 240ms cubic-bezier(0.25, 1, 0.5, 1), visibility 0s linear 300ms',
             willChange: 'transform, opacity',
           }}
         >
@@ -490,7 +528,7 @@ export default function Navbar({ activeTab, onTabChange }: NavbarProps) {
               className="block relative overflow-hidden px-3.5 py-2.5 text-[16px] font-google-sans font-semibold rounded-xl text-slate-800 hover:text-[#D72134] hover:bg-red-50/70 active:scale-[0.98] transition-all outline-none select-none"
               style={{ WebkitTapHighlightColor: 'transparent', outline: 'none' }}
             >
-              <span className="relative z-10 pointer-events-none">Trang chủ NCTU</span>
+              <span className="relative z-10 pointer-events-none">Trang chủ</span>
             </a>
 
             <a

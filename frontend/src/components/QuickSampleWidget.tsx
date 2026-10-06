@@ -30,7 +30,7 @@ const FALLBACK_SAMPLES = {
       ngay_sinh: '2001-05-15',
       loai_dao_tao: 'dh',
       so_hieu_phoi: 'B6829104',
-      so_vao_so: 'NCTU-CNTT-2023/142',
+      so_vao_so: 'DNC-CNTT-2023/142',
       badge: 'Đại học',
     },
     {
@@ -39,7 +39,7 @@ const FALLBACK_SAMPLES = {
       ngay_sinh: '2002-11-20',
       loai_dao_tao: 'dh',
       so_hieu_phoi: 'B7910245',
-      so_vao_so: 'NCTU-DH-2024/098',
+      so_vao_so: 'DNC-DH-2024/098',
       badge: 'Đại học',
     },
     {
@@ -48,7 +48,7 @@ const FALLBACK_SAMPLES = {
       ngay_sinh: '1995-03-25',
       loai_dao_tao: 'ths',
       so_hieu_phoi: 'TS203918',
-      so_vao_so: 'NCTU-THS-2023/045',
+      so_vao_so: 'DNC-THS-2023/045',
       badge: 'Thạc sĩ',
     },
   ],
@@ -58,7 +58,7 @@ const FALLBACK_SAMPLES = {
       cap_do: 'coban',
       so_hieu_phoi: '001300',
       ho_ten: 'Nguyễn Thị Ngọc Châu',
-      ngay_sinh: '1997-07-20',
+      ngay_sinh: '2001-12-03',
       badge: 'Cơ bản',
     },
     {
@@ -251,7 +251,7 @@ export default function QuickSampleWidget({
           <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
             <span className="flex items-center gap-1">
               <UserCheck className="w-3.5 h-3.5 text-slate-400" />
-              <span>Dữ liệu thử nghiệm NCTU</span>
+              <span>Dữ liệu thử nghiệm DNC</span>
             </span>
             <span>ESC để đóng</span>
           </div>

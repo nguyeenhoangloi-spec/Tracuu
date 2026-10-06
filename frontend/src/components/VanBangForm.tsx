@@ -172,7 +172,7 @@ export default function VanBangForm({
       ngay_sinh: '2001-05-15',
       loai_dao_tao: 'dh',
       so_hieu_phoi: 'B6829104',
-      so_vao_so: 'NCTU-CNTT-2023/142',
+      so_vao_so: 'DNC-CNTT-2023/142',
     },
     {
       label: 'Trần Thị Ngọc Mai (Dược học - Bằng ĐH)',
@@ -180,7 +180,7 @@ export default function VanBangForm({
       ngay_sinh: '2002-11-20',
       loai_dao_tao: 'dh',
       so_hieu_phoi: 'B7910245',
-      so_vao_so: 'NCTU-DH-2024/098',
+      so_vao_so: 'DNC-DH-2024/098',
     },
     {
       label: 'Phạm Minh Đức (Thạc sĩ)',
@@ -188,7 +188,7 @@ export default function VanBangForm({
       ngay_sinh: '1995-03-25',
       loai_dao_tao: 'ths',
       so_hieu_phoi: 'TS203918',
-      so_vao_so: 'NCTU-THS-2023/045',
+      so_vao_so: 'DNC-THS-2023/045',
     },
   ];
 
@@ -317,7 +317,7 @@ export default function VanBangForm({
       <div>
         <LabelInput
           label="Số vào sổ cấp bằng"
-          placeholder="Ví dụ: NCTU-CNTT-2023/142"
+          placeholder="Ví dụ: DNC-CNTT-2023/142"
           value={soVaoSo}
           onChange={(e) => {
             setSoVaoSo(e.target.value);

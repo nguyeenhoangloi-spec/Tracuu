@@ -5,7 +5,7 @@ import GlobalRipple from '@/components/GlobalRipple';
 export const metadata: Metadata = {
   title: 'HỆ THỐNG TRA CỨU VĂN BẰNG & CHỨNG CHỈ | ĐẠI HỌC NAM CẦN THƠ',
   description:
-    'Cổng thông tin xác thực điện tử văn bằng tốt nghiệp, chứng chỉ ứng dụng CNTT và chứng chỉ tiếng Anh VSTEP chính thức của Trường Đại học Nam Cần Thơ (NCTU).',
+    'Cổng thông tin xác thực điện tử văn bằng tốt nghiệp, chứng chỉ ứng dụng CNTT và chứng chỉ tiếng Anh VSTEP chính thức của Trường Đại học Nam Cần Thơ (DNC).',
   icons: {
     icon: 'https://nctu.edu.vn/images/webp/favicon.webp',
   },

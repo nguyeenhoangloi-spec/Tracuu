@@ -92,16 +92,19 @@ export function LabelInput({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const boxRef = useRef<HTMLDivElement | null>(null);
   const popoverRef = useRef<HTMLDivElement | null>(null);
+  const lastToggleTimeRef = useRef(0);
 
   const [mounted, setMounted] = useState(false);
   const [popoverRendered, setPopoverRendered] = useState(false);
   const [popoverPlacement, setPopoverPlacement] = useState<"bottom" | "top">("bottom");
   const [popoverCoords, setPopoverCoords] = useState<{
-    top: number;
+    top?: number;
+    bottom?: number;
     left: number;
     width: number;
     transformOrigin?: string;
-  }>({ top: 0, left: 0, width: 0 });
+  }>({ left: 0, width: 0 });
+  const [contentHeight, setContentHeight] = useState<number | undefined>(undefined);
 
   const [focus, setFocus] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -156,6 +159,7 @@ export function LabelInput({
 
   const [viewYear, setViewYear] = useState(() => parsedDate ? parsedDate.year : 2001);
   const [viewMonth, setViewMonth] = useState(() => parsedDate ? parsedDate.month - 1 : 4);
+  const [yearScrollTrigger, setYearScrollTrigger] = useState(0);
 
   useEffect(() => {
     if (parsedDate) {
@@ -164,21 +168,44 @@ export function LabelInput({
     }
   }, [parsedDate]);
 
-  // Cuộn năm đã chọn vào giữa danh sách mà CHỈ CUỘN BÊN TRONG HỘP NĂM, KHÔNG ĐẨY MÀN HÌNH NGOÀI!
+  // Cuộn năm đã chọn vào giữa danh sách một cách êm ái, mượt mà (khi mở năm, đổi năm, hoặc bấm Hôm nay)
   useEffect(() => {
-    if (datePickerOpen && viewMode === "years" && selectedYearRef.current && yearListRef.current) {
+    if (datePickerOpen && viewMode === "years" && yearListRef.current) {
+      let animId: number;
       const timer = setTimeout(() => {
         const container = yearListRef.current;
         const target = selectedYearRef.current;
-        if (container && target) {
-          const targetTop = target.offsetTop - container.offsetTop;
-          const scrollPos = targetTop - container.clientHeight / 2 + target.clientHeight / 2;
-          container.scrollTo({ top: Math.max(0, scrollPos), behavior: "smooth" });
-        }
-      }, 50);
-      return () => clearTimeout(timer);
+        if (!container || !target) return;
+
+        const targetTop = target.offsetTop - container.offsetTop;
+        const targetScrollPos = Math.max(0, targetTop - container.clientHeight / 2 + target.clientHeight / 2);
+        const startScrollPos = container.scrollTop;
+        const distance = targetScrollPos - startScrollPos;
+
+        if (Math.abs(distance) < 2) return;
+
+        const duration = 520; // 520ms lướt êm ái, nhẹ nhàng, không bị giật nhanh
+        const startTime = performance.now();
+        const easeOutQuart = (t: number) => 1 - Math.pow(1 - t, 4);
+
+        const step = (now: number) => {
+          const elapsed = now - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          container.scrollTop = startScrollPos + distance * easeOutQuart(progress);
+          if (progress < 1) {
+            animId = requestAnimationFrame(step);
+          }
+        };
+
+        animId = requestAnimationFrame(step);
+      }, 80);
+
+      return () => {
+        clearTimeout(timer);
+        if (animId) cancelAnimationFrame(animId);
+      };
     }
-  }, [datePickerOpen, viewMode]);
+  }, [datePickerOpen, viewMode, viewYear, yearScrollTrigger]);
 
   const [show, setShow] = useState(false);
   const [flip, setFlip] = useState(0);
@@ -229,7 +256,7 @@ export function LabelInput({
     const isMobile = viewportWidth < 640;
 
     const popoverWidth = isDate ? Math.min(350, viewportWidth - 24) : rect.width;
-    const popoverHeight = isDate ? 395 : Math.min(260, (options?.length || 4) * 46 + 18);
+    const popoverHeight = isDate ? 402 : Math.min(260, (options?.length || 4) * 46 + 18);
 
     const spaceBelow = viewportHeight - rect.bottom;
     const spaceAbove = rect.top;
@@ -253,39 +280,86 @@ export function LabelInput({
 
     const origin = openUpward ? "bottom center" : "top center";
 
+    // Đối với lịch (isDate): Cố định tọa độ top tuyệt đối (kể cả khi mở hướng lên)
+    // để thanh tiêu đề và các nút điều hướng < Tháng X > luôn đứng yên 100% tại chỗ.
+    // Khi tháng thay đổi giữa 5 hàng và 6 hàng, cạnh đáy tự động co giãn (đẩy ra / thu lại)
+    // mượt mà mà nút bấm không bao giờ bị nhảy xê dịch khỏi ngón tay/chuột của người dùng!
+    const maxDateHeight = 402;
+    const dateTop = openUpward
+      ? Math.max(8, Math.round(rect.top - maxDateHeight - 8))
+      : Math.round(rect.bottom + 8);
+
     setPopoverCoords({
-      top: Math.round(top),
+      top: isDate ? dateTop : (openUpward ? undefined : Math.round(rect.bottom + 8)),
+      bottom: isDate ? undefined : (openUpward ? Math.round(viewportHeight - rect.top + 8) : undefined),
       left: Math.round(left),
       width: Math.round(popoverWidth),
       transformOrigin: origin,
     });
   }, [isDate, options]);
 
+  // Tự động đo đạc và kích hoạt chuyển động co giãn (đẩy ra / thu lại) mượt mà khi tháng đổi số tuần (5 tuần ↔ 6 tuần)
+  useEffect(() => {
+    if (!popoverRendered || !isDate || !datePickerContentRef.current) return;
+    const el = datePickerContentRef.current;
+    const initialH = el.offsetHeight;
+    if (initialH > 0) setContentHeight(initialH);
+
+    const ro = new ResizeObserver(() => {
+      if (datePickerContentRef.current) {
+        const h = datePickerContentRef.current.offsetHeight;
+        if (h > 0) {
+          setContentHeight(h);
+        }
+      }
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [popoverRendered, isDate, viewMode, viewMonth, viewYear]);
+
   const handleToggleDropdown = useCallback((e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    if (!dropdownOpen) {
-      updatePopoverPosition();
-      setPopoverRendered(true);
-      setDropdownOpen(true);
-      setFocus(true);
-    } else {
-      setDropdownOpen(false);
-      setFocus(false);
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
     }
-  }, [dropdownOpen, updatePopoverPosition]);
+    const now = Date.now();
+    if (now - lastToggleTimeRef.current < 40) return;
+    lastToggleTimeRef.current = now;
+
+    setDropdownOpen((prev) => {
+      const next = !prev;
+      if (next) {
+        updatePopoverPosition();
+        setPopoverRendered(true);
+        setFocus(true);
+      } else {
+        setFocus(false);
+      }
+      return next;
+    });
+  }, [updatePopoverPosition]);
 
   const handleToggleDatePicker = useCallback((e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    if (!datePickerOpen) {
-      updatePopoverPosition();
-      setPopoverRendered(true);
-      setDatePickerOpen(true);
-      setFocus(true);
-    } else {
-      setDatePickerOpen(false);
-      setFocus(false);
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
     }
-  }, [datePickerOpen, updatePopoverPosition]);
+    const now = Date.now();
+    if (now - lastToggleTimeRef.current < 40) return;
+    lastToggleTimeRef.current = now;
+
+    setDatePickerOpen((prev) => {
+      const next = !prev;
+      if (next) {
+        updatePopoverPosition();
+        setPopoverRendered(true);
+        setFocus(true);
+      } else {
+        setFocus(false);
+      }
+      return next;
+    });
+  }, [updatePopoverPosition]);
 
   useEffect(() => {
     if (!popoverRendered) return;
@@ -399,7 +473,7 @@ export function LabelInput({
               }
         }
       >
-        <label className="lbi-label" htmlFor={id} ref={lab}>
+        <label className="lbi-label" htmlFor={isDate || isSelect ? undefined : id} ref={lab}>
           {Array.from(label).map((ch, i) => (
             <span key={i} style={{ "--i": i } as React.CSSProperties}>{ch === " " ? "\u00A0" : ch}</span>
           ))}
@@ -452,12 +526,16 @@ export function LabelInput({
                 data-placement={popoverPlacement}
                 style={{
                   position: "fixed",
-                  top: `${popoverCoords.top}px`,
+                  top: popoverCoords.top !== undefined ? `${popoverCoords.top}px` : undefined,
+                  bottom: popoverCoords.bottom !== undefined ? `${popoverCoords.bottom}px` : undefined,
                   left: `${popoverCoords.left}px`,
                   width: `${popoverCoords.width}px`,
+                  height: contentHeight ? `${contentHeight}px` : undefined,
                   transformOrigin: popoverCoords.transformOrigin,
                   zIndex: 99999,
                   backgroundColor: "#ffffff",
+                  transition: contentHeight ? "height 320ms cubic-bezier(0.16, 1, 0.3, 1)" : undefined,
+                  willChange: "height, transform, opacity",
                 }}
                 className={`bg-white rounded-2xl border-0 border-none shadow-[0_24px_65px_-12px_rgba(15,23,42,0.25),0_10px_24px_-4px_rgba(15,23,42,0.10)] overflow-hidden select-none lbi-popover-shell ${datePickerOpen
                   ? "lbi-popover-open"
@@ -467,22 +545,105 @@ export function LabelInput({
                 onClick={(e) => e.stopPropagation()}
               >
                 <div ref={datePickerContentRef} className="p-4 bg-white">
+                  {/* Universal Header: Cố định vị trí, bấm Tháng/Năm để mở và bấm lại chính nó ("nhấn lại tại đây") để thu lại về ngày */}
+                  <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (viewMode === "years" || viewMode === "months") {
+                          setViewYear((y) => y - 1);
+                        } else {
+                          if (viewMonth === 0) {
+                            setViewMonth(11);
+                            setViewYear((y) => y - 1);
+                          } else {
+                            setViewMonth((m) => m - 1);
+                          }
+                        }
+                      }}
+                      className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer active:scale-95 text-slate-600 hover:text-[#D72134] hover:bg-red-50 outline-none focus:outline-none ring-0 border-0 border-none select-none"
+                      style={{ outline: "none", border: "none" }}
+                      title={viewMode === "years" || viewMode === "months" ? "Năm trước" : "Tháng trước"}
+                    >
+                      <ChevronLeft size={18} strokeWidth={2.5} />
+                    </button>
+
+                    <div className="flex items-center justify-center gap-1.5 flex-1">
+                      {/* Bấm Tháng X để mở chọn tháng, bấm lại chính nó để thu lại về ngày */}
+                      <button
+                        type="button"
+                        onClick={() => setViewMode((m) => (m === "months" ? "days" : "months"))}
+                        className={`h-8 px-2.5 rounded-lg text-sm font-bold transition-all duration-150 flex items-center justify-center gap-1 cursor-pointer active:scale-95 tabular-nums shrink-0 outline-none focus:outline-none ring-0 border-0 border-none select-none ${
+                          viewMode === "months"
+                            ? "bg-red-50 text-[#D72134] shadow-sm ring-1 ring-red-200"
+                            : "text-slate-900 hover:text-[#D72134] hover:bg-red-50"
+                        }`}
+                        style={{ outline: "none", border: "none" }}
+                        title={viewMode === "months" ? "Nhấn lại để thu lại về ngày" : "Chọn tháng"}
+                      >
+                        <span>Tháng {viewMonth + 1}</span>
+                        <ChevronDown
+                          size={14}
+                          strokeWidth={2.5}
+                          className={`shrink-0 transition-transform duration-200 ${
+                            viewMode === "months" ? "rotate-180 text-[#D72134]" : "text-slate-500"
+                          }`}
+                        />
+                      </button>
+
+                      {/* Bấm Năm để mở chọn năm, bấm lại chính nó để thu lại về ngày */}
+                      <button
+                        type="button"
+                        onClick={() => setViewMode((m) => (m === "years" ? "days" : "years"))}
+                        className={`h-8 px-2.5 rounded-lg text-sm font-bold transition-all duration-150 flex items-center justify-center gap-1 cursor-pointer active:scale-95 tabular-nums shrink-0 outline-none focus:outline-none ring-0 border-0 border-none select-none ${
+                          viewMode === "years"
+                            ? "bg-red-50 text-[#D72134] shadow-sm ring-1 ring-red-200"
+                            : "text-slate-900 hover:text-[#D72134] hover:bg-red-50"
+                        }`}
+                        style={{ outline: "none", border: "none" }}
+                        title={viewMode === "years" ? "Nhấn lại để thu lại về ngày" : "Chọn năm"}
+                      >
+                        <span>{viewYear}</span>
+                        <ChevronDown
+                          size={14}
+                          strokeWidth={2.5}
+                          className={`shrink-0 transition-transform duration-200 ${
+                            viewMode === "years" ? "rotate-180 text-[#D72134]" : "text-slate-500"
+                          }`}
+                        />
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (viewMode === "years" || viewMode === "months") {
+                          setViewYear((y) => y + 1);
+                        } else {
+                          if (viewMonth === 11) {
+                            setViewMonth(0);
+                            setViewYear((y) => y + 1);
+                          } else {
+                            setViewMonth((m) => m + 1);
+                          }
+                        }
+                      }}
+                      className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer active:scale-95 text-slate-600 hover:text-[#D72134] hover:bg-red-50 outline-none focus:outline-none ring-0 border-0 border-none select-none"
+                      style={{ outline: "none", border: "none" }}
+                      title={viewMode === "years" || viewMode === "months" ? "Năm sau" : "Tháng sau"}
+                    >
+                      <ChevronRight size={18} strokeWidth={2.5} />
+                    </button>
+                  </div>
+
                   {/* Body depending on viewMode with synchronized transitions */}
                   {viewMode === "months" ? (
-                    <div key="months" className="animate-view-enter space-y-2">
-                      <div className="flex items-center justify-between pb-2 mb-1 border-b border-slate-100">
-                        <span className="text-[12px] font-bold text-slate-500 uppercase tracking-wider">Chọn tháng</span>
-                        <button
-                          type="button"
-                          onClick={() => setViewMode("days")}
-                          className="text-xs font-bold text-[#D72134] hover:underline cursor-pointer flex items-center gap-1 py-1 px-2 rounded-lg hover:bg-red-50 transition-colors"
-                        >
-                          Quay lại
-                        </button>
-                      </div>
-                      <div className="grid grid-cols-3 gap-2.5 py-1.5 h-[240px] content-center">
+                    <div key="months" className="animate-view-enter h-[264px]">
+                      {/* 12 Tháng phân bố đều 4 hàng x 3 cột lấp đầy hài hòa, không bị khoảng trống thừa */}
+                      <div className="grid grid-cols-3 grid-rows-4 gap-2.5 h-full">
                         {Array.from({ length: 12 }, (_, i) => {
                           const isCurrentMonth = viewMonth === i;
+                          const isRealCurrentMonth = viewYear === new Date().getFullYear() && new Date().getMonth() === i;
                           return (
                             <button
                               key={i}
@@ -491,10 +652,13 @@ export function LabelInput({
                                 setViewMonth(i);
                                 setViewMode("days");
                               }}
-                              className={`py-2.5 px-3 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${isCurrentMonth
-                                ? "bg-[#D72134] text-white font-bold shadow-md shadow-red-600/30 scale-105"
-                                : "text-slate-800 hover:text-[#D72134] hover:bg-red-50 active:scale-95"
+                              className={`h-full flex items-center justify-center rounded-xl text-[14px] font-bold transition-all duration-150 cursor-pointer outline-none focus:outline-none ring-0 border-0 border-none select-none ${isCurrentMonth
+                                ? "bg-[#D72134] text-white shadow-md shadow-red-600/30 scale-102"
+                                : isRealCurrentMonth
+                                  ? "text-[#D72134] font-bold bg-red-50/70 hover:bg-red-100/70 active:scale-95"
+                                  : "text-slate-800 hover:text-[#D72134] hover:bg-red-50 active:scale-95"
                                 }`}
+                              style={{ outline: "none", border: "none" }}
                             >
                               Tháng {i + 1}
                             </button>
@@ -503,22 +667,12 @@ export function LabelInput({
                       </div>
                     </div>
                   ) : viewMode === "years" ? (
-                    <div key="years" className="animate-view-enter space-y-2">
-                      <div className="flex items-center justify-between pb-2 mb-1 border-b border-slate-100">
-                        <span className="text-[12px] font-bold text-slate-500 uppercase tracking-wider">Chọn năm</span>
-                        <button
-                          type="button"
-                          onClick={() => setViewMode("days")}
-                          className="text-xs font-bold text-[#D72134] hover:underline cursor-pointer flex items-center gap-1 py-1 px-2 rounded-lg hover:bg-red-50 transition-colors"
-                        >
-                          Quay lại
-                        </button>
-                      </div>
-
+                    <div key="years" className="animate-view-enter h-[264px]">
                       {/* Scrollable list of years with centered auto-scroll and sleek scrollbar */}
-                      <div ref={yearListRef} className="grid grid-cols-4 gap-1.5 h-[240px] max-h-[245px] overflow-y-auto pr-1.5 custom-scrollbar">
+                      <div ref={yearListRef} className="grid grid-cols-4 gap-1.5 h-full max-h-[264px] overflow-y-auto pr-1.5 custom-scrollbar">
                         {Array.from({ length: 77 }, (_, i) => 2026 - i).map((y) => {
                           const isCurrentYear = viewYear === y;
+                          const isRealCurrentYear = new Date().getFullYear() === y;
                           return (
                             <button
                               key={y}
@@ -528,10 +682,13 @@ export function LabelInput({
                                 setViewYear(y);
                                 setViewMode("days");
                               }}
-                              className={`py-2 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${isCurrentYear
-                                ? "bg-[#D72134] text-white font-bold shadow-md shadow-red-600/30 scale-105"
-                                : "text-slate-800 hover:text-[#D72134] hover:bg-red-50 active:scale-95"
+                              className={`py-2.5 rounded-xl text-[13px] font-bold transition-all duration-150 cursor-pointer outline-none focus:outline-none ring-0 border-0 border-none select-none ${isCurrentYear
+                                ? "bg-[#D72134] text-white shadow-md shadow-red-600/30 scale-102"
+                                : isRealCurrentYear
+                                  ? "text-[#D72134] font-bold bg-red-50/70 hover:bg-red-100/70 active:scale-95"
+                                  : "text-slate-800 hover:text-[#D72134] hover:bg-red-50 active:scale-95"
                                 }`}
+                              style={{ outline: "none", border: "none" }}
                             >
                               {y}
                             </button>
@@ -541,60 +698,6 @@ export function LabelInput({
                     </div>
                   ) : (
                     <div key="days" className="animate-view-enter">
-                      {/* Header */}
-                      <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (viewMonth === 0) {
-                              setViewMonth(11);
-                              setViewYear((y) => y - 1);
-                            } else {
-                              setViewMonth((m) => m - 1);
-                            }
-                          }}
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 hover:text-[#D72134] hover:bg-red-50 transition-colors cursor-pointer active:scale-95"
-                          title="Tháng trước"
-                        >
-                          <ChevronLeft size={18} strokeWidth={2.5} />
-                        </button>
-
-                        <div className="flex items-center justify-center gap-1.5 flex-1">
-                          <button
-                            type="button"
-                            onClick={() => setViewMode("months")}
-                            className="w-[96px] h-8 rounded-lg text-sm font-bold transition-all duration-150 flex items-center justify-center gap-1 cursor-pointer active:scale-95 text-slate-900 hover:text-[#D72134] hover:bg-red-50 tabular-nums shrink-0"
-                          >
-                            <span>Tháng {viewMonth + 1}</span>
-                            <ChevronDown size={14} strokeWidth={2.5} className="shrink-0 text-slate-500" />
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => setViewMode("years")}
-                            className="w-[74px] h-8 rounded-lg text-sm font-bold transition-all duration-150 flex items-center justify-center gap-1 cursor-pointer active:scale-95 text-slate-900 hover:text-[#D72134] hover:bg-red-50 tabular-nums shrink-0"
-                          >
-                            <span>{viewYear}</span>
-                            <ChevronDown size={14} strokeWidth={2.5} className="shrink-0 text-slate-500" />
-                          </button>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => {
-                            if (viewMonth === 11) {
-                              setViewMonth(0);
-                              setViewYear((y) => y + 1);
-                            } else {
-                              setViewMonth((m) => m + 1);
-                            }
-                          }}
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 hover:text-[#D72134] hover:bg-red-50 transition-colors cursor-pointer active:scale-95"
-                          title="Tháng sau"
-                        >
-                          <ChevronRight size={18} strokeWidth={2.5} />
-                        </button>
-                      </div>
 
                       {/* Days of week header */}
                       <div className="grid grid-cols-7 gap-1 text-center mb-1.5 pb-1 border-b border-slate-100">
@@ -608,8 +711,8 @@ export function LabelInput({
                         ))}
                       </div>
 
-                      {/* Days grid */}
-                      <div className="grid grid-cols-7 gap-1">
+                      {/* Days grid with smooth month fade transition */}
+                      <div key={`${viewYear}-${viewMonth}`} className="grid grid-cols-7 gap-1 animate-month-fade">
                         {(() => {
                           const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
                           const firstDayOfWeek = (new Date(viewYear, viewMonth, 1).getDay() + 6) % 7;
@@ -622,8 +725,9 @@ export function LabelInput({
                           for (let d = 1; d <= daysInMonth; d++) {
                             cells.push({ day: d, isCurrent: true, monthOffset: 0 });
                           }
-                          // Tối ưu số hàng hiển thị: nếu đủ trong 5 hàng (<= 35 ô) thì không cố sinh thêm hàng thứ 6 thừa thãi
-                          const totalSlots = cells.length > 35 ? 42 : 35;
+                          // Chuẩn quốc tế cho lịch tháng: Luôn hiển thị cố định đúng 6 hàng (42 ô)
+                          // Giúp chiều cao lịch luôn đứng yên 100%, nút bấm điều hướng không bao giờ bị nhảy vị trí
+                          const totalSlots = 42;
                           const remaining = totalSlots - cells.length;
                           for (let d = 1; d <= remaining; d++) {
                             cells.push({ day: d, isCurrent: false, monthOffset: 1 });
@@ -668,7 +772,7 @@ export function LabelInput({
                                   setFocus(false);
                                 }}
                                 data-ripple="rgba(215, 33, 52, 0.22)"
-                                className={`w-9 h-9 rounded-xl text-[13px] flex items-center justify-center transition-all duration-150 cursor-pointer relative overflow-hidden select-none ${isSelected
+                                className={`w-9 h-9 rounded-xl text-[13px] flex items-center justify-center transition-all duration-150 cursor-pointer relative overflow-hidden select-none outline-none focus:outline-none ring-0 border-0 border-none ${isSelected
                                   ? "bg-[#D72134] text-white font-bold shadow-md shadow-red-600/30 scale-105"
                                   : isToday
                                     ? "text-[#D72134] font-bold bg-red-50/50 hover:bg-red-100/70 hover:scale-105 active:scale-95"
@@ -715,6 +819,7 @@ export function LabelInput({
                           }
                           setViewYear(today.getFullYear());
                           setViewMonth(today.getMonth());
+                          setYearScrollTrigger((c) => c + 1);
                         }}
                         className="relative overflow-hidden px-3 py-1.5 rounded-lg text-xs font-semibold text-[#D72134] hover:text-[#b71526] hover:bg-red-50/80 transition-all duration-150 cursor-pointer active:scale-95 border-0 border-none outline-none select-none"
                       >
@@ -790,7 +895,8 @@ export function LabelInput({
                 data-placement={popoverPlacement}
                 style={{
                   position: "fixed",
-                  top: `${popoverCoords.top}px`,
+                  top: popoverCoords.top !== undefined ? `${popoverCoords.top}px` : undefined,
+                  bottom: popoverCoords.bottom !== undefined ? `${popoverCoords.bottom}px` : undefined,
                   left: `${popoverCoords.left}px`,
                   width: `${popoverCoords.width}px`,
                   transformOrigin: popoverCoords.transformOrigin,

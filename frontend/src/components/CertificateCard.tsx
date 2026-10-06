@@ -109,8 +109,8 @@ export default function CertificateCard({
       {/* THẺ KẾT QUẢ TRA CỨU: DRAWER THOÁNG ĐÃNG TRÊN MOBILE (~76VH), TRONG ĐÓ CUỘN NỘI DUNG, POPUP OMNINOTCH TRÊN DESKTOP */}
       <div
         className={`bg-white rounded-[32px] sm:rounded-[36px] border-0 transition-shadow duration-300 ${isExpanded
-            ? 'shadow-[0_32px_90px_-15px_rgba(15,23,42,0.32),0_12px_36px_-6px_rgba(15,23,42,0.12)]'
-            : 'shadow-[0_24px_65px_-15px_rgba(15,23,42,0.22),0_10px_26px_-4px_rgba(15,23,42,0.08)]'
+          ? 'shadow-[0_32px_90px_-15px_rgba(15,23,42,0.32),0_12px_36px_-6px_rgba(15,23,42,0.12)]'
+          : 'shadow-[0_24px_65px_-15px_rgba(15,23,42,0.22),0_10px_26px_-4px_rgba(15,23,42,0.08)]'
           } overflow-hidden certificate-card w-full h-[76vh] max-h-[82dvh] sm:h-auto sm:max-h-[88vh] flex flex-col no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}
       >
         {/* TIÊU ĐỀ KẾT QUẢ VĂN BẰNG / CHỨNG CHỈ (NỀN XÁM NHẸ, CỐ ĐỊNH TRÊN CÙNG DRAWER, LIỀN MẠCH KHÔNG VIỀN) */}

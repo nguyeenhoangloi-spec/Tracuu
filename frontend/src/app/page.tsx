@@ -505,29 +505,33 @@ export default function Home() {
       {/* 1. NAVBAR */}
       <Navbar activeTab={activeTab} onTabChange={handleTabChange} />
 
-      {/* 2. HERO STAGE - NỀN XANH HỌC THUẬT DNC CHUYỂN SẮC SANG TRỌNG, NÂNG TONE TRẮNG SÁNG, KHÔNG DÙNG HÌNH 3D CẮT CỤT */}
+      {/* 2. HERO STAGE - NỀN XANH HỌC THUẬT DNC CHUYỂN SẮC SANG TRỌNG, ĐẦY ĐỦ NỀN TRÊN CẢ MOBILE VÀ DESKTOP */}
       <section
         id="hero-stage"
-        className="relative min-h-[285px] sm:min-h-[400px] lg:min-h-[430px] flex flex-col justify-start items-center pt-28 sm:pt-32 lg:pt-36 pb-12 sm:pb-24 lg:pb-26 px-4 sm:px-6 overflow-hidden bg-gradient-to-br from-[#0F275A] via-[#1E3A8A] to-[#1E40AF]"
+        className="relative min-h-[230px] min-[390px]:min-h-[245px] sm:min-h-[320px] lg:min-h-[360px] flex flex-col justify-end items-center pt-20 sm:pt-24 lg:pt-28 pb-10 sm:pb-14 lg:pb-16 px-4 sm:px-6 overflow-hidden bg-gradient-to-br from-[#0F275A] via-[#1E3A8A] to-[#1E40AF]"
       >
-        {/* 1. LỚP ẢNH MINH HỌA HỌC THUẬT DNC (BR.PNG) Ở GÓC PHẢI */}
+        {/* 1. LỚP ẢNH NỀN HỌC THUẬT DNC (BR.PNG) Ở GÓC PHẢI - ÊM DỊU, THANH THOÁT, KHÔNG ĐÈ LÊN CHỮ */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 pointer-events-none bg-cover select-none mix-blend-luminosity"
+          className="absolute inset-0 pointer-events-none bg-cover select-none mix-blend-luminosity opacity-[0.20] sm:opacity-[0.22] bg-[position:95%_20%] sm:bg-[position:right_35%]"
           style={{
             backgroundImage: "url('/br.png')",
-            backgroundPosition: 'right 35%',
-            opacity: 0.18,
-            filter: 'contrast(120%) brightness(110%)',
-            maskImage: 'linear-gradient(to bottom, black 0%, black 70%, transparent 95%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 70%, transparent 95%)',
+            filter: 'contrast(115%) brightness(115%)',
+            maskImage: 'linear-gradient(to bottom, black 0%, black 75%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 75%, transparent 100%)',
           }}
         />
 
-        {/* 2. LỚP HOA VĂN BẢO MẬT PHÔI VĂN BẰNG (GUILLOCHE SECURITY WATERMARK CHUẨN ĐẠI HỌC) */}
+        {/* 2. LỚP CHUYỂN SẮC BẢO VỆ CHỮ (TEXT PROTECTION GRADIENT): BÊN TRÁI ÊM SẠCH 100%, BÊN PHẢI MỞ RỘNG HÌNH NỀN HỌC THUẬT */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 pointer-events-none opacity-[0.04] overflow-hidden select-none [mask-image:radial-gradient(ellipse_80%_65%_at_50%_45%,rgba(0,0,0,0.35)_0%,black_100%)]"
+          className="absolute inset-0 pointer-events-none bg-gradient-to-r from-[#0F275A] via-[#0F275A]/75 sm:via-[#0F275A]/45 to-transparent z-[1]"
+        />
+
+        {/* 3. LỚP HOA VĂN BẢO MẬT PHÔI VĂN BẰNG (GUILLOCHE SECURITY WATERMARK CHUẨN ĐẠI HỌC) */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 pointer-events-none opacity-[0.025] sm:opacity-[0.035] overflow-hidden select-none [mask-image:radial-gradient(ellipse_80%_65%_at_50%_45%,rgba(0,0,0,0.35)_0%,black_100%)] z-[1]"
         >
           <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
@@ -549,10 +553,10 @@ export default function Home() {
           </svg>
         </div>
 
-        {/* 3. BIỂU TRƯNG VÒNG NGUYỆT QUẾ TRI THỨC & NÓN CỬ NHÂN: DỜI LẠI RA CHÍNH GIỮA PHẦN TRÊN BANNER */}
+        {/* 4. BIỂU TRƯNG VÒNG NGUYỆT QUẾ TRI THỨC & NÓN CỬ NHÂN: CHỈ HIỆN NHẸ TRÊN DESKTOP, ẨN TRÊN MOBILE TRÁNH RỐI */}
         <div
           aria-hidden="true"
-          className="absolute top-2 sm:top-4 lg:top-6 left-1/2 -translate-x-1/2 w-[300px] sm:w-[400px] lg:w-[450px] h-[300px] sm:h-[400px] lg:h-[450px] pointer-events-none opacity-[0.06] text-white select-none z-0"
+          className="hidden sm:block absolute sm:top-4 lg:top-6 left-1/2 -translate-x-1/2 sm:w-[400px] lg:w-[450px] sm:h-[400px] lg:h-[450px] pointer-events-none sm:opacity-[0.045] text-white select-none z-[1]"
         >
           <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
             {/* Vòng tròn đồng tâm la bàn tri thức */}
@@ -570,36 +574,38 @@ export default function Home() {
           </svg>
         </div>
 
-        {/* 4. LUỒNG SÁNG HÀO QUANG DỊU MẮT TẬP TRUNG VÀO TRUNG TÂM */}
+        {/* 5. LUỒNG SÁNG HÀO QUANG DỊU MẮT TẬP TRUNG VÀO TRUNG TÂM */}
         <div
           aria-hidden="true"
-          className="absolute -top-28 left-1/2 -translate-x-1/2 w-[720px] h-[340px] bg-blue-400/20 rounded-full blur-3xl pointer-events-none"
+          className="absolute -top-28 left-1/2 -translate-x-1/2 w-[720px] h-[340px] bg-blue-400/15 rounded-full blur-3xl pointer-events-none z-[1]"
         />
 
-        {/* Khối nội dung tiêu đề: Đặt ở góc dưới bên trái dóng thẳng hàng tuyệt đối với Logo DNC trên Navbar */}
-        <div className="w-full max-w-[1590px] mx-auto relative z-10 px-4 sm:px-6 flex flex-col items-start text-left mt-auto mb-2 sm:mb-4 lg:mb-6">
-          {/* Breadcrumb chuẩn phong cách cổng trường ĐH Nam Cần Thơ: [Trang chủ / Tra cứu] */}
-          <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs sm:text-[13px] text-blue-200/90 font-medium mb-1.5 sm:mb-2 select-none">
+        {/* Khối nội dung tiêu đề: Căn trái đồng bộ cả Mobile và Desktop, dóng thẳng hàng Logo DNC, khoảng thở thoáng đãng tinh tế */}
+        <div className="w-full max-w-[1590px] mx-auto relative z-10 px-4 min-[360px]:px-5 sm:px-6 flex flex-col items-start text-left sm:mt-auto mb-2.5 sm:mb-4 lg:mb-5">
+          {/* Breadcrumb chuẩn phong cách cổng trường ĐH Nam Cần Thơ: [Trang chủ > Tra cứu] nền kính mờ không viền tinh tế */}
+          <nav aria-label="Breadcrumb" className="inline-flex items-center gap-2 text-[12px] min-[360px]:text-[12.5px] sm:text-[14.5px] text-blue-50 font-medium mb-2 sm:mb-3.5 select-none px-3 py-1 sm:px-5 sm:py-2 rounded-full bg-white/[0.12] hover:bg-white/[0.18] backdrop-blur-md shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-all">
             <a
               href="https://nctu.edu.vn"
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1 text-white/90 hover:text-white hover:underline transition-all cursor-pointer"
+              className="flex items-center gap-1.5 text-white/90 hover:text-white transition-colors cursor-pointer"
               title="Về Trang chủ Trường Đại học Nam Cần Thơ (nctu.edu.vn)"
             >
-              <svg className="w-3.5 h-3.5 inline-block -mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 inline-block text-blue-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                 <polyline points="9 22 9 12 15 12 15 22" />
               </svg>
               <span>Trang chủ</span>
             </a>
-            <span className="text-blue-300/60">/</span>
+            <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-200/80 inline-block -mx-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m9 18 6-6-6-6" />
+            </svg>
             <span className="text-white font-semibold">
               Tra cứu
             </span>
           </nav>
 
-          {/* Slider Tiêu đề lớn: Bỏ chữ 'Tra cứu', chỉ ghi tên phân hệ như mẫu DNC, kích thước 56px, nét thanh lịch font-semibold */}
+          {/* Slider Tiêu đề lớn: Bỏ chữ 'Tra cứu', căn trái thanh thoát, 56px desktop, 26px mobile gọn gàng sang trọng */}
           <div className="w-full overflow-hidden max-w-4xl lg:max-w-5xl">
             <div
               className="flex transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
@@ -614,21 +620,21 @@ export default function Home() {
             >
               {/* Tab 1: Văn bằng tốt nghiệp */}
               <div className="w-full flex-shrink-0 text-left pr-2">
-                <h1 className="animate-hero-title text-[28px] min-[360px]:text-[32px] min-[390px]:text-[34px] sm:text-[40px] md:text-[46px] lg:text-[52px] xl:text-[56px] font-semibold tracking-tight text-white leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]">
+                <h1 className="animate-hero-title text-[24px] min-[360px]:text-[26px] min-[390px]:text-[28px] sm:text-[38px] md:text-[46px] lg:text-[52px] xl:text-[56px] font-semibold tracking-tight text-white leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]">
                   Văn bằng tốt nghiệp
                 </h1>
               </div>
 
               {/* Tab 2: CNTT */}
               <div className="w-full flex-shrink-0 text-left pr-2">
-                <h1 className="animate-hero-title text-[28px] min-[360px]:text-[32px] min-[390px]:text-[34px] sm:text-[40px] md:text-[46px] lg:text-[52px] xl:text-[56px] font-semibold tracking-tight text-white leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]">
+                <h1 className="animate-hero-title text-[24px] min-[360px]:text-[26px] min-[390px]:text-[28px] sm:text-[38px] md:text-[46px] lg:text-[52px] xl:text-[56px] font-semibold tracking-tight text-white leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]">
                   Chứng chỉ CNTT
                 </h1>
               </div>
 
               {/* Tab 3: VSTEP */}
               <div className="w-full flex-shrink-0 text-left pr-2">
-                <h1 className="animate-hero-title text-[28px] min-[360px]:text-[32px] min-[390px]:text-[34px] sm:text-[40px] md:text-[46px] lg:text-[52px] xl:text-[56px] font-semibold tracking-tight text-white leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]">
+                <h1 className="animate-hero-title text-[24px] min-[360px]:text-[26px] min-[390px]:text-[28px] sm:text-[38px] md:text-[46px] lg:text-[52px] xl:text-[56px] font-semibold tracking-tight text-white leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]">
                   Chứng chỉ VSTEP
                 </h1>
               </div>

@@ -224,7 +224,7 @@ export default function VstepForm({
       <div>
         <LabelInput
           label="Số hiệu phôi hoặc số báo danh"
-          placeholder="Ví dụ: VSTEP-881923, NCTU-VSTEP-2024-0489"
+          placeholder="Ví dụ: VSTEP-881923, DNC-VSTEP-2024-0489"
           value={soHieuPhoi}
           onChange={(e) => {
             setSoHieuPhoi(e.target.value.toUpperCase());
