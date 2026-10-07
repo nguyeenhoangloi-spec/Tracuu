@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, RotateCcw, Check, Sparkles, AlertCircle, Loader2, X } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Search, Loader2 } from 'lucide-react';
 import LabelInput from '@/components/LabelInput';
 import SecurityCaptcha from '@/components/SecurityCaptcha';
 
@@ -12,6 +13,9 @@ interface CnttFormProps {
   sampleData?: any[];
   resetTrigger?: number;
   sampleToApply?: any;
+  initialSoHieuPhoi?: string;
+  initialCapDo?: 'coban' | 'nangcao';
+  onCapDoChange?: (capDo: 'coban' | 'nangcao') => void;
 }
 
 export default function CnttForm({
@@ -21,16 +25,31 @@ export default function CnttForm({
   sampleData,
   resetTrigger,
   sampleToApply,
+  initialSoHieuPhoi,
+  initialCapDo,
+  onCapDoChange,
 }: CnttFormProps) {
-  const [capDo, setCapDo] = useState<'coban' | 'nangcao'>('coban');
-  const [soHieuPhoi, setSoHieuPhoi] = useState('');
+  const [capDo, setCapDo] = useState<'coban' | 'nangcao'>(initialCapDo || 'coban');
+  const [soHieuPhoi, setSoHieuPhoi] = useState(initialSoHieuPhoi || '');
+  const [soVaoSo, setSoVaoSo] = useState('');
   const [hoTen, setHoTen] = useState('');
   const [ngaySinh, setNgaySinh] = useState('');
-  const [confirmed, setConfirmed] = useState(false);
   const [captchaInput, setCaptchaInput] = useState('');
   const [captchaCode, setCaptchaCode] = useState('');
   const [captchaError, setCaptchaError] = useState<string | null>(null);
-  const [showValidation, setShowValidation] = useState(false);
+
+  React.useEffect(() => {
+    if (initialCapDo) {
+      setCapDo(initialCapDo);
+    }
+  }, [initialCapDo]);
+
+  React.useEffect(() => {
+    if (initialSoHieuPhoi) {
+      setSoHieuPhoi(initialSoHieuPhoi);
+    }
+  }, [initialSoHieuPhoi]);
+
   const [fieldErrors, setFieldErrors] = useState<{ soHieuPhoi?: string; hoTen?: string; ngaySinh?: string }>({});
 
   const [loading, setLoading] = useState(false);
@@ -42,32 +61,15 @@ export default function CnttForm({
     setCaptchaError(null);
 
     let hasError = false;
-    const newErrors: { soHieuPhoi?: string; hoTen?: string; ngaySinh?: string } = {};
+    const newErrors: { soHieuPhoi?: string } = {};
     if (!soHieuPhoi.trim()) {
       newErrors.soHieuPhoi = 'Vui lòng điền số hiệu phôi';
-      hasError = true;
-    }
-    if (!hoTen.trim()) {
-      newErrors.hoTen = 'Vui lòng điền họ tên';
-      hasError = true;
-    }
-    if (!ngaySinh) {
-      newErrors.ngaySinh = 'Vui lòng điền ngày sinh';
       hasError = true;
     }
     setFieldErrors(newErrors);
 
     if (!captchaInput.trim()) {
-      setCaptchaError('Vui lòng nhập mã bảo vệ');
-      hasError = true;
-    } else if (captchaInput.trim().toUpperCase() !== captchaCode.toUpperCase()) {
-      setCaptchaError('Mã bảo vệ không chính xác. Vui lòng nhập lại');
-      setCaptchaInput('');
-      hasError = true;
-    }
-
-    if (!confirmed) {
-      setShowValidation(true);
+      setCaptchaError('Vui lòng xác nhận Tôi không phải là người máy');
       hasError = true;
     }
 
@@ -85,8 +87,8 @@ export default function CnttForm({
         body: JSON.stringify({
           so_hieu_phoi: soHieuPhoi.trim(),
           cap_do: capDo,
-          ho_ten: hoTen.trim(),
-          ngay_sinh: ngaySinh,
+          ho_ten: hoTen.trim() || undefined,
+          ngay_sinh: ngaySinh || undefined,
         }),
       });
 
@@ -130,63 +132,33 @@ export default function CnttForm({
   const handleReset = () => {
     setCapDo('coban');
     setSoHieuPhoi('');
+    setSoVaoSo('');
     setHoTen('');
     setNgaySinh('');
-    setConfirmed(false);
     setCaptchaInput('');
     setCaptchaError(null);
-    setShowValidation(false);
     setFieldErrors({});
     setError(null);
   };
 
-  // Lắng nghe tín hiệu làm mới biểu mẫu từ header, thu hồi lỗi mượt mà
   React.useEffect(() => {
     if (resetTrigger && resetTrigger > 0) {
       handleReset();
     }
   }, [resetTrigger]);
 
-  const DEFAULT_SAMPLES = [
-    {
-      label: 'Nguyễn Thị Ngọc Châu (Phôi: 001300)',
-      so_hieu_phoi: '001300',
-      ho_ten: 'Nguyễn Thị Ngọc Châu',
-      ngay_sinh: '2001-12-03',
-      cap_do: 'coban',
-    },
-    {
-      label: 'Nguyễn Văn An (CB-982145)',
-      so_hieu_phoi: 'CB-982145',
-      ho_ten: 'Nguyễn Văn An',
-      ngay_sinh: '2001-05-15',
-      cap_do: 'coban',
-    },
-    {
-      label: 'Trần Thị Ngọc Mai (NC-452109)',
-      so_hieu_phoi: 'NC-452109',
-      ho_ten: 'Trần Thị Ngọc Mai',
-      ngay_sinh: '2002-11-20',
-      cap_do: 'nangcao',
-    },
-  ];
-
-  const samplesToUse = sampleData && sampleData.length > 0 ? sampleData : DEFAULT_SAMPLES;
-
   const handleApplySample = (sample: any) => {
     if (sample.cap_do) setCapDo(sample.cap_do);
     if (sample.so_hieu_phoi) setSoHieuPhoi(sample.so_hieu_phoi);
+    if (sample.so_vao_so) setSoVaoSo(sample.so_vao_so);
     if (sample.ho_ten) setHoTen(sample.ho_ten);
     if (sample.ngay_sinh) setNgaySinh(sample.ngay_sinh);
-    setConfirmed(true);
     if (captchaCode) setCaptchaInput(captchaCode);
     setFieldErrors({});
     setCaptchaError(null);
     setError(null);
-    setShowValidation(false);
   };
 
-  // Áp dụng dữ liệu mẫu từ Floating Widget bên ngoài
   React.useEffect(() => {
     if (sampleToApply && (sampleToApply.tab === 'cntt' || !sampleToApply.tab) && sampleToApply.data) {
       handleApplySample(sampleToApply.data);
@@ -202,157 +174,136 @@ export default function CnttForm({
       noValidate
       className="space-y-3 sm:space-y-3.5"
     >
-      {/* Loại chứng chỉ & Số hiệu phôi */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-3.5">
-        <div>
-          <LabelInput
-            label="Loại chứng chỉ"
-            options={[
-              {
-                value: 'coban',
-                label: 'Ứng dụng CNTT Cơ bản',
-                desc: 'Chuẩn kỹ năng sử dụng CNTT theo Thông tư 03/2014/TT-BTTTT',
-                badge: 'Cơ bản',
-              },
-              {
-                value: 'nangcao',
-                label: 'Ứng dụng CNTT Nâng cao',
-                desc: 'Module kỹ năng xử lý dữ liệu và công nghệ chuyên sâu',
-                badge: 'Nâng cao',
-              },
-            ]}
-            value={capDo}
-            onChange={(e) => setCapDo(e.target.value as any)}
-          />
-        </div>
+      {/* Bộ chuyển đổi Cấp độ: CNTT Cơ bản vs CNTT Nâng cao chuẩn Apple Segmented Control */}
+      <div className="w-full max-w-sm mx-auto p-1 bg-slate-100/90 rounded-2xl flex items-center gap-1 mb-2">
+        <button
+          type="button"
+          onClick={() => {
+            setCapDo('coban');
+            onCapDoChange?.('coban');
+          }}
+          className={`flex-1 py-2 px-3 rounded-xl text-xs sm:text-[13px] font-bold transition-all duration-200 outline-none focus:outline-none border-0 cursor-pointer ${
+            capDo === 'coban'
+              ? 'bg-white text-[#0369A1] shadow-xs scale-[1.01]'
+              : 'text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          CNTT Cơ bản
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setCapDo('nangcao');
+            onCapDoChange?.('nangcao');
+          }}
+          className={`flex-1 py-2 px-3 rounded-xl text-xs sm:text-[13px] font-bold transition-all duration-200 outline-none focus:outline-none border-0 cursor-pointer ${
+            capDo === 'nangcao'
+              ? 'bg-gradient-to-r from-[#0F766E] to-[#0D9488] text-white shadow-xs scale-[1.01]'
+              : 'text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          CNTT Nâng cao
+        </button>
+      </div>
 
+      {/* LƯỚI 2x2 CÂN ĐỐI CHUẨN APPLE: Ô NHẬP TO RỘNG 60PX */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
+        {/* Ô 1: Số hiệu phôi (Bắt buộc) */}
         <div>
           <LabelInput
             label="Số hiệu phôi"
-            placeholder="Ví dụ: 001300, NC-452109"
+            placeholder={capDo === 'nangcao' ? 'Ví dụ: NC-452109' : 'Ví dụ: 001300, CB-982145'}
             value={soHieuPhoi}
+            height={60}
+            corner={16}
             onChange={(e) => {
-              setSoHieuPhoi(e.target.value);
+              setSoHieuPhoi(e.target.value.toUpperCase());
               if (fieldErrors.soHieuPhoi) setFieldErrors((prev) => ({ ...prev, soHieuPhoi: undefined }));
             }}
             error={fieldErrors.soHieuPhoi}
             required
           />
         </div>
-      </div>
 
-      {/* Họ tên & Ngày sinh (Xác thực 2 lớp chống dò quét) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-3.5">
+        {/* Ô 2: Số vào sổ hoặc Số CCCD (Tùy chọn) */}
         <div>
           <LabelInput
-            label="Họ tên"
-            placeholder="Ví dụ: Nguyễn Thị Ngọc Châu"
+            label="Số vào sổ / CCCD (Tùy chọn)"
+            placeholder="Ví dụ: NCTU-CNTT-2023/142 hoặc 092..."
+            value={soVaoSo}
+            height={60}
+            corner={16}
+            onChange={(e) => setSoVaoSo(e.target.value)}
+          />
+        </div>
+
+        {/* Ô 3: Họ tên (Tùy chọn) */}
+        <div>
+          <LabelInput
+            label="Họ và tên (Tùy chọn)"
+            placeholder="Ví dụ: NGUYỄN THỊ NGỌC CHÂU"
             value={hoTen}
+            height={60}
+            corner={16}
             onChange={(e) => {
               setHoTen(e.target.value);
               if (fieldErrors.hoTen) setFieldErrors((prev) => ({ ...prev, hoTen: undefined }));
             }}
             error={fieldErrors.hoTen}
-            required
           />
         </div>
 
+        {/* Ô 4: Ngày sinh (Tùy chọn) */}
         <div>
           <LabelInput
-            label="Ngày sinh"
+            label="Ngày sinh (Tùy chọn)"
             type="date"
             placeholder="dd/mm/yyyy"
+            height={60}
+            corner={16}
             value={ngaySinh}
             onChange={(e) => {
               setNgaySinh(e.target.value);
               if (fieldErrors.ngaySinh) setFieldErrors((prev) => ({ ...prev, ngaySinh: undefined }));
             }}
             error={fieldErrors.ngaySinh}
-            required
           />
         </div>
       </div>
 
-      {/* Xác thực bảo mật CAPTCHA */}
-      <div>
-        <SecurityCaptcha
-          id="captcha-cntt"
-          captchaInput={captchaInput}
-          onCaptchaInputChange={(val) => {
-            setCaptchaInput(val);
-            if (captchaError) setCaptchaError(null);
-          }}
-          onCaptchaCodeGenerated={setCaptchaCode}
-          captchaError={captchaError || undefined}
-          resetTrigger={resetTrigger}
-        />
-      </div>
-
-      {/* Cụm Cam kết xác nhận & Nút hành động ôm thành 1 hàng */}
-      <div className="pt-1.5 pb-2">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          {/* Checkbox cam kết bên trái */}
-          <label
-            onClick={() => {
-              const nextVal = !confirmed;
-              setConfirmed(nextVal);
-              if (nextVal) {
-                setShowValidation(false);
-              }
+      {/* HÀNG XÁC THỰC VÀ NÚT BẤM: LUÔN CỐ ĐỊNH, KHÔNG BAO GIỜ NHẢY KHUNG HAY ĐẨY NỀN XANH */}
+      <div className="pt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <div className="shrink-0">
+          <SecurityCaptcha
+            id="captcha-cntt"
+            captchaInput={captchaInput}
+            onCaptchaInputChange={(val) => {
+              setCaptchaInput(val);
+              if (captchaError) setCaptchaError(null);
             }}
-            className="checkbox-label-target flex items-center gap-3 cursor-pointer select-none py-1 group transition-all duration-200"
-          >
-            <div
-              data-ripple="rgba(215, 33, 52, 0.24)"
-              className="checkbox-ripple-target relative w-9 h-9 -my-2 -mr-2 ml-0 flex items-center justify-center rounded-full overflow-hidden flex-shrink-0 group-hover:bg-red-50/40 transition-colors"
-            >
-              <div
-                className={`w-5 h-5 rounded-[6px] flex items-center justify-center border-2 transition-all duration-200 flex-shrink-0 ${
-                  confirmed
-                    ? 'bg-[#D72134] border-[#D72134] text-white shadow-2xs shadow-red-500/20 scale-105'
-                    : showValidation && !confirmed
-                    ? 'border-red-500 bg-red-50/50 animate-pulse ring-2 ring-red-200'
-                    : 'border-slate-300 bg-white group-hover:border-slate-400'
-                }`}
-              >
-                {confirmed && <Check className="w-3.5 h-3.5 stroke-[3]" />}
-              </div>
-            </div>
-            <span
-              className={`text-[14px] sm:text-[15px] leading-tight transition-colors ${
-                showValidation && !confirmed
-                  ? 'text-red-600 font-semibold'
-                  : 'text-slate-700 group-hover:text-slate-900 font-medium'
-              }`}
-            >
-              Tôi xác nhận rằng tất cả thông tin trên là đúng sự thật
-              <span
-                style={{ verticalAlign: '-3px' }}
-                className={`text-[13px] sm:text-[13.5px] text-red-500 font-normal ml-1.5 transition-all duration-200 inline-flex items-center gap-1 ${
-                  showValidation && !confirmed
-                    ? 'opacity-100 translate-x-0'
-                    : 'opacity-0 -translate-x-1 pointer-events-none'
-                }`}
-              >
-                <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" strokeWidth={2.4} />
-                <span>(Bắt buộc)</span>
-              </span>
-            </span>
-          </label>
+            onCaptchaCodeGenerated={setCaptchaCode}
+            captchaError={captchaError || undefined}
+            resetTrigger={resetTrigger}
+          />
+        </div>
 
-          {/* Nút tra cứu chính bên phải */}
+        <div className="flex-1 flex justify-end">
           <button
             type="submit"
             onClick={handleSubmit}
             disabled={loading}
-            className="btn-submit flex-1 md:flex-none flex items-center justify-center gap-2.5 text-[16px] sm:text-[17px] font-semibold select-none whitespace-nowrap group cursor-pointer"
+            className={`w-full sm:w-auto min-w-[200px] h-[54px] sm:h-[60px] px-6 sm:px-7 rounded-2xl text-white flex items-center justify-center gap-2.5 text-[15px] sm:text-[15.5px] font-bold outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none border-0 transition-all duration-200 cursor-pointer active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed select-none ${
+              capDo === 'nangcao'
+                ? 'bg-gradient-to-r from-[#0F766E] via-[#0D9488] to-[#14B8A6] hover:from-[#042F2E] hover:to-[#0F766E] shadow-[0_8px_20px_-4px_rgba(13,148,136,0.38)]'
+                : 'bg-gradient-to-r from-[#0369A1] via-[#0284C7] to-[#0EA5E9] hover:from-[#075985] hover:to-[#0284C7] shadow-[0_8px_20px_-4px_rgba(2,132,199,0.38)]'
+            }`}
           >
             {loading ? (
-              <Loader2 className="w-5.5 h-5.5 animate-spin shrink-0 text-white" strokeWidth={2.4} />
+              <Loader2 className="w-5 h-5 animate-spin shrink-0 text-white" strokeWidth={2.4} />
             ) : (
-              <Search className="w-5.5 h-5.5 group-hover:scale-110 transition-transform duration-200 shrink-0" strokeWidth={2.4} />
+              <Search className="w-5 h-5 transition-transform duration-200 shrink-0" strokeWidth={2.4} />
             )}
-            <span>Tra cứu</span>
+            <span>Tra cứu CNTT {capDo === 'nangcao' ? 'Nâng cao' : 'Cơ bản'}</span>
           </button>
         </div>
       </div>

@@ -132,41 +132,30 @@ body {
   font-family: inherit;
 }
 
-/* ══ THANH CUỘN CHUẨN ĐẠI HỌC NAM CẦN THƠ (DNC) - NỀN XANH NAVY #25359D TRÊN TRACK #F1F1F1 (CHỈ DÀNH CHO TRANG CHÍNH) ══ */
-html,
-body {
-  scrollbar-width: thin;
-  scrollbar-color: #25359D #F1F1F1;
+/* ══ THANH CUỘN CHUẨN 100% ĐẠI HỌC NAM CẦN THƠ (NCTU) - MỎNG 5PX, VUÔNG VẮN, NỀN #25359D, TRACK #F1F1F1 ══ */
+::-webkit-scrollbar {
+  width: 5px !important;
+  height: 4px !important;
 }
 
-html::-webkit-scrollbar,
-body::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner,
+::-webkit-scrollbar-track-piece {
+  background: #f1f1f1 !important;
+  z-index: 356 !important;
 }
 
-html::-webkit-scrollbar-track,
-body::-webkit-scrollbar-track,
-html::-webkit-scrollbar-corner,
-body::-webkit-scrollbar-corner,
-html::-webkit-scrollbar-track-piece,
-body::-webkit-scrollbar-track-piece {
-  background: #F1F1F1 !important;
-}
-
-html::-webkit-scrollbar-thumb,
-body::-webkit-scrollbar-thumb {
-  background: #25359D !important;
+::-webkit-scrollbar-thumb {
+  background: #25359d !important;
   border-radius: 0px !important;
+  border: none !important;
 }
 
-html::-webkit-scrollbar-thumb:hover,
-body::-webkit-scrollbar-thumb:hover {
-  background: #1B2A80 !important;
+::-webkit-scrollbar-thumb:hover {
+  background: #1a2775 !important;
 }
 
-html::-webkit-scrollbar-button,
-body::-webkit-scrollbar-button {
+::-webkit-scrollbar-button {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
@@ -372,22 +361,23 @@ body::-webkit-scrollbar-button {
   padding-top: 6px;
 }
 
-/* Custom Card Wrapper: Đổ bóng lan tỏa đa tầng siêu êm, màu xanh navy loãng chuẩn Stripe/Apple, triệt tiêu hoàn toàn viền đen giả */
+/* Custom Card Wrapper: Thiết kế chuẩn xác, viền siêu nét nhẹ nhàng, bóng đổ đa tầng bồng bềnh cao cấp */
 .card-wrapper {
   background: #ffffff;
-  border-radius: 38px;
-  padding: 22px 24px 18px 24px;
+  border-radius: 28px;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  padding: 24px 28px 20px 28px;
 
-  /* Đổ bóng đa tầng xanh navy siêu dịu mắt: Không có viền đen, không lem mép, nhìn xa bồng bềnh tự nhiên */
+  /* Đổ bóng đa tầng xanh navy siêu êm dịu mắt */
   box-shadow:
-    0 26px 70px -16px rgba(15, 39, 90, 0.09),
-    0 12px 32px -10px rgba(15, 39, 90, 0.05);
+    0 20px 48px -12px rgba(15, 39, 90, 0.08),
+    0 4px 12px -2px rgba(15, 39, 90, 0.03);
 }
 
 @media (max-width: 640px) {
   .card-wrapper {
-    border-radius: 36px;
-    padding: 16px 14px 12px 14px;
+    border-radius: 24px;
+    padding: 18px 16px 14px 16px;
   }
 }
 
@@ -563,28 +553,57 @@ body::-webkit-scrollbar-button {
   box-shadow: none;
 }
 
-/* Áp dụng kỹ thuật đổ bóng nổi khối Neumorphic 20px vào toàn bộ ô nhập liệu LabelInput */
+/* Triệt tiêu hoàn toàn viền focus/active mặc định của trình duyệt gây mất thẩm mỹ */
+button, input, select, textarea {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+button:focus, button:focus-visible, button:active,
+input:focus, input:focus-visible, input:active {
+  outline: none !important;
+}
+
+/* Triệt tiêu hoàn toàn nền autofill / vệt nền xám xanh của trình duyệt trong thanh tìm kiếm */
+#spotlight-search-input {
+  background-color: transparent !important;
+  background: transparent !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+}
+
+#spotlight-search-input:-webkit-autofill,
+#spotlight-search-input:-webkit-autofill:hover,
+#spotlight-search-input:-webkit-autofill:focus,
+#spotlight-search-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #0f172a !important;
+  caret-color: #2563eb !important;
+  transition: background-color 500000s ease-in-out 0s !important;
+}
+
+/* ══ THIẾT KẾ Ô NHẬP LIỆU CAO CẤP CHUẨN APPLE & STRIPE DESIGN SYSTEM ══
+   Nền trắng tinh (#ffffff), viền slate-300 sắc nét (1.5px), đổ bóng ngoại vi tinh tế,
+   tương phản cao, triệt tiêu hoàn toàn cảm giác nhạt nhòa, mờ đục cũ. */
 .lbi-box {
   position: relative;
   width: 100%;
-  border-radius: 20px;
-  border: 1.5px solid rgba(203, 213, 225, 0.85);
-  background-color: #f1f4f9;
-  box-shadow:
-    inset 3px 3px 6px rgba(160, 175, 200, 0.35),
-    inset -2px -2px 5px rgba(255, 255, 255, 0.9);
-  transition: border-color 300ms cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 300ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  border-radius: 16px;
+  border: 1.5px solid #cbd5e1;
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.03);
+  transition: border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
   cursor: text;
 }
 
 .lbi-box:hover {
-  border-color: rgba(148, 163, 184, 0.9);
-  background-color: #edf2f7;
-  box-shadow:
-    inset 3px 3px 6px rgba(150, 165, 190, 0.4),
-    inset -2px -2px 5px rgba(255, 255, 255, 0.95);
+  border-color: #94a3b8;
+  background-color: #ffffff;
+  box-shadow: 0 2px 6px 0 rgba(15, 23, 42, 0.07);
 }
 
 .lbi-box[data-is-select="true"] {
@@ -596,7 +615,7 @@ body::-webkit-scrollbar-button {
   z-index: 60;
 }
 
-/* Khi người dùng nhấn vào ô nhập (Focus / Active): Nền chuyển sang MÀU TRẮNG TINH (#ffffff), viền đỏ 2px sắc nét thương hiệu NCTU */
+/* Khi người dùng nhấn vào ô nhập (Focus / Active): Viền Navy thanh lịch, tuyệt đối KHÔNG dính ring viền ngoài thô kệch */
 .lbi[data-focus="true"] .lbi-box,
 .lbi[data-focus="true"] .lbi-box:hover,
 .lbi:focus-within .lbi-box,
@@ -604,27 +623,30 @@ body::-webkit-scrollbar-button {
 .lbi-box:focus-within,
 .lbi-box:focus-within:hover {
   background-color: #ffffff !important;
-  border: 2px solid #D72134 !important;
-  border-color: #D72134 !important;
-  box-shadow: none !important;
+  border: 1.5px solid #142B6F !important;
+  border-color: #142B6F !important;
+  box-shadow: 0 2px 8px 0 rgba(20, 43, 111, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
+  outline: none !important;
 }
 
 .lbi[data-focus="true"] .lbi-label,
 .lbi:focus-within .lbi-label {
-  color: #D72134 !important;
+  color: #142B6F !important;
   font-weight: 600;
 }
 
 .lbi[data-filled="true"]:not([data-focus="true"]):not(:focus-within):not([data-error="true"]) .lbi-box {
-  background-color: #f1f4f9;
-  border: 1.5px solid rgba(203, 213, 225, 0.85);
-  border-color: rgba(203, 213, 225, 0.85);
-  box-shadow:
-    inset 3px 3px 6px rgba(160, 175, 200, 0.35),
-    inset -2px -2px 5px rgba(255, 255, 255, 0.9);
+  background-color: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05);
 }
 
-/* Khi ô bị lỗi (Error): Nền TRẮNG TINH (#ffffff), viền đỏ 2px sắc nét, sạch bóng không đổ bóng loang mờ */
+.lbi[data-filled="true"]:not([data-focus="true"]):not(:focus-within):not([data-error="true"]) .lbi-box:hover {
+  border-color: #94a3b8;
+  box-shadow: 0 2px 6px 0 rgba(15, 23, 42, 0.07);
+}
+
+/* Khi ô bị lỗi (Error): Nền trắng tinh, viền đỏ tinh tế, không dính viền bóng ngoài */
 .lbi[data-error="true"] .lbi-box,
 .lbi[data-error="true"] .lbi-box:hover,
 .lbi[data-error="true"][data-focus="true"] .lbi-box,
@@ -632,9 +654,10 @@ body::-webkit-scrollbar-button {
 .lbi[data-error="true"]:focus-within .lbi-box,
 .lbi[data-error="true"]:focus-within .lbi-box:hover {
   background-color: #ffffff !important;
-  border: 2px solid #D72134 !important;
+  border: 1.5px solid #D72134 !important;
   border-color: #D72134 !important;
-  box-shadow: none !important;
+  box-shadow: 0 2px 8px 0 rgba(215, 33, 52, 0.08), 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
+  outline: none !important;
 }
 
 .lbi[data-error="true"] .lbi-label {
@@ -826,37 +849,37 @@ body::-webkit-scrollbar-button {
 }
 
 /* ── the label (Apple / Stripe inside floating label) ───────
-   In resting state: centered vertically as an elegant placeholder.
+   In resting state: centered vertically as an elegant placeholder with clear contrast.
    When focused/filled: floats smoothly to the upper area INSIDE the box.
    The value/placeholder sits cleanly underneath, never breaking the border. */
 .lbi-label {
   position: absolute;
-  left: var(--lbi-x, 24px);
+  left: var(--lbi-x, 20px);
   top: 50%;
   transform: translateY(-50%) scale(1);
   transform-origin: left center;
-  font-size: 17px;
-  font-weight: 500;
+  font-size: 15.5px;
+  font-weight: 550;
   line-height: 1;
   letter-spacing: -0.01em;
   white-space: pre;
-  color: #64748b;
+  color: #475569;
   cursor: text;
   -webkit-user-select: none;
   user-select: none;
   pointer-events: none;
   z-index: 5;
-  transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
-    color 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 200ms cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, color;
   backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
 .lbi[data-up="true"] .lbi-label {
-  transform: translateY(calc(-50% - 13px)) scale(0.824);
+  transform: translateY(calc(-50% - 13px)) scale(0.78);
   color: #64748b;
-  font-weight: 500;
+  font-weight: 600;
   background: transparent !important;
   padding: 0 !important;
   border-radius: 0 !important;
@@ -865,13 +888,13 @@ body::-webkit-scrollbar-button {
 
 .lbi[data-focus="true"] .lbi-label,
 .lbi:focus-within .lbi-label {
-  color: #D72134 !important;
-  font-weight: 500;
+  color: #142B6F !important;
+  font-weight: 600;
 }
 
 .lbi[data-error="true"] .lbi-label {
   color: #D72134 !important;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .lbi-label span {
@@ -888,20 +911,20 @@ body::-webkit-scrollbar-button {
   inset: 0;
   width: 100%;
   height: 100%;
-  padding-left: var(--lbi-x, 24px);
-  padding-top: 24px;
+  padding-left: var(--lbi-x, 20px);
+  padding-top: 22px;
   padding-bottom: 6px;
   border: 0;
   border-radius: inherit;
   background: transparent;
   font: inherit;
   font-size: 16px;
-  font-weight: 550;
+  font-weight: 600;
   letter-spacing: -0.01em;
   color: #0f172a;
   outline: none;
   z-index: 2;
-  transition: opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),
+  transition: opacity 240ms cubic-bezier(0.16, 1, 0.3, 1),
     color 200ms ease;
 }
 
@@ -915,9 +938,9 @@ body::-webkit-scrollbar-button {
 
 .lbi-field::placeholder {
   color: #94a3b8;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 400;
-  opacity: 0.85;
+  opacity: 1;
 }
 
 /* Support browser autofill gracefully */
@@ -1666,6 +1689,23 @@ button:focus-visible,
 [role="button"]:focus-visible {
   outline: none !important;
   box-shadow: none !important;
+}
+
+/* ══ GOOGLE RECAPTCHA V2 CHÍNH THỨC - HIỂN THỊ CHUẨN XÁC, KHÔNG CẮT XÉN ══ */
+.recaptcha-clean-box {
+  width: 304px !important;
+  height: 78px !important;
+  max-height: 78px !important;
+  overflow: hidden !important;
+  border-radius: 4px !important;
+  position: relative !important;
+}
+
+.recaptcha-clean-box iframe {
+  margin-top: 0 !important;
+  height: 78px !important;
+  max-height: 78px !important;
+  display: block !important;
 }
 
 

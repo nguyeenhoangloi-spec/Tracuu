@@ -72,8 +72,8 @@ export function LabelInput({
   name,
   id: customId,
   subLabel,
-  corner = 20,
-  height: customH = 70,
+  corner = 16,
+  height: customH = 64,
   showcase = false,
   className = "",
   autoComplete = "off",
@@ -420,8 +420,8 @@ export function LabelInput({
     : null;
 
   /* ── where the label sits ────────────────────────────────
-     Aligned naturally with rounded corner (20px) */
-  const lx = Math.max(18, r + 2);
+     Aligned naturally with rounded corner (16px) */
+  const lx = Math.max(20, r + 4);
 
   const reveal = () => {
     setShow((s) => !s);
@@ -458,10 +458,6 @@ export function LabelInput({
           "--lbi-x": `${lx}px`,
           "--lbi-half-h": `${(H / 2).toFixed(1)}px`,
           zIndex: datePickerOpen || dropdownOpen ? 70 : undefined,
-          borderWidth: isFieldFocused || Boolean(error) ? "2px" : undefined,
-          borderColor: isFieldFocused || Boolean(error) ? "#D72134" : undefined,
-          backgroundColor: isFieldFocused || Boolean(error) ? "#ffffff" : undefined,
-          boxShadow: isFieldFocused || Boolean(error) ? "none" : undefined,
         } as React.CSSProperties}
         onClick={
           isSelect
@@ -542,6 +538,8 @@ export function LabelInput({
                   : "lbi-popover-closed"
                   }`}
                 role="dialog"
+                onMouseDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
                 onClick={(e) => e.stopPropagation()}
               >
                 <div ref={datePickerContentRef} className="p-4 bg-white">
@@ -908,6 +906,8 @@ export function LabelInput({
                   : "lbi-popover-closed"
                   }`}
                 role="listbox"
+                onMouseDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="space-y-1 max-h-72 overflow-y-auto pr-1 custom-scrollbar">

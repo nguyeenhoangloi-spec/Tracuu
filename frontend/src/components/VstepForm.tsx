@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, RotateCcw, Check, Sparkles, AlertCircle, Loader2, X } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Search, Loader2 } from 'lucide-react';
 import LabelInput from '@/components/LabelInput';
 import SecurityCaptcha from '@/components/SecurityCaptcha';
 
@@ -12,6 +13,7 @@ interface VstepFormProps {
   sampleData?: any[];
   resetTrigger?: number;
   sampleToApply?: any;
+  initialSoHieuPhoi?: string;
 }
 
 export default function VstepForm({
@@ -21,15 +23,22 @@ export default function VstepForm({
   sampleData,
   resetTrigger,
   sampleToApply,
+  initialSoHieuPhoi,
 }: VstepFormProps) {
-  const [soHieuPhoi, setSoHieuPhoi] = useState('');
+  const [soHieuPhoi, setSoHieuPhoi] = useState(initialSoHieuPhoi || '');
+  const [soBaoDanh, setSoBaoDanh] = useState('');
   const [hoTen, setHoTen] = useState('');
   const [ngaySinh, setNgaySinh] = useState('');
-  const [confirmed, setConfirmed] = useState(false);
   const [captchaInput, setCaptchaInput] = useState('');
   const [captchaCode, setCaptchaCode] = useState('');
   const [captchaError, setCaptchaError] = useState<string | null>(null);
-  const [showValidation, setShowValidation] = useState(false);
+
+  React.useEffect(() => {
+    if (initialSoHieuPhoi) {
+      setSoHieuPhoi(initialSoHieuPhoi);
+    }
+  }, [initialSoHieuPhoi]);
+
   const [fieldErrors, setFieldErrors] = useState<{ soHieuPhoi?: string; hoTen?: string; ngaySinh?: string }>({});
 
   const [loading, setLoading] = useState(false);
@@ -41,32 +50,15 @@ export default function VstepForm({
     setCaptchaError(null);
 
     let hasError = false;
-    const newErrors: { soHieuPhoi?: string; hoTen?: string; ngaySinh?: string } = {};
-    if (!soHieuPhoi.trim()) {
-      newErrors.soHieuPhoi = 'Vui lòng điền số hiệu phôi';
-      hasError = true;
-    }
-    if (!hoTen.trim()) {
-      newErrors.hoTen = 'Vui lòng điền họ tên';
-      hasError = true;
-    }
-    if (!ngaySinh) {
-      newErrors.ngaySinh = 'Vui lòng điền ngày sinh';
+    const newErrors: { soHieuPhoi?: string } = {};
+    if (!soHieuPhoi.trim() && !soBaoDanh.trim()) {
+      newErrors.soHieuPhoi = 'Vui lòng điền số hiệu phôi hoặc số báo danh';
       hasError = true;
     }
     setFieldErrors(newErrors);
 
     if (!captchaInput.trim()) {
-      setCaptchaError('Vui lòng nhập mã bảo vệ');
-      hasError = true;
-    } else if (captchaInput.trim().toUpperCase() !== captchaCode.toUpperCase()) {
-      setCaptchaError('Mã bảo vệ không chính xác. Vui lòng nhập lại');
-      setCaptchaInput('');
-      hasError = true;
-    }
-
-    if (!confirmed) {
-      setShowValidation(true);
+      setCaptchaError('Vui lòng xác nhận Tôi không phải là người máy');
       hasError = true;
     }
 
@@ -82,9 +74,9 @@ export default function VstepForm({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          so_hieu_phoi: soHieuPhoi.trim(),
-          ho_ten: hoTen.trim(),
-          ngay_sinh: ngaySinh,
+          so_hieu_phoi: soHieuPhoi.trim() || soBaoDanh.trim(),
+          ho_ten: hoTen.trim() || undefined,
+          ngay_sinh: ngaySinh || undefined,
         }),
       });
 
@@ -111,7 +103,7 @@ export default function VstepForm({
       if (onNotFound) {
         onNotFound({
           query: {
-            soHieuPhoi: soHieuPhoi.trim(),
+            soHieuPhoi: soHieuPhoi.trim() || soBaoDanh.trim(),
             hoTen: hoTen.trim(),
             ngaySinh,
           },
@@ -126,53 +118,32 @@ export default function VstepForm({
 
   const handleReset = () => {
     setSoHieuPhoi('');
+    setSoBaoDanh('');
     setHoTen('');
     setNgaySinh('');
-    setConfirmed(false);
     setCaptchaInput('');
-    setShowValidation(false);
     setFieldErrors({});
     setError(null);
     setCaptchaError(null);
   };
 
-  // Lắng nghe tín hiệu làm mới biểu mẫu từ header, thu hồi lỗi mượt mà
   React.useEffect(() => {
     if (resetTrigger && resetTrigger > 0) {
       handleReset();
     }
   }, [resetTrigger]);
 
-  const DEFAULT_SAMPLES = [
-    {
-      label: 'Nguyễn Văn An (B2 - VSTEP-881923)',
-      so_hieu_phoi: 'VSTEP-881923',
-      ho_ten: 'Nguyễn Văn An',
-      ngay_sinh: '2001-05-15',
-    },
-    {
-      label: 'Lê Hoàng Nam (B1 - VSTEP-772019)',
-      so_hieu_phoi: 'VSTEP-772019',
-      ho_ten: 'Lê Hoàng Nam',
-      ngay_sinh: '2000-08-10',
-    },
-  ];
-
-  const samplesToUse = sampleData && sampleData.length > 0 ? sampleData : DEFAULT_SAMPLES;
-
   const handleApplySample = (sample: any) => {
     if (sample.so_hieu_phoi) setSoHieuPhoi(sample.so_hieu_phoi);
+    if (sample.so_bao_danh) setSoBaoDanh(sample.so_bao_danh);
     if (sample.ho_ten) setHoTen(sample.ho_ten);
     if (sample.ngay_sinh) setNgaySinh(sample.ngay_sinh);
-    setConfirmed(true);
     if (captchaCode) setCaptchaInput(captchaCode);
     setFieldErrors({});
     setCaptchaError(null);
     setError(null);
-    setShowValidation(false);
   };
 
-  // Áp dụng dữ liệu mẫu từ Floating Widget bên ngoài
   React.useEffect(() => {
     if (sampleToApply && (sampleToApply.tab === 'vstep' || !sampleToApply.tab) && sampleToApply.data) {
       handleApplySample(sampleToApply.data);
@@ -188,133 +159,102 @@ export default function VstepForm({
       noValidate
       className="space-y-3 sm:space-y-3.5"
     >
-      {/* Số hiệu phôi */}
-      <div>
-        <LabelInput
-          label="Số hiệu phôi"
-          placeholder="Ví dụ: VSTEP-881923 hoặc Số báo danh"
-          value={soHieuPhoi}
-          onChange={(e) => {
-            setSoHieuPhoi(e.target.value.toUpperCase());
-            if (fieldErrors.soHieuPhoi) setFieldErrors((prev) => ({ ...prev, soHieuPhoi: undefined }));
-          }}
-          error={fieldErrors.soHieuPhoi}
-          required
-        />
-      </div>
-
-      {/* Họ tên & Ngày sinh */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-3.5">
+      {/* LƯỚI 2x2 CÂN ĐỐI CHUẨN APPLE: Ô NHẬP TO RỘNG 66PX */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
+        {/* Ô 1: Số hiệu phôi */}
         <div>
           <LabelInput
-            label="Họ tên"
-            placeholder="Ví dụ: Nguyễn Văn An"
+            label="Số hiệu phôi"
+            placeholder="Ví dụ: VSTEP-881923"
+            value={soHieuPhoi}
+            height={60}
+            corner={16}
+            onChange={(e) => {
+              setSoHieuPhoi(e.target.value.toUpperCase());
+              if (fieldErrors.soHieuPhoi) setFieldErrors((prev) => ({ ...prev, soHieuPhoi: undefined }));
+            }}
+            error={fieldErrors.soHieuPhoi}
+            required
+          />
+        </div>
+
+        {/* Ô 2: Số báo danh */}
+        <div>
+          <LabelInput
+            label="Số báo danh (Nếu có)"
+            placeholder="Ví dụ: B2-0192"
+            value={soBaoDanh}
+            height={60}
+            corner={16}
+            onChange={(e) => {
+              setSoBaoDanh(e.target.value.toUpperCase());
+            }}
+          />
+        </div>
+
+        {/* Ô 3: Họ tên */}
+        <div>
+          <LabelInput
+            label="Họ và tên (Tùy chọn)"
+            placeholder="Ví dụ: NGUYỄN VĂN AN"
             value={hoTen}
+            height={60}
+            corner={16}
             onChange={(e) => {
               setHoTen(e.target.value);
               if (fieldErrors.hoTen) setFieldErrors((prev) => ({ ...prev, hoTen: undefined }));
             }}
             error={fieldErrors.hoTen}
-            required
           />
         </div>
 
+        {/* Ô 4: Ngày sinh */}
         <div>
           <LabelInput
-            label="Ngày sinh"
+            label="Ngày sinh (Tùy chọn)"
             type="date"
             placeholder="dd/mm/yyyy"
+            height={60}
+            corner={16}
             value={ngaySinh}
             onChange={(e) => {
               setNgaySinh(e.target.value);
               if (fieldErrors.ngaySinh) setFieldErrors((prev) => ({ ...prev, ngaySinh: undefined }));
             }}
             error={fieldErrors.ngaySinh}
-            required
           />
         </div>
       </div>
 
-      {/* Xác thực bảo mật CAPTCHA */}
-      <div>
-        <SecurityCaptcha
-          id="captcha-vstep"
-          captchaInput={captchaInput}
-          onCaptchaInputChange={(val) => {
-            setCaptchaInput(val);
-            if (captchaError) setCaptchaError(null);
-          }}
-          onCaptchaCodeGenerated={setCaptchaCode}
-          captchaError={captchaError || undefined}
-          resetTrigger={resetTrigger}
-        />
-      </div>
-
-      {/* Cụm Cam kết xác nhận & Nút hành động ôm thành 1 hàng */}
-      <div className="pt-1.5 pb-2">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          {/* Checkbox cam kết bên trái */}
-          <label
-            onClick={() => {
-              const nextVal = !confirmed;
-              setConfirmed(nextVal);
-              if (nextVal) {
-                setShowValidation(false);
-              }
+      {/* HÀNG XÁC THỰC VÀ NÚT BẤM: LUÔN CỐ ĐỊNH, KHÔNG BAO GIỜ NHẢY KHUNG HAY ĐẨY NỀN XANH */}
+      <div className="pt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <div className="shrink-0">
+          <SecurityCaptcha
+            id="captcha-vstep"
+            captchaInput={captchaInput}
+            onCaptchaInputChange={(val) => {
+              setCaptchaInput(val);
+              if (captchaError) setCaptchaError(null);
             }}
-            className="checkbox-label-target flex items-center gap-3 cursor-pointer select-none py-1 group transition-all duration-200"
-          >
-            <div
-              data-ripple="rgba(215, 33, 52, 0.24)"
-              className="checkbox-ripple-target relative w-9 h-9 -my-2 -mr-2 ml-0 flex items-center justify-center rounded-full overflow-hidden flex-shrink-0 group-hover:bg-red-50/40 transition-colors"
-            >
-              <div
-                className={`w-5 h-5 rounded-[6px] flex items-center justify-center border-2 transition-all duration-200 flex-shrink-0 ${
-                  confirmed
-                    ? 'bg-[#D72134] border-[#D72134] text-white shadow-2xs shadow-red-500/20 scale-105'
-                    : showValidation && !confirmed
-                    ? 'border-red-500 bg-red-50/50 animate-pulse ring-2 ring-red-200'
-                    : 'border-slate-300 bg-white group-hover:border-slate-400'
-                }`}
-              >
-                {confirmed && <Check className="w-3.5 h-3.5 stroke-[3]" />}
-              </div>
-            </div>
-            <span
-              className={`text-[14px] sm:text-[15px] leading-tight transition-colors ${
-                showValidation && !confirmed
-                  ? 'text-red-600 font-semibold'
-                  : 'text-slate-700 group-hover:text-slate-900 font-medium'
-              }`}
-            >
-              Tôi xác nhận rằng tất cả thông tin trên là đúng sự thật
-              <span
-                style={{ verticalAlign: '-3px' }}
-                className={`text-[13px] sm:text-[13.5px] text-red-500 font-normal ml-1.5 transition-all duration-200 inline-flex items-center gap-1 ${
-                  showValidation && !confirmed
-                    ? 'opacity-100 translate-x-0'
-                    : 'opacity-0 -translate-x-1 pointer-events-none'
-                }`}
-              >
-                <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" strokeWidth={2.4} />
-                <span>(Bắt buộc)</span>
-              </span>
-            </span>
-          </label>
+            onCaptchaCodeGenerated={setCaptchaCode}
+            captchaError={captchaError || undefined}
+            resetTrigger={resetTrigger}
+          />
+        </div>
 
-          {/* Nút tra cứu chính bên phải */}
+        <div className="flex-1 flex justify-end">
           <button
             type="submit"
             onClick={handleSubmit}
             disabled={loading}
-            className="btn-submit flex-1 md:flex-none flex items-center justify-center gap-2.5 text-[16px] sm:text-[17px] font-semibold select-none whitespace-nowrap group cursor-pointer"
+            className="w-full sm:w-auto min-w-[200px] h-[54px] sm:h-[60px] px-6 sm:px-7 rounded-2xl bg-gradient-to-r from-[#9F1239] via-[#BE123C] to-[#E11D48] hover:from-[#881337] hover:to-[#BE123C] text-white flex items-center justify-center gap-2.5 text-[15px] sm:text-[15.5px] font-bold shadow-[0_8px_20px_-4px_rgba(225,29,72,0.38)] outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none border-0 transition-all duration-200 cursor-pointer active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed select-none"
           >
             {loading ? (
-              <Loader2 className="w-5.5 h-5.5 animate-spin shrink-0 text-white" strokeWidth={2.4} />
+              <Loader2 className="w-5 h-5 animate-spin shrink-0 text-white" strokeWidth={2.4} />
             ) : (
-              <Search className="w-5.5 h-5.5 group-hover:scale-110 transition-transform duration-200 shrink-0" strokeWidth={2.4} />
+              <Search className="w-5 h-5 transition-transform duration-200 shrink-0" strokeWidth={2.4} />
             )}
-            <span>Tra cứu</span>
+            <span>Tra cứu chứng chỉ VSTEP</span>
           </button>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, HttpCode, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Get, Post, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import { LookupService } from './lookup.service';
 
 @Controller('tracuu')
@@ -73,6 +73,17 @@ export class LookupController {
     };
   }
 
+  @Get('spotlight')
+  spotlightSearch(
+    @Query('q') q: string,
+    @Query('tab') tab?: 'vanbang' | 'cntt' | 'vstep' | 'all',
+  ) {
+    return {
+      success: true,
+      data: this.lookupService.spotlightSearch(q, tab),
+    };
+  }
+
   @Get('stats')
   getStats() {
     return {
@@ -81,3 +92,4 @@ export class LookupController {
     };
   }
 }
+

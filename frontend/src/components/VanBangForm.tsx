@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Search, RotateCcw, Check, Sparkles, AlertCircle, Loader2, X } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Search, Loader2 } from 'lucide-react';
 import LabelInput from '@/components/LabelInput';
 import SecurityCaptcha from '@/components/SecurityCaptcha';
 
@@ -12,6 +13,8 @@ interface VanBangFormProps {
   sampleData?: any[];
   resetTrigger?: number;
   sampleToApply?: any;
+  initialSoHieuPhoi?: string;
+  initialLoaiDaoTao?: string;
 }
 
 export default function VanBangForm({
@@ -21,17 +24,30 @@ export default function VanBangForm({
   sampleData,
   resetTrigger,
   sampleToApply,
+  initialSoHieuPhoi,
+  initialLoaiDaoTao,
 }: VanBangFormProps) {
-  const [loaiDaoTao, setLoaiDaoTao] = useState('dh');
+  const [loaiDaoTao, setLoaiDaoTao] = useState(initialLoaiDaoTao || 'dh');
   const [hoTen, setHoTen] = useState('');
   const [ngaySinh, setNgaySinh] = useState('');
-  const [soHieuPhoi, setSoHieuPhoi] = useState('');
+  const [soHieuPhoi, setSoHieuPhoi] = useState(initialSoHieuPhoi || '');
   const [soVaoSo, setSoVaoSo] = useState('');
-  const [confirmed, setConfirmed] = useState(false);
   const [captchaInput, setCaptchaInput] = useState('');
   const [captchaCode, setCaptchaCode] = useState('');
   const [captchaError, setCaptchaError] = useState<string | null>(null);
-  const [showValidation, setShowValidation] = useState(false);
+
+  React.useEffect(() => {
+    if (initialLoaiDaoTao) {
+      setLoaiDaoTao(initialLoaiDaoTao);
+    }
+  }, [initialLoaiDaoTao]);
+
+  React.useEffect(() => {
+    if (initialSoHieuPhoi) {
+      setSoHieuPhoi(initialSoHieuPhoi);
+    }
+  }, [initialSoHieuPhoi]);
+
   const [fieldErrors, setFieldErrors] = useState<{
     hoTen?: string;
     ngaySinh?: string;
@@ -73,16 +89,7 @@ export default function VanBangForm({
     setFieldErrors(newErrors);
 
     if (!captchaInput.trim()) {
-      setCaptchaError('Vui lòng nhập mã bảo vệ');
-      hasError = true;
-    } else if (captchaInput.trim().toUpperCase() !== captchaCode.toUpperCase()) {
-      setCaptchaError('Mã bảo vệ không chính xác. Vui lòng nhập lại');
-      setCaptchaInput('');
-      hasError = true;
-    }
-
-    if (!confirmed) {
-      setShowValidation(true);
+      setCaptchaError('Vui lòng xác nhận Tôi không phải là người máy');
       hasError = true;
     }
 
@@ -150,49 +157,17 @@ export default function VanBangForm({
     setNgaySinh('');
     setSoHieuPhoi('');
     setSoVaoSo('');
-    setConfirmed(false);
     setCaptchaInput('');
     setCaptchaError(null);
-    setShowValidation(false);
     setFieldErrors({});
     setError(null);
   };
 
-  // Lắng nghe tín hiệu làm mới biểu mẫu từ header, thu hồi lỗi mượt mà
   React.useEffect(() => {
     if (resetTrigger && resetTrigger > 0) {
       handleReset();
     }
   }, [resetTrigger]);
-
-  const DEFAULT_SAMPLES = [
-    {
-      label: 'Nguyễn Văn An (CNTT - Bằng ĐH)',
-      ho_ten: 'Nguyễn Văn An',
-      ngay_sinh: '2001-05-15',
-      loai_dao_tao: 'dh',
-      so_hieu_phoi: 'B6829104',
-      so_vao_so: 'NCTU-CNTT-2023/142',
-    },
-    {
-      label: 'Trần Thị Ngọc Mai (Dược học - Bằng ĐH)',
-      ho_ten: 'Trần Thị Ngọc Mai',
-      ngay_sinh: '2002-11-20',
-      loai_dao_tao: 'dh',
-      so_hieu_phoi: 'B7910245',
-      so_vao_so: 'NCTU-DH-2024/098',
-    },
-    {
-      label: 'Phạm Minh Đức (Thạc sĩ)',
-      ho_ten: 'Phạm Minh Đức',
-      ngay_sinh: '1995-03-25',
-      loai_dao_tao: 'ths',
-      so_hieu_phoi: 'TS203918',
-      so_vao_so: 'NCTU-THS-2023/045',
-    },
-  ];
-
-  const samplesToUse = sampleData && sampleData.length > 0 ? sampleData : DEFAULT_SAMPLES;
 
   const handleApplySample = (sample: any) => {
     if (sample.loai_dao_tao) setLoaiDaoTao(sample.loai_dao_tao);
@@ -200,15 +175,12 @@ export default function VanBangForm({
     if (sample.ngay_sinh) setNgaySinh(sample.ngay_sinh);
     if (sample.so_hieu_phoi) setSoHieuPhoi(sample.so_hieu_phoi);
     if (sample.so_vao_so) setSoVaoSo(sample.so_vao_so);
-    setConfirmed(true);
     if (captchaCode) setCaptchaInput(captchaCode);
     setFieldErrors({});
     setCaptchaError(null);
     setError(null);
-    setShowValidation(false);
   };
 
-  // Áp dụng dữ liệu mẫu từ Floating Widget bên ngoài
   React.useEffect(() => {
     if (sampleToApply && (sampleToApply.tab === 'vanbang' || !sampleToApply.tab) && sampleToApply.data) {
       handleApplySample(sampleToApply.data);
@@ -224,66 +196,16 @@ export default function VanBangForm({
       noValidate
       className="space-y-3 sm:space-y-3.5"
     >
-      {/* Loại văn bằng & Số hiệu phôi */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
+      {/* LƯỚI 2x2 CÂN ĐỐI HOÀN HẢO CHUẨN APPLE: GỌN GÀNG, Ô NHẬP TO RỘNG 66PX */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
+        {/* Ô 1: Họ tên */}
         <div>
           <LabelInput
-            label="Loại văn bằng"
-            options={[
-              {
-                value: 'dh',
-                label: 'Bằng tốt nghiệp Đại học',
-                desc: 'Hệ chính quy, liên thông, văn bằng 2, từ xa',
-                badge: 'Đại học',
-              },
-              {
-                value: 'cd',
-                label: 'Bằng tốt nghiệp Cao đẳng',
-                desc: 'Chương trình cao đẳng chính quy',
-                badge: 'Cao đẳng',
-              },
-              {
-                value: 'ths',
-                label: 'Bằng tốt nghiệp Thạc sĩ',
-                desc: 'Đào tạo Sau đại học cấp bằng Thạc sĩ',
-                badge: 'Thạc sĩ',
-              },
-              {
-                value: 'ts',
-                label: 'Bằng tốt nghiệp Tiến sĩ',
-                desc: 'Học vị Tiến sĩ khoa học các chuyên ngành',
-                badge: 'Tiến sĩ',
-              },
-            ]}
-            value={loaiDaoTao}
-            onChange={(e) => setLoaiDaoTao(e.target.value)}
-          />
-        </div>
-
-        <div>
-          <LabelInput
-            label="Số hiệu phôi"
-            placeholder="Ví dụ: B6829104"
-            value={soHieuPhoi}
-            onChange={(e) => {
-              setSoHieuPhoi(e.target.value.toUpperCase());
-              if (fieldErrors.soHieuPhoi) {
-                setFieldErrors((prev) => ({ ...prev, soHieuPhoi: undefined }));
-              }
-            }}
-            error={fieldErrors.soHieuPhoi}
-            required
-          />
-        </div>
-      </div>
-
-      {/* Họ tên & Ngày sinh */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
-        <div>
-          <LabelInput
-            label="Họ tên"
-            placeholder="Ví dụ: Nguyễn Văn An"
+            label="Họ và tên"
+            placeholder="Ví dụ: NGUYỄN VĂN AN"
             value={hoTen}
+            height={60}
+            corner={16}
             onChange={(e) => {
               setHoTen(e.target.value);
               if (fieldErrors.hoTen) {
@@ -295,11 +217,14 @@ export default function VanBangForm({
           />
         </div>
 
+        {/* Ô 2: Ngày sinh */}
         <div>
           <LabelInput
             label="Ngày sinh"
             type="date"
             placeholder="dd/mm/yyyy"
+            height={60}
+            corner={16}
             required
             value={ngaySinh}
             onChange={(e) => {
@@ -311,105 +236,77 @@ export default function VanBangForm({
             error={fieldErrors.ngaySinh}
           />
         </div>
-      </div>
 
-      {/* Số vào sổ */}
-      <div>
-        <LabelInput
-          label="Số vào sổ"
-          placeholder="Ví dụ: DNC-CNTT-2023/142"
-          value={soVaoSo}
-          onChange={(e) => {
-            setSoVaoSo(e.target.value);
-            if (fieldErrors.soVaoSo) {
-              setFieldErrors((prev) => ({ ...prev, soVaoSo: undefined }));
-            }
-          }}
-          error={fieldErrors.soVaoSo}
-          required
-        />
-      </div>
-
-      {/* Xác thực bảo mật CAPTCHA */}
-      <div>
-        <SecurityCaptcha
-          id="captcha-vanbang"
-          captchaInput={captchaInput}
-          onCaptchaInputChange={(val) => {
-            setCaptchaInput(val);
-            if (captchaError) setCaptchaError(null);
-          }}
-          onCaptchaCodeGenerated={setCaptchaCode}
-          captchaError={captchaError || undefined}
-          resetTrigger={resetTrigger}
-        />
-      </div>
-
-      {/* Cụm Cam kết xác nhận & Nút hành động ôm thành 1 hàng */}
-      <div className="pt-1.5 pb-2">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          {/* Checkbox cam kết bên trái */}
-          <label
-            onClick={() => {
-              const nextVal = !confirmed;
-              setConfirmed(nextVal);
-              if (nextVal) {
-                setShowValidation(false);
+        {/* Ô 3: Số hiệu phôi */}
+        <div>
+          <LabelInput
+            label="Số hiệu phôi"
+            placeholder="Ví dụ: B6829104"
+            value={soHieuPhoi}
+            height={60}
+            corner={16}
+            onChange={(e) => {
+              setSoHieuPhoi(e.target.value.toUpperCase());
+              if (fieldErrors.soHieuPhoi) {
+                setFieldErrors((prev) => ({ ...prev, soHieuPhoi: undefined }));
               }
             }}
-            className="checkbox-label-target flex items-center gap-3 cursor-pointer select-none py-1 group transition-all duration-200"
-          >
-            <div
-              data-ripple="rgba(215, 33, 52, 0.24)"
-              className="checkbox-ripple-target relative w-9 h-9 -my-2 -mr-2 ml-0 flex items-center justify-center rounded-full overflow-hidden flex-shrink-0 group-hover:bg-red-50/40 transition-colors"
-            >
-              <div
-                className={`w-5 h-5 rounded-[6px] flex items-center justify-center border-2 transition-all duration-200 flex-shrink-0 ${
-                  confirmed
-                    ? 'bg-[#D72134] border-[#D72134] text-white shadow-2xs shadow-red-500/20 scale-105'
-                    : showValidation && !confirmed
-                    ? 'border-red-500 bg-red-50/50 animate-pulse ring-2 ring-red-200'
-                    : 'border-slate-300 bg-white group-hover:border-slate-400'
-                }`}
-              >
-                {confirmed && <Check className="w-3.5 h-3.5 stroke-[3]" />}
-              </div>
-            </div>
-            <span
-              className={`text-[14px] sm:text-[15px] leading-tight transition-colors ${
-                showValidation && !confirmed
-                  ? 'text-red-600 font-semibold'
-                  : 'text-slate-700 group-hover:text-slate-900 font-medium'
-              }`}
-            >
-              Tôi xác nhận rằng tất cả thông tin trên là đúng sự thật
-              <span
-                style={{ verticalAlign: '-3px' }}
-                className={`text-[13px] sm:text-[13.5px] text-red-500 font-normal ml-1.5 transition-all duration-200 inline-flex items-center gap-1 ${
-                  showValidation && !confirmed
-                    ? 'opacity-100 translate-x-0'
-                    : 'opacity-0 -translate-x-1 pointer-events-none'
-                }`}
-              >
-                <AlertCircle className="w-3.5 h-3.5 text-red-500 shrink-0" strokeWidth={2.4} />
-                <span>(Bắt buộc)</span>
-              </span>
-            </span>
-          </label>
+            error={fieldErrors.soHieuPhoi}
+            required
+          />
+        </div>
 
-          {/* Nút tra cứu chính bên phải */}
+        {/* Ô 4: Số vào sổ cấp bằng */}
+        <div>
+          <LabelInput
+            label="Số vào sổ"
+            placeholder="Ví dụ: NCTU-CNTT-2023/142"
+            value={soVaoSo}
+            height={60}
+            corner={16}
+            onChange={(e) => {
+              setSoVaoSo(e.target.value);
+              if (fieldErrors.soVaoSo) {
+                setFieldErrors((prev) => ({ ...prev, soVaoSo: undefined }));
+              }
+            }}
+            error={fieldErrors.soVaoSo}
+            required
+          />
+        </div>
+      </div>
+
+      {/* HÀNG XÁC THỰC RECAPTCHA VÀ NÚT TRA CỨU: LUÔN CỐ ĐỊNH, KHÔNG BAO GIỜ NHẢY KHUNG HAY ĐẨY NỀN XANH */}
+      <div className="pt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        {/* reCAPTCHA chuẩn Google */}
+        <div className="shrink-0">
+          <SecurityCaptcha
+            id="captcha-vanbang"
+            captchaInput={captchaInput}
+            onCaptchaInputChange={(val) => {
+              setCaptchaInput(val);
+              if (captchaError) setCaptchaError(null);
+            }}
+            onCaptchaCodeGenerated={setCaptchaCode}
+            captchaError={captchaError || undefined}
+            resetTrigger={resetTrigger}
+          />
+        </div>
+
+        {/* Nút hành động chính chuẩn Apple Royal Navy, không viền cộm, không ring dính */}
+        <div className="flex-1 flex justify-end">
           <button
             type="submit"
             onClick={handleSubmit}
             disabled={loading}
-            className="btn-submit flex-1 md:flex-none flex items-center justify-center gap-2.5 text-[16px] sm:text-[17px] font-semibold select-none whitespace-nowrap group cursor-pointer"
+            className="w-full sm:w-auto min-w-[200px] h-[54px] sm:h-[60px] px-6 sm:px-7 rounded-2xl bg-gradient-to-r from-[#142B6F] via-[#1E3A8A] to-[#2563EB] hover:from-[#0F1E4A] hover:to-[#1E3A8A] text-white flex items-center justify-center gap-2.5 text-[15px] sm:text-[15.5px] font-bold shadow-[0_8px_20px_-4px_rgba(20,43,111,0.38)] outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none border-0 transition-all duration-200 cursor-pointer active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed select-none"
           >
             {loading ? (
-              <Loader2 className="w-5.5 h-5.5 animate-spin shrink-0 text-white" strokeWidth={2.4} />
+              <Loader2 className="w-5 h-5 animate-spin shrink-0 text-white" strokeWidth={2.4} />
             ) : (
-              <Search className="w-5.5 h-5.5 group-hover:scale-110 transition-transform duration-200 shrink-0" strokeWidth={2.4} />
+              <Search className="w-5 h-5 transition-transform duration-200 shrink-0" strokeWidth={2.4} />
             )}
-            <span>Tra cứu</span>
+            <span>Tra cứu văn bằng</span>
           </button>
         </div>
       </div>

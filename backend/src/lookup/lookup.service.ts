@@ -315,16 +315,49 @@ export class LookupService {
     },
   ];
 
-  // Helper hàm chuẩn hoá chuỗi tìm kiếm (loại bỏ dấu tiếng Việt, khoảng trắng thừa, chữ hoa)
-  private normalizeString(str: string): string {
-    if (!str) return '';
-    return str
-      .toLowerCase()
+  // Helper chuẩn hoá chuỗi tiếng Việt: Bỏ dấu, giải mã Telex (dd, aa, aw, ee, oo, ow, uw, w, sfrxjz),
+  // khử lỗi lặp phím (ttra -> tra, ddi -> di), hỗ trợ tìm kiếm không dấu và xử lý lỗi gõ phím
+  public normalizeVietnamese(input: string): string {
+    if (!input) return '';
+    let str = input.toLowerCase().trim();
+
+    // 1. Chuyển đổi tổ hợp phím Telex
+    str = str.replace(/dd/g, 'd');
+    str = str.replace(/\btt(?=[raieouy])/g, 't');
+    str = str.replace(/\bcc(?=[raieouy])/g, 'c');
+    str = str.replace(/\bnn(?=[raieouy])/g, 'n');
+    str = str.replace(/\bmm(?=[raieouy])/g, 'm');
+    str = str.replace(/uow/g, 'uo');
+    str = str.replace(/uoo/g, 'uo');
+    str = str.replace(/uw/g, 'u');
+    str = str.replace(/ow/g, 'o');
+    str = str.replace(/aa/g, 'a');
+    str = str.replace(/aw/g, 'a');
+    str = str.replace(/ee/g, 'e');
+    str = str.replace(/oo/g, 'o');
+    str = str.replace(/w/g, 'u');
+
+    // 2. Unicode NFD & bóc tách toàn bộ dấu thanh/mũ
+    str = str
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
-      .replace(/đ/g, 'd')
-      .replace(/Đ/g, 'd')
-      .trim();
+      .replace(/[đĐ]/g, 'd');
+
+    // 3. Xử lý dấu thanh Telex ở cuối âm tiết (s, f, r, x, j, z)
+    str = str
+      .split(/\s+/)
+      .map((word) => {
+        let w = word.replace(/([aeiouy]+)[sfrxjz](\b|$)/g, '$1');
+        w = w.replace(/([aeiouy]+[b-df-hj-np-tv-z]+)[sfrxjz](\b|$)/g, '$1');
+        return w;
+      })
+      .join(' ');
+
+    return str.replace(/\s+/g, ' ').trim();
+  }
+
+  private normalizeString(str: string): string {
+    return this.normalizeVietnamese(str);
   }
 
   // Helper chuẩn hoá chuỗi ngày sinh (hỗ trợ cả YYYY-MM-DD và DD/MM/YYYY)
@@ -404,7 +437,7 @@ export class LookupService {
     return record;
   }
 
-  // Tra cứu CNTT (Xác thực chính xác Số phôi + Họ tên + Ngày sinh)
+  // Tra cứu CNTT (Xác thực theo Số phôi / CCCD / Số vào sổ - Chỉ cần mã là đủ, nếu có họ tên/ngày sinh thì đối soát thêm)
   traCuuCntt(query: {
     so_hieu_phoi: string;
     cap_do?: string;
@@ -419,15 +452,9 @@ export class LookupService {
     if (!qKey) {
       throw new NotFoundException('Vui lòng nhập Số hiệu phôi chứng chỉ để tra cứu.');
     }
-    if (!qHoten) {
-      throw new NotFoundException('Vui lòng nhập Họ và tên để tra cứu.');
-    }
-    if (!qNgaysinh) {
-      throw new NotFoundException('Vui lòng chọn Ngày sinh để tra cứu.');
-    }
 
     const record = this.cnttDb.find((item) => {
-      // Mã phôi / CCCD / Số vào sổ: Phải khớp chính xác
+      // Mã phôi / CCCD / Số vào sổ: Phải khớp
       const matchPhoi = item.so_hieu_phoi.toLowerCase() === qKey;
       const matchCccd = item.so_cccd.toLowerCase() === qKey;
       const matchVaoSo = item.so_vao_so.toLowerCase() === qKey;
@@ -436,25 +463,25 @@ export class LookupService {
       // Cấp độ (nếu có)
       const matchCapDo = !qCapDo || item.cap_do === qCapDo;
 
-      // Họ tên: Bắt buộc khớp chính xác
-      const matchName = this.normalizeString(item.ho_ten) === qHoten;
+      // Họ tên: Nếu có nhập thì kiểm tra khớp
+      const matchName = qHoten ? this.normalizeString(item.ho_ten) === qHoten : true;
 
-      // Ngày sinh: Bắt buộc khớp chính xác
-      const matchBirth = this.matchDate(item.ngay_sinh, qNgaysinh);
+      // Ngày sinh: Nếu có nhập thì kiểm tra khớp
+      const matchBirth = qNgaysinh ? this.matchDate(item.ngay_sinh, qNgaysinh) : true;
 
       return matchCode && matchCapDo && matchName && matchBirth;
     });
 
     if (!record) {
       throw new NotFoundException(
-        `Không tìm thấy chứng chỉ CNTT phù hợp với thông tin đã nhập (Số phôi: "${query.so_hieu_phoi}"). Vui lòng kiểm tra lại Họ tên, Ngày sinh và Số hiệu phôi.`,
+        `Không tìm thấy chứng chỉ CNTT phù hợp với mã: "${query.so_hieu_phoi}". Vui lòng kiểm tra lại số hiệu phôi.`,
       );
     }
 
     return record;
   }
 
-  // Tra cứu VSTEP (Xác thực chính xác Số phôi/SBD + Họ tên + Ngày sinh)
+  // Tra cứu VSTEP (Xác thực theo Số phôi/SBD/CCCD - Chỉ cần mã là đủ, nếu có họ tên/ngày sinh thì đối soát thêm)
   traCuuVstep(query: {
     so_hieu_phoi: string;
     ho_ten?: string;
@@ -467,12 +494,6 @@ export class LookupService {
     if (!qKey) {
       throw new NotFoundException('Vui lòng nhập Số hiệu phôi, Số báo danh hoặc CCCD để tra cứu.');
     }
-    if (!qHoten) {
-      throw new NotFoundException('Vui lòng nhập Họ và tên để tra cứu.');
-    }
-    if (!qNgaysinh) {
-      throw new NotFoundException('Vui lòng chọn Ngày sinh để tra cứu.');
-    }
 
     const record = this.vstepDb.find((item) => {
       const matchPhoi = item.so_hieu_phoi.toLowerCase() === qKey;
@@ -481,18 +502,18 @@ export class LookupService {
       const matchVaoSo = item.so_vao_so.toLowerCase() === qKey;
       const matchCode = matchPhoi || matchSbd || matchCccd || matchVaoSo;
 
-      // Họ tên: Bắt buộc khớp chính xác
-      const matchName = this.normalizeString(item.ho_ten) === qHoten;
+      // Họ tên: Nếu có nhập thì kiểm tra khớp
+      const matchName = qHoten ? this.normalizeString(item.ho_ten) === qHoten : true;
 
-      // Ngày sinh: Bắt buộc khớp chính xác
-      const matchBirth = this.matchDate(item.ngay_sinh, qNgaysinh);
+      // Ngày sinh: Nếu có nhập thì kiểm tra khớp
+      const matchBirth = qNgaysinh ? this.matchDate(item.ngay_sinh, qNgaysinh) : true;
 
       return matchCode && matchName && matchBirth;
     });
 
     if (!record) {
       throw new NotFoundException(
-        `Không tìm thấy kết quả thi hoặc chứng chỉ VSTEP phù hợp với thông tin đã nhập. Vui lòng kiểm tra lại Họ tên, Ngày sinh và Số hiệu phôi/SBD.`,
+        `Không tìm thấy chứng chỉ VSTEP phù hợp với mã: "${query.so_hieu_phoi}". Vui lòng kiểm tra lại số hiệu phôi hoặc SBD.`,
       );
     }
 
@@ -581,10 +602,164 @@ export class LookupService {
     return {
       tong_van_bang_da_cap: 35820,
       tong_chung_chi_cntt: 28410,
-      tong_chung_chi_vstep: 19650,
       luot_tra_cuu_hom_nay: 1248,
       ti_le_xac_thuc_chinh_xac: '100%',
       thoi_gian_cap_nhat: new Date().toISOString(),
     };
   }
+
+  // Tìm kiếm tức thì chuẩn Apple Spotlight Search: Bỏ dấu, giải mã Telex, đi thành công
+  spotlightSearch(query: string, tab?: 'vanbang' | 'cntt' | 'vstep' | 'all') {
+    if (!query || query.trim().length < 2) return [];
+    const qNorm = this.normalizeVietnamese(query);
+    const qRaw = query.trim().toLowerCase();
+
+    const results: Array<{
+      type: 'vanbang' | 'cntt' | 'vstep';
+      id: string;
+      title: string;
+      subTitle: string;
+      ho_ten: string;
+      so_hieu_phoi: string;
+      so_vao_so: string;
+      data: any;
+    }> = [];
+
+    // Nhận diện từ khóa điều hướng Cổng Tra Cứu (ví dụ: "ttra cuus văn bàng chúng chỉ", "tra cuu van bang", "chung chi", "tot nghiep")
+    const isPortalKeywords =
+      qNorm.includes('tra cuu') ||
+      qNorm.includes('van bang') ||
+      qNorm.includes('chung chi') ||
+      qNorm.includes('tot nghiep') ||
+      qNorm.includes('dai hoc') ||
+      qNorm.includes('di thanh cong') ||
+      qNorm.includes('bang cap');
+
+    // Nếu người dùng nhập ý định tra cứu chung của cổng -> Ưu tiên đưa 3 thẻ phân hệ điều hướng nhanh (đi thành công)
+    if (isPortalKeywords) {
+      // 1. Phân hệ Văn bằng
+      if (!tab || tab === 'all' || tab === 'vanbang' || qNorm.includes('van bang') || qNorm.includes('tot nghiep') || qNorm.includes('dai hoc')) {
+        results.push({
+          type: 'vanbang',
+          id: 'portal-vanbang',
+          title: 'Cổng Tra Cứu Văn Bằng Tốt Nghiệp',
+          subTitle: 'Đại học chính quy, Thạc sĩ, Tiến sĩ • ĐH Nam Cần Thơ (Sẵn sàng)',
+          ho_ten: 'CỔNG TRA CỨU VĂN BẰNG',
+          so_hieu_phoi: 'HỆ THỐNG CHÍNH THỨC',
+          so_vao_so: 'NCTU-DNC',
+          data: this.vanBangDb[2], // Mẫu Dương Thị Anh Thư
+        });
+      }
+
+      // 2. Phân hệ CNTT
+      if (!tab || tab === 'all' || tab === 'cntt' || qNorm.includes('cntt') || qNorm.includes('tin hoc') || qNorm.includes('chung chi')) {
+        results.push({
+          type: 'cntt',
+          id: 'portal-cntt',
+          title: 'Cổng Tra Cứu Chứng Chỉ Ứng Dụng CNTT',
+          subTitle: 'Chứng chỉ Tin học Cơ bản & Nâng cao • Chuẩn Bộ TT&TT',
+          ho_ten: 'CỔNG TRA CỨU CHỨNG CHỈ CNTT',
+          so_hieu_phoi: 'CHỨNG CHỈ QUỐC GIA',
+          so_vao_so: 'BỘ TT&TT',
+          data: this.cnttDb[0], // Mẫu Nguyễn Thị Ngọc Châu
+        });
+      }
+
+      // 3. Phân hệ VSTEP
+      if (!tab || tab === 'all' || tab === 'vstep' || qNorm.includes('vstep') || qNorm.includes('tieng anh') || qNorm.includes('chung chi')) {
+        results.push({
+          type: 'vstep',
+          id: 'portal-vstep',
+          title: 'Cổng Tra Cứu Chứng Chỉ Tiếng Anh VSTEP',
+          subTitle: 'Khung năng lực ngoại ngữ 6 bậc (Bậc 2 - Bậc 6) • Chuẩn Bộ GD&ĐT',
+          ho_ten: 'CỔNG TRA CỨU VSTEP',
+          so_hieu_phoi: 'VSTEP BẬC 2 - 6',
+          so_vao_so: 'BỘ GD&ĐT',
+          data: this.vstepDb[0], // Mẫu Nguyễn Văn An
+        });
+      }
+    }
+
+    // 1. Quét kho Văn bằng tốt nghiệp (khớp tên, phôi, số sổ, ngành, chuyên ngành, tên văn bằng)
+    if (!tab || tab === 'all' || tab === 'vanbang' || (isPortalKeywords && (qNorm.includes('van bang') || qNorm.includes('dai hoc') || qNorm.includes('tot nghiep')))) {
+      for (const item of this.vanBangDb) {
+        const matchPhoi = item.so_hieu_phoi.toLowerCase().includes(qRaw);
+        const matchSo = item.so_vao_so.toLowerCase().includes(qRaw);
+        const matchName = this.normalizeVietnamese(item.ho_ten).includes(qNorm);
+        const matchId = item.id.toLowerCase().includes(qRaw);
+        const matchNganh = this.normalizeVietnamese(item.nganh_dao_tao).includes(qNorm);
+        const matchVanBang = this.normalizeVietnamese(item.ten_van_bang).includes(qNorm);
+        if (matchPhoi || matchSo || matchName || matchId || matchNganh || matchVanBang) {
+          results.push({
+            type: 'vanbang',
+            id: item.id,
+            title: item.ten_van_bang,
+            subTitle: `Ngành: ${item.nganh_dao_tao} • Xếp loại: ${item.xep_loai} • Năm: ${item.nam_tot_nghiep}`,
+            ho_ten: item.ho_ten,
+            so_hieu_phoi: item.so_hieu_phoi,
+            so_vao_so: item.so_vao_so,
+            data: item,
+          });
+        }
+      }
+    }
+
+    // 2. Quét kho Chứng chỉ CNTT
+    if (!tab || tab === 'all' || tab === 'cntt' || (isPortalKeywords && (qNorm.includes('cntt') || qNorm.includes('tin hoc') || qNorm.includes('chung chi')))) {
+      for (const item of this.cnttDb) {
+        const matchPhoi = item.so_hieu_phoi.toLowerCase().includes(qRaw);
+        const matchSo = item.so_vao_so.toLowerCase().includes(qRaw);
+        const matchName = this.normalizeVietnamese(item.ho_ten).includes(qNorm);
+        const matchCccd = item.so_cccd.toLowerCase().includes(qRaw);
+        const matchCert = this.normalizeVietnamese(item.ten_chung_chi).includes(qNorm);
+        if (matchPhoi || matchSo || matchName || matchCccd || matchCert) {
+          results.push({
+            type: 'cntt',
+            id: item.id,
+            title: item.ten_chung_chi,
+            subTitle: `Cấp độ: ${item.cap_do === 'coban' ? 'Cơ bản' : 'Nâng cao'} • Điểm TK: ${item.diem_tong_ket}`,
+            ho_ten: item.ho_ten,
+            so_hieu_phoi: item.so_hieu_phoi,
+            so_vao_so: item.so_vao_so,
+            data: item,
+          });
+        }
+      }
+    }
+
+    // 3. Quét kho Chứng chỉ VSTEP
+    if (!tab || tab === 'all' || tab === 'vstep' || (isPortalKeywords && (qNorm.includes('vstep') || qNorm.includes('tieng anh') || qNorm.includes('chung chi')))) {
+      for (const item of this.vstepDb) {
+        const matchPhoi = item.so_hieu_phoi.toLowerCase().includes(qRaw);
+        const matchSo = item.so_vao_so.toLowerCase().includes(qRaw);
+        const matchName = this.normalizeVietnamese(item.ho_ten).includes(qNorm);
+        const matchSbd = item.so_bao_danh.toLowerCase().includes(qRaw);
+        const matchCert = this.normalizeVietnamese(item.ten_chung_chi).includes(qNorm);
+        if (matchPhoi || matchSo || matchName || matchSbd || matchCert) {
+          results.push({
+            type: 'vstep',
+            id: item.id,
+            title: `${item.ten_chung_chi} (${item.bac_nang_luc})`,
+            subTitle: `Điểm tổng: ${item.diem_tong} • Hội đồng thi: ${item.hoi_dong_thi}`,
+            ho_ten: item.ho_ten,
+            so_hieu_phoi: item.so_hieu_phoi,
+            so_vao_so: item.so_vao_so,
+            data: item,
+          });
+        }
+      }
+    }
+
+    // Loại bỏ trùng lặp id nếu có
+    const uniqueMap = new Map<string, (typeof results)[0]>();
+    for (const r of results) {
+      if (!uniqueMap.has(r.id)) {
+        uniqueMap.set(r.id, r);
+      }
+    }
+
+    // Giới hạn hiển thị: Tối đa 8 kết quả
+    return Array.from(uniqueMap.values()).slice(0, 8);
+  }
 }
+

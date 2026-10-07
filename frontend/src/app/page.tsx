@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { RotateCcw, ArrowDown } from 'lucide-react';
+import { RotateCcw, ArrowDown, X } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SpotlightBar from '@/components/SpotlightBar';
 import VanBangForm from '@/components/VanBangForm';
 import CnttForm from '@/components/CnttForm';
 import VstepForm from '@/components/VstepForm';
@@ -505,242 +506,76 @@ export default function Home() {
       {/* 1. NAVBAR */}
       <Navbar activeTab={activeTab} onTabChange={handleTabChange} />
 
-      {/* 2. HERO STAGE - NỀN XANH HỌC THUẬT DNC CHUYỂN SẮC SANG TRỌNG, ĐẦY ĐỦ NỀN TRÊN CẢ MOBILE VÀ DESKTOP */}
+      {/* 2. HERO STAGE & SPOTLIGHT SEARCH - CĂN GIỮA VỊ TRÍ GỐC (KHÔNG DỜI LÊN TRÊN, CHUẨN 100% ẢNH GỐC) */}
       <section
         id="hero-stage"
-        className="relative min-h-[225px] min-[390px]:min-h-[235px] sm:min-h-[330px] lg:min-h-[370px] xl:min-h-[385px] flex flex-col justify-start items-center pt-[88px] min-[390px]:pt-[92px] sm:pt-[110px] lg:pt-[122px] xl:pt-[128px] pb-11 min-[390px]:pb-12 sm:pb-[72px] lg:pb-[86px] xl:pb-[100px] px-4 sm:px-6 overflow-hidden bg-gradient-to-br from-[#0F275A] via-[#1E3A8A] to-[#1E40AF] no-print"
+        className="relative flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 overflow-hidden bg-gradient-to-br from-[#0F275A] via-[#1E3A8A] to-[#1E40AF] text-white no-print min-h-[calc(100vh-70px)] sm:min-h-[calc(100vh-80px)] py-12 sm:py-16"
       >
-        {/* 1. LỚP ẢNH NỀN HỌC THUẬT DNC Ở GÓC PHẢI - ÊM DỊU, THANH THOÁT, KHÔNG ĐÈ LÊN CHỮ */}
+        {/* 1. LỚP ẢNH NỀN HỌC THUẬT DNC CHÍNH THỨC (TRỌN VẸN 100% ẢNH GỐC ĐHCT) */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 pointer-events-none bg-cover select-none mix-blend-luminosity opacity-[0.20] sm:opacity-[0.22] bg-[position:95%_20%] sm:bg-[position:right_35%]"
+          className="absolute inset-0 pointer-events-none select-none bg-cover bg-right sm:bg-center mix-blend-luminosity opacity-[0.24] sm:opacity-[0.28]"
           style={{
             backgroundImage: "url('/images/hero/dnc-hero-campus-banner.png')",
             filter: 'contrast(115%) brightness(115%)',
-            maskImage: 'linear-gradient(to bottom, black 0%, black 75%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 75%, transparent 100%)',
           }}
         />
 
-        {/* 2. LỚP CHUYỂN SẮC BẢO VỆ CHỮ (TEXT PROTECTION GRADIENT): BÊN TRÁI ÊM SẠCH 100%, BÊN PHẢI MỞ RỘNG HÌNH NỀN HỌC THUẬT */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 pointer-events-none bg-gradient-to-r from-[#0F275A] via-[#0F275A]/75 sm:via-[#0F275A]/45 to-transparent z-[1]"
-        />
+        {/* 2. KHỐI TIÊU ĐỀ & THANH SPOTLIGHT CĂN GIỮA HOÀN TOÀN (KHÔNG DỜI LÊN TRÊN, ĐỨNG YÊN VỊ TRÍ TỰ NHIÊN) */}
+        <div className="w-full max-w-[1080px] mx-auto flex flex-col items-center text-center relative z-20">
+          {/* Tiêu đề cổng tra cứu */}
+          <h1 className="text-3xl sm:text-4xl lg:text-[46px] font-bold text-white tracking-tight leading-tight drop-shadow-[0_2px_14px_rgba(0,0,0,0.35)] mb-3 sm:mb-3.5">
+            Cổng Tra Cứu Văn Bằng Chứng Chỉ
+          </h1>
 
-        {/* 3. LỚP HOA VĂN BẢO MẬT PHÔI VĂN BẰNG (GUILLOCHE SECURITY WATERMARK CHUẨN ĐẠI HỌC) */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 pointer-events-none opacity-[0.025] sm:opacity-[0.035] overflow-hidden select-none [mask-image:radial-gradient(ellipse_80%_65%_at_50%_45%,rgba(0,0,0,0.35)_0%,black_100%)] z-[1]"
-        >
-          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern
-                id="hero-academic-guilloche"
-                width="120"
-                height="120"
-                patternUnits="userSpaceOnUse"
-              >
-                <circle cx="60" cy="60" r="28" fill="none" stroke="#FFFFFF" strokeWidth="0.8" strokeDasharray="3 3" />
-                <circle cx="60" cy="60" r="44" fill="none" stroke="#93C5FD" strokeWidth="0.6" />
-                <path d="M 60 12 C 40 36 40 84 60 108 C 80 84 80 36 60 12 Z" fill="none" stroke="#BFDBFE" strokeWidth="0.75" />
-                <path d="M 12 60 C 36 40 84 40 108 60 C 84 80 36 80 12 60 Z" fill="none" stroke="#BFDBFE" strokeWidth="0.75" />
-                <path d="M 0 60 Q 30 12 60 12 Q 90 12 120 60 Q 90 108 60 108 Q 30 108 0 60" fill="none" stroke="#FFFFFF" strokeWidth="0.7" />
-                <path d="M 60 0 Q 12 30 12 60 Q 12 90 60 120 Q 108 90 108 60 Q 108 30 60 0" fill="none" stroke="#FFFFFF" strokeWidth="0.7" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#hero-academic-guilloche)" />
-          </svg>
-        </div>
+          {/* Phụ đề mô tả quyền hạn và dịch vụ */}
+          <p className="text-[13.5px] sm:text-[15.5px] text-blue-100/90 max-w-xl mx-auto font-normal leading-relaxed mb-7 sm:mb-9 drop-shadow-[0_1px_4px_rgba(0,0,0,0.25)]">
+            Hệ thống xác thực văn bằng điện tử chính thức Trường Đại học Nam Cần Thơ
+          </p>
 
-        {/* 4. BIỂU TRƯNG VÒNG NGUYỆT QUẾ TRI THỨC & NÓN CỬ NHÂN: CHỈ HIỆN NHẸ TRÊN DESKTOP, ẨN TRÊN MOBILE TRÁNH RỐI */}
-        <div
-          aria-hidden="true"
-          className="hidden sm:block absolute sm:top-4 lg:top-6 left-1/2 -translate-x-1/2 sm:w-[400px] lg:w-[450px] sm:h-[400px] lg:h-[450px] pointer-events-none sm:opacity-[0.045] text-white select-none z-[1]"
-        >
-          <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-            {/* Vòng tròn đồng tâm la bàn tri thức */}
-            <circle cx="100" cy="100" r="90" stroke="currentColor" strokeWidth="1.2" strokeDasharray="4 4" />
-            <circle cx="100" cy="100" r="76" stroke="currentColor" strokeWidth="1" />
-            <circle cx="100" cy="100" r="62" stroke="currentColor" strokeWidth="0.8" strokeDasharray="2 3" />
-            {/* Biểu tượng nón cử nhân học thuật */}
-            <path d="M 100 62 L 148 84 L 100 106 L 52 84 Z" stroke="currentColor" strokeWidth="2" fill="currentColor" fillOpacity="0.2" />
-            <path d="M 72 94 L 72 118 C 72 128 128 128 128 118 L 128 94" stroke="currentColor" strokeWidth="1.8" />
-            <path d="M 148 84 L 148 122 C 148 126 142 128 142 134" stroke="currentColor" strokeWidth="1.5" />
-            <circle cx="142" cy="136" r="3" fill="currentColor" />
-            {/* Vòng nguyệt quế hai bên */}
-            <path d="M 45 135 C 35 110 40 75 60 55" stroke="currentColor" strokeWidth="1.2" />
-            <path d="M 155 135 C 165 110 160 75 140 55" stroke="currentColor" strokeWidth="1.2" />
-          </svg>
-        </div>
-
-        {/* 5. LUỒNG SÁNG HÀO QUANG DỊU MẮT TẬP TRUNG VÀO TRUNG TÂM */}
-        <div
-          aria-hidden="true"
-          className="absolute -top-28 left-1/2 -translate-x-1/2 w-[720px] h-[340px] bg-blue-400/15 rounded-full blur-3xl pointer-events-none z-[1]"
-        />
-
-        {/* Khối nội dung tiêu đề: Căn trái đồng bộ cả Mobile và Desktop, dóng thẳng hàng Logo DNC, khoảng thở thoáng đãng tinh tế */}
-        <div className="w-full max-w-[1590px] mx-auto relative z-10 px-4 min-[360px]:px-5 sm:px-6 flex flex-col items-start text-left mb-0">
-          {/* Breadcrumb chuẩn phong cách cổng trường ĐH Nam Cần Thơ: [Trang chủ > Tra cứu] nền kính mờ không viền tinh tế */}
-          <nav aria-label="Breadcrumb" className="inline-flex items-center gap-2 text-[12px] min-[360px]:text-[12.5px] sm:text-[14.5px] text-blue-50 font-medium mb-2 sm:mb-3.5 select-none px-3 py-1 sm:px-5 sm:py-2 rounded-full bg-white/[0.12] hover:bg-white/[0.18] backdrop-blur-md shadow-[0_4px_16px_rgba(0,0,0,0.12)] transition-all">
-            <a
-              href="https://nctu.edu.vn"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-1.5 text-white/90 hover:text-white transition-colors cursor-pointer"
-              title="Về Trang chủ Trường Đại học Nam Cần Thơ (nctu.edu.vn)"
-            >
-              <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 inline-block text-blue-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                <polyline points="9 22 9 12 15 12 15 22" />
-              </svg>
-              <span>Trang chủ</span>
-            </a>
-            <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-blue-200/80 inline-block -mx-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="m9 18 6-6-6-6" />
-            </svg>
-            <span className="text-white font-semibold">
-              Tra cứu
-            </span>
-          </nav>
-
-          {/* Slider Tiêu đề lớn: Bỏ chữ 'Tra cứu', căn trái thanh thoát, 56px desktop, 26px mobile gọn gàng sang trọng */}
-          <div className="w-full overflow-hidden max-w-4xl lg:max-w-5xl">
-            <div
-              className="flex transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
-              style={{
-                transform:
-                  activeTab === 'vanbang'
-                    ? 'translate3d(0%, 0, 0)'
-                    : activeTab === 'cntt'
-                      ? 'translate3d(-100%, 0, 0)'
-                      : 'translate3d(-200%, 0, 0)',
-              }}
-            >
-              {/* Tab 1: Văn bằng tốt nghiệp */}
-              <div className="w-full flex-shrink-0 text-left pr-2">
-                <h1 className="animate-hero-title text-[24px] min-[360px]:text-[26px] min-[390px]:text-[28px] sm:text-[38px] md:text-[46px] lg:text-[52px] xl:text-[56px] font-semibold tracking-tight text-white leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]">
-                  Văn bằng tốt nghiệp
-                </h1>
-              </div>
-
-              {/* Tab 2: CNTT */}
-              <div className="w-full flex-shrink-0 text-left pr-2">
-                <h1 className="animate-hero-title text-[24px] min-[360px]:text-[26px] min-[390px]:text-[28px] sm:text-[38px] md:text-[46px] lg:text-[52px] xl:text-[56px] font-semibold tracking-tight text-white leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]">
-                  Chứng chỉ CNTT
-                </h1>
-              </div>
-
-              {/* Tab 3: VSTEP */}
-              <div className="w-full flex-shrink-0 text-left pr-2">
-                <h1 className="animate-hero-title text-[24px] min-[360px]:text-[26px] min-[390px]:text-[28px] sm:text-[38px] md:text-[46px] lg:text-[52px] xl:text-[56px] font-semibold tracking-tight text-white leading-tight drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]">
-                  Chứng chỉ VSTEP
-                </h1>
-              </div>
-            </div>
+          {/* Thanh tra cứu Spotlight căn giữa: Nền cố định 100%, popover mở nổi tuyệt đối */}
+          <div className="w-full max-w-[980px] relative">
+            <SpotlightBar
+              activeTab={activeTab}
+              onTabChange={handleTabChange}
+              onSelectResult={handleLookupSuccess}
+              onNotFound={handleLookupNotFound}
+              onReset={handleGlobalReset}
+              sampleData={sampleData}
+            />
           </div>
+        </div>
+
+        {/* 3. ĐƯỜNG LƯỢN SÓNG CHUYỂN NỀN MỀM MẠI Ở CHÂN TRANG NỐI VÀO NỀN DƯỚI */}
+        <div
+          aria-hidden="true"
+          className="absolute -bottom-px left-0 right-0 w-full overflow-hidden leading-none pointer-events-none z-10"
+        >
+          <svg
+            className="w-full h-10 sm:h-16 md:h-20 lg:h-24 block text-[#F8FAFC]"
+            viewBox="0 0 1440 90"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M0 45C320 72 680 24 1040 60C1240 76 1360 54 1440 46V90H0V45Z"
+              fill="rgba(255, 255, 255, 0.18)"
+            />
+            <path
+              d="M0 52C360 82 760 32 1120 70C1280 84 1380 66 1440 58V90H0V52Z"
+              fill="currentColor"
+            />
+          </svg>
         </div>
       </section>
 
-      {/* 3. KHUNG TRA CỨU TRUNG TÂM (GỐI NHẸ LÊN CHÂN NỀN XANH HỌC THUẬT) */}
+      {/* 3. MAIN ANCHOR */}
       <main
         id="khung-tra-cuu"
         ref={cardSectionRef}
-        className="w-full bg-[#FFFFFF] relative z-20 pb-20 sm:pb-24 pt-0 no-print"
-      >
-        <div className="w-full max-w-[780px] mx-auto px-4 sm:px-6 -mt-12 sm:-mt-16 lg:-mt-20 xl:-mt-24 relative">
-          <div
-            id="khung-tra-cuu-card"
-            className={`card-wrapper form-card-reveal relative bg-white border-0 border-none ${isCardRevealed ? 'active' : ''
-              }`}
-          >
-            {/* LỚP BÓNG TRONG PHẢN CHIẾU ÁNH SÁNG MẶT KÍNH TRÊN NỀN TRẮNG (GLOSSY CRYSTAL SHEEN) */}
-            <div aria-hidden="true" className="pointer-events-none absolute inset-0 rounded-[36px] sm:rounded-[38px] overflow-hidden">
-              <div className="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-white via-white/50 to-transparent" />
-              <div className="absolute -top-24 left-1/4 w-[480px] h-[200px] bg-gradient-to-b from-blue-100/35 via-white/60 to-transparent rounded-full blur-2xl" />
-              {/* VỆT SÁNG PHA LÊ (CRYSTAL SHEEN) QUÉT NGANG KHI CARD XUẤT HIỆN */}
-              <div className={`card-shine-sweep ${isCardRevealed ? 'active' : ''}`} />
-            </div>
-
-            {/* KHỐI NỘI DUNG PHÂN HỆ: CHUYỂN ĐỘNG SLIDER TRACK LIỀN MẠCH, TỰ ĐỘNG CO GIÃN CHIỀU CAO VỪA KHÍT TỪNG TAB */}
-            <div
-              className={`relative z-10 w-full overflow-hidden ${isSwitchingTab ? 'transition-[height] duration-[420ms] ease-[cubic-bezier(0.16,1,0.3,1)]' : ''
-                }`}
-              style={{ height: isSwitchingTab && switchingHeight ? `${switchingHeight}px` : 'auto' }}
-            >
-              <div
-                className="tab-carousel-track"
-                style={{
-                  transform:
-                    activeTab === 'vanbang'
-                      ? 'translate3d(0%, 0, 0)'
-                      : activeTab === 'cntt'
-                        ? 'translate3d(-33.333333%, 0, 0)'
-                        : 'translate3d(-66.666666%, 0, 0)',
-                }}
-              >
-                {/* PANE 1: VĂN BẰNG */}
-                <div
-                  ref={vanbangPaneRef}
-                  className={`tab-carousel-pane px-1.5 pt-0.5 pb-1 transition-opacity duration-300 ${activeTab === 'vanbang'
-                    ? 'opacity-100'
-                    : `opacity-0 pointer-events-none ${!isSwitchingTab ? 'max-h-0 overflow-hidden' : ''}`
-                    }`}
-                >
-                  <VanBangForm
-                    resetTrigger={resetKey}
-                    onSuccess={(data) => handleLookupSuccess('vanbang', data)}
-                    onNotFound={(data) => handleLookupNotFound('vanbang', data)}
-                    sampleData={sampleData.vanbang}
-                    sampleToApply={sampleToApply}
-                  />
-                </div>
-
-                {/* PANE 2: CNTT */}
-                <div
-                  ref={cnttPaneRef}
-                  className={`tab-carousel-pane px-1.5 pt-0.5 pb-1 transition-opacity duration-300 ${activeTab === 'cntt'
-                    ? 'opacity-100'
-                    : `opacity-0 pointer-events-none ${!isSwitchingTab ? 'max-h-0 overflow-hidden' : ''}`
-                    }`}
-                >
-                  <CnttForm
-                    resetTrigger={resetKey}
-                    onSuccess={(data) => handleLookupSuccess('cntt', data)}
-                    onNotFound={(data) => handleLookupNotFound('cntt', data)}
-                    sampleData={sampleData.cntt}
-                    sampleToApply={sampleToApply}
-                  />
-                </div>
-
-                {/* PANE 3: VSTEP */}
-                <div
-                  ref={vstepPaneRef}
-                  className={`tab-carousel-pane px-1.5 pt-0.5 pb-1 transition-opacity duration-300 ${activeTab === 'vstep'
-                    ? 'opacity-100'
-                    : `opacity-0 pointer-events-none ${!isSwitchingTab ? 'max-h-0 overflow-hidden' : ''}`
-                    }`}
-                >
-                  <VstepForm
-                    resetTrigger={resetKey}
-                    onSuccess={(data) => handleLookupSuccess('vstep', data)}
-                    onNotFound={(data) => handleLookupNotFound('vstep', data)}
-                    sampleData={sampleData.vstep}
-                    sampleToApply={sampleToApply}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Dòng ghi chú bên dưới (Footer Note) */}
-        <p className="text-center text-xs sm:text-[13px] text-slate-500 mt-4 px-2 leading-relaxed">
-          <span className="font-semibold text-slate-600">* Lưu ý:</span> Hệ thống chỉ hỗ trợ tra cứu các văn bằng, chứng chỉ do đơn vị đào tạo cấp và đã đồng bộ vào cơ sở dữ liệu số hóa.
-        </p>
-
-      </main>
+        className="flex-1 bg-[#F8FAFC] min-h-[30px] sm:min-h-[50px] no-print"
+      />
 
       {/* THANH THÔNG BÁO DYNAMIC ISLAND (KHI KẾT QUẢ ĐANG Ở CHẾ ĐỘ THU GỌN - ĐEN TRONG SUỐT APPLE SMOKED GLASS, BỎ CHẤM XANH, KHÔNG VIỀN, HỖ TRỢ KÉO ĐẶT Ở GIỮA TRÊN, GIỮA DƯỚI VÀ 4 GÓC, HIỆU ỨNG ĐỒNG BỘ 100%) */}
       {result && !result.notFound && !isResultVisible && (
