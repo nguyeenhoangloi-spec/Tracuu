@@ -129,7 +129,7 @@ export default function Footer() {
         </svg>
       </div>
 
-      {/* 3. NỘI DUNG CHÂN TRANG NỔI BẬT RÕ NÉT TRÊN MẶT NỀN HOA VĂN CHÌM */}
+      {/* 3. NỘI DUNG CHÂN TRANG: BỐ CỤC 3 CỘT TRUYỀN THỐNG CHÍNH THỨC */}
       <div className="max-w-[1430px] mx-auto px-4 sm:px-6 relative z-10">
         {/* Dòng thông tin cơ quan chính thức */}
         <div className="flex flex-col md:flex-row md:items-center justify-between pb-5 sm:pb-6 border-b border-slate-200/90 gap-4">

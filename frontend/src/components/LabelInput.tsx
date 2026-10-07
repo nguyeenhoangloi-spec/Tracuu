@@ -72,8 +72,8 @@ export function LabelInput({
   name,
   id: customId,
   subLabel,
-  corner = 16,
-  height: customH = 64,
+  corner = 18,
+  height: customH = 68,
   showcase = false,
   className = "",
   autoComplete = "off",
@@ -411,9 +411,9 @@ export function LabelInput({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [dropdownOpen, datePickerOpen]);
 
-  /* Only lift label when field is focused, popover is open, has value, or has an error */
+  /* Only lift label when field is focused, popover is open, or has value */
   const hasValue = Boolean(value !== undefined && value !== null && String(value).trim().length > 0);
-  const up = Boolean(focus || dropdownOpen || datePickerOpen || hasValue || error);
+  const up = Boolean(focus || dropdownOpen || datePickerOpen || hasValue);
 
   const selectedOption = isSelect
     ? options!.find((opt) => String(opt.value) === String(value)) || (hasValue ? options![0] : null)
@@ -491,8 +491,8 @@ export function LabelInput({
               aria-haspopup="dialog"
               aria-expanded={datePickerOpen}
             >
-              <span className={`truncate text-[16px] ${displayDate ? "font-semibold text-slate-800" : "text-slate-400 font-normal"}`}>
-                {displayDate || (up ? placeholder || "dd/mm/yyyy" : "")}
+              <span className={`truncate text-[16.5px] ${displayDate ? "font-semibold text-slate-900" : "text-slate-400 font-medium"}`}>
+                {displayDate || (focus || datePickerOpen ? placeholder || "dd/mm/yyyy" : "")}
               </span>
             </button>
 
@@ -963,7 +963,7 @@ export function LabelInput({
             value={value}
             required={required}
             disabled={disabled}
-            placeholder={up ? placeholder : ""}
+            placeholder={focus && !hasValue ? placeholder : ""}
             onChange={(e) => {
               if (!isControlled) setUncontrolledValue(e.target.value);
               if (onChange) onChange(e);

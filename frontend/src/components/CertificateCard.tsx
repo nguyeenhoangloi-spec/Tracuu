@@ -176,10 +176,11 @@ export default function CertificateCard({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-slate-200/60 hover:bg-slate-300/80 active:bg-slate-300 text-slate-700 hover:text-slate-900 transition-all duration-150 cursor-pointer flex-shrink-0 active:scale-90 outline-none border-0 border-none backdrop-blur-xs"
+                  data-ripple="rgba(215, 33, 52, 0.28)"
+                  className="relative overflow-hidden w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-slate-200/60 hover:bg-slate-300/80 active:bg-slate-300 text-slate-700 hover:text-slate-900 transition-all duration-150 cursor-pointer flex-shrink-0 active:scale-90 outline-none border-0 border-none backdrop-blur-xs select-none [-webkit-tap-highlight-color:transparent]"
                   title="Thu gọn (Esc)"
                 >
-                  <X className="w-5 h-5 sm:w-6 sm:h-6 text-slate-700" strokeWidth={2.5} />
+                  <X className="w-5 h-5 sm:w-6 sm:h-6 text-slate-700 pointer-events-none" strokeWidth={2.5} />
                 </button>
               )}
             </div>

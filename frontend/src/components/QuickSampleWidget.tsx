@@ -11,6 +11,7 @@ interface QuickSampleWidgetProps {
     vstep?: any[];
   };
   onApplySample: (sample: any) => void;
+  isSpotlightOpen?: boolean;
 }
 
 const FALLBACK_SAMPLES = {
@@ -106,6 +107,7 @@ export default function QuickSampleWidget({
   activeTab,
   sampleData,
   onApplySample,
+  isSpotlightOpen = false,
 }: QuickSampleWidgetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [appliedLabel, setAppliedLabel] = useState<string | null>(null);
@@ -153,7 +155,15 @@ export default function QuickSampleWidget({
   };
 
   return (
-    <aside aria-label="Khối dữ liệu mẫu thử nghiệm" ref={widgetRef} className="fixed bottom-20 right-3.5 sm:bottom-6 sm:right-6 z-40 select-none no-print">
+    <aside
+      aria-label="Khối dữ liệu mẫu thử nghiệm"
+      ref={widgetRef}
+      className={`fixed bottom-20 right-3.5 sm:bottom-6 sm:right-6 z-40 select-none no-print transition-all duration-300 ${
+        isSpotlightOpen
+          ? 'hidden sm:block opacity-0 sm:opacity-100 pointer-events-none sm:pointer-events-auto'
+          : 'opacity-100'
+      }`}
+    >
       {/* PANEL DANH SÁCH MẪU (BUNG LÊN TỪ NÚT GÓC DƯỚI) */}
       {isOpen && (
         <div className="absolute bottom-12 right-0 w-[calc(100vw-32px)] max-w-[340px] sm:max-w-[380px] sm:w-[380px] bg-white/95 backdrop-blur-xl border border-slate-200/90 rounded-2xl shadow-[0_20px_60px_-15px_rgba(15,23,42,0.25),0_0_0_1px_rgba(0,0,0,0.04)] p-4 sm:p-5 space-y-3.5 transition-all duration-200 origin-bottom-right">

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Loader2 } from 'lucide-react';
+import { Search, Loader2, ShieldCheck } from 'lucide-react';
 import LabelInput from '@/components/LabelInput';
 import SecurityCaptcha from '@/components/SecurityCaptcha';
 
@@ -33,8 +33,6 @@ export default function VanBangForm({
   const [soHieuPhoi, setSoHieuPhoi] = useState(initialSoHieuPhoi || '');
   const [soVaoSo, setSoVaoSo] = useState('');
   const [captchaInput, setCaptchaInput] = useState('');
-  const [captchaCode, setCaptchaCode] = useState('');
-  const [captchaError, setCaptchaError] = useState<string | null>(null);
 
   React.useEffect(() => {
     if (initialLoaiDaoTao) {
@@ -53,15 +51,15 @@ export default function VanBangForm({
     ngaySinh?: string;
     soHieuPhoi?: string;
     soVaoSo?: string;
+    captcha?: string;
   }>({});
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e?: React.FormEvent | React.MouseEvent) => {
+  const handleSubmit = (e?: React.FormEvent | React.MouseEvent) => {
     if (e) e.preventDefault();
     setError(null);
-    setCaptchaError(null);
 
     let hasError = false;
     const newErrors: {
@@ -69,6 +67,7 @@ export default function VanBangForm({
       ngaySinh?: string;
       soHieuPhoi?: string;
       soVaoSo?: string;
+      captcha?: string;
     } = {};
     if (!hoTen.trim()) {
       newErrors.hoTen = 'Vui lòng điền họ tên';
@@ -78,25 +77,27 @@ export default function VanBangForm({
       newErrors.ngaySinh = 'Vui lòng điền ngày sinh';
       hasError = true;
     }
-    if (!soHieuPhoi.trim()) {
-      newErrors.soHieuPhoi = 'Vui lòng điền số hiệu phôi';
+    // Chuẩn đặc tả NCTU: Nhập Số hiệu phôi HOẶC Số vào sổ (ít nhất 1 trong 2)
+    if (!soHieuPhoi.trim() && !soVaoSo.trim()) {
+      newErrors.soHieuPhoi = 'Vui lòng nhập Số hiệu phôi hoặc Số vào sổ';
+      newErrors.soVaoSo = 'Vui lòng nhập Số vào sổ hoặc Số hiệu phôi';
       hasError = true;
     }
-    if (!soVaoSo.trim()) {
-      newErrors.soVaoSo = 'Vui lòng điền số vào sổ';
-      hasError = true;
-    }
-    setFieldErrors(newErrors);
-
     if (!captchaInput.trim()) {
-      setCaptchaError('Vui lòng xác nhận Tôi không phải là người máy');
+      newErrors.captcha = 'Vui lòng xác thực Tôi không phải là người máy';
       hasError = true;
     }
+
+    setFieldErrors(newErrors);
 
     if (hasError) {
       return;
     }
 
+    doSearch(captchaInput);
+  };
+
+  const doSearch = async (token: string) => {
     const startTime = Date.now();
     setLoading(true);
     onLoading?.(true);
@@ -110,6 +111,7 @@ export default function VanBangForm({
           ngay_sinh: ngaySinh,
           so_hieu_phoi: soHieuPhoi.trim() || undefined,
           so_vao_so: soVaoSo.trim() || undefined,
+          recaptcha_token: token,
         }),
       });
 
@@ -158,7 +160,6 @@ export default function VanBangForm({
     setSoHieuPhoi('');
     setSoVaoSo('');
     setCaptchaInput('');
-    setCaptchaError(null);
     setFieldErrors({});
     setError(null);
   };
@@ -175,9 +176,7 @@ export default function VanBangForm({
     if (sample.ngay_sinh) setNgaySinh(sample.ngay_sinh);
     if (sample.so_hieu_phoi) setSoHieuPhoi(sample.so_hieu_phoi);
     if (sample.so_vao_so) setSoVaoSo(sample.so_vao_so);
-    if (captchaCode) setCaptchaInput(captchaCode);
     setFieldErrors({});
-    setCaptchaError(null);
     setError(null);
   };
 
@@ -194,18 +193,18 @@ export default function VanBangForm({
         handleSubmit(e);
       }}
       noValidate
-      className="space-y-3 sm:space-y-3.5"
+      className="space-y-2.5 sm:space-y-3"
     >
-      {/* LƯỚI 2x2 CÂN ĐỐI HOÀN HẢO CHUẨN APPLE: GỌN GÀNG, Ô NHẬP TO RỘNG 66PX */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
+      {/* LƯỚI 2x2 CÂN ĐỐI HOÀN HẢO CHUẨN APPLE: GỌN GÀNG, Ô NHẬP 68PX THOÁNG ĐÃNG, BO GÓC 18PX */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
         {/* Ô 1: Họ tên */}
         <div>
           <LabelInput
             label="Họ và tên"
             placeholder="Ví dụ: NGUYỄN VĂN AN"
             value={hoTen}
-            height={60}
-            corner={16}
+            height={68}
+            corner={18}
             onChange={(e) => {
               setHoTen(e.target.value);
               if (fieldErrors.hoTen) {
@@ -223,8 +222,8 @@ export default function VanBangForm({
             label="Ngày sinh"
             type="date"
             placeholder="dd/mm/yyyy"
-            height={60}
-            corner={16}
+            height={68}
+            corner={18}
             required
             value={ngaySinh}
             onChange={(e) => {
@@ -243,8 +242,8 @@ export default function VanBangForm({
             label="Số hiệu phôi"
             placeholder="Ví dụ: B6829104"
             value={soHieuPhoi}
-            height={60}
-            corner={16}
+            height={68}
+            corner={18}
             onChange={(e) => {
               setSoHieuPhoi(e.target.value.toUpperCase());
               if (fieldErrors.soHieuPhoi) {
@@ -262,8 +261,8 @@ export default function VanBangForm({
             label="Số vào sổ"
             placeholder="Ví dụ: NCTU-CNTT-2023/142"
             value={soVaoSo}
-            height={60}
-            corner={16}
+            height={68}
+            corner={18}
             onChange={(e) => {
               setSoVaoSo(e.target.value);
               if (fieldErrors.soVaoSo) {
@@ -276,38 +275,45 @@ export default function VanBangForm({
         </div>
       </div>
 
-      {/* HÀNG XÁC THỰC RECAPTCHA VÀ NÚT TRA CỨU: LUÔN CỐ ĐỊNH, KHÔNG BAO GIỜ NHẢY KHUNG HAY ĐẨY NỀN XANH */}
-      <div className="pt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
-        {/* reCAPTCHA chuẩn Google */}
-        <div className="shrink-0">
-          <SecurityCaptcha
-            id="captcha-vanbang"
-            captchaInput={captchaInput}
-            onCaptchaInputChange={(val) => {
-              setCaptchaInput(val);
-              if (captchaError) setCaptchaError(null);
-            }}
-            onCaptchaCodeGenerated={setCaptchaCode}
-            captchaError={captchaError || undefined}
-            resetTrigger={resetTrigger}
-          />
-        </div>
+      {/* KHỐI XÁC THỰC MÃ BẢO MẬT & HÀNG NÚT TRA CỨU TRỰC TIẾP TRONG BIỂU MẪU */}
+      <div className="pt-2.5 space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/80 p-3 sm:p-3.5 rounded-2xl border border-slate-200/80">
+          <div>
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <ShieldCheck className="w-4 h-4 text-blue-600" />
+              <span className="text-[13px] font-bold text-slate-800">Mã bảo mật:</span>
+              <span className="text-xs text-red-500 font-bold">*</span>
+            </div>
+            <SecurityCaptcha
+              id="vanbang-inline-recaptcha"
+              captchaInput={captchaInput}
+              onCaptchaInputChange={(token) => {
+                setCaptchaInput(token);
+                if (fieldErrors.captcha) {
+                  setFieldErrors((prev) => ({ ...prev, captcha: undefined }));
+                }
+              }}
+              captchaError={fieldErrors.captcha}
+              resetTrigger={resetTrigger}
+            />
+          </div>
 
-        {/* Nút hành động chính chuẩn Apple Royal Navy, không viền cộm, không ring dính */}
-        <div className="flex-1 flex justify-end">
-          <button
-            type="submit"
-            onClick={handleSubmit}
-            disabled={loading}
-            className="w-full sm:w-auto min-w-[200px] h-[54px] sm:h-[60px] px-6 sm:px-7 rounded-2xl bg-gradient-to-r from-[#142B6F] via-[#1E3A8A] to-[#2563EB] hover:from-[#0F1E4A] hover:to-[#1E3A8A] text-white flex items-center justify-center gap-2.5 text-[15px] sm:text-[15.5px] font-bold shadow-[0_8px_20px_-4px_rgba(20,43,111,0.38)] outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none border-0 transition-all duration-200 cursor-pointer active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed select-none"
-          >
-            {loading ? (
-              <Loader2 className="w-5 h-5 animate-spin shrink-0 text-white" strokeWidth={2.4} />
-            ) : (
-              <Search className="w-5 h-5 transition-transform duration-200 shrink-0" strokeWidth={2.4} />
-            )}
-            <span>Tra cứu văn bằng</span>
-          </button>
+          {/* HÀNG NÚT TRA CỨU */}
+          <div className="flex sm:justify-end items-end w-full sm:w-auto pt-1 sm:pt-0">
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              disabled={loading}
+              className="w-full sm:w-auto min-w-[200px] h-[50px] sm:h-[54px] px-7 rounded-2xl bg-gradient-to-r from-[#142B6F] via-[#1E3A8A] to-[#2563EB] hover:from-[#0F1E4A] hover:to-[#1E3A8A] text-white flex items-center justify-center gap-2.5 text-[15px] sm:text-[15.5px] font-bold shadow-[0_8px_20px_-4px_rgba(20,43,111,0.38)] outline-none focus:outline-none ring-0 border-0 transition-all duration-200 cursor-pointer active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed select-none"
+            >
+              {loading ? (
+                <Loader2 className="w-5 h-5 animate-spin shrink-0 text-white" strokeWidth={2.4} />
+              ) : (
+                <Search className="w-5 h-5 transition-transform duration-200 shrink-0" strokeWidth={2.4} />
+              )}
+              <span>Tra cứu văn bằng</span>
+            </button>
+          </div>
         </div>
       </div>
     </form>

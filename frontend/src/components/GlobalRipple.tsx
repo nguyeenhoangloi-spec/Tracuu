@@ -45,8 +45,16 @@ export default function GlobalRipple() {
         ripple.style.backgroundColor = attrColor;
       } else {
         const bg = computedStyle.backgroundColor;
+        const isTargetLight =
+          target.classList.contains('bg-white') ||
+          target.classList.contains('bg-slate-50') ||
+          target.classList.contains('bg-slate-100') ||
+          target.classList.contains('bg-slate-200') ||
+          target.closest('.bg-white, .bg-slate-50, [style*="background-color: rgb(255, 255, 255)"]') !== null;
+
         const isRedOrDark =
-          target.classList.contains('bg-[#D72134]') ||
+          !isTargetLight &&
+          (target.classList.contains('bg-[#D72134]') ||
           target.classList.contains('bg-slate-900') ||
           target.classList.contains('btn-submit') ||
           target.closest('#hero-stage') !== null ||
@@ -56,7 +64,7 @@ export default function GlobalRipple() {
           bg.includes('30, 41, 59') ||
           bg.includes('6, 12, 34') ||
           bg.includes('9, 21, 56') ||
-          bg.includes('0, 0, 0');
+          bg.includes('0, 0, 0'));
 
         if (isRedOrDark) {
           ripple.style.backgroundColor = 'rgba(255, 255, 255, 0.32)';

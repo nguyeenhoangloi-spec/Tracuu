@@ -22,10 +22,11 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ['"Momo Trust Sans"', '"Google Sans"', '"Be Vietnam Pro"', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['"Momo Trust Sans"', '"Google Sans"', '"Roboto Flex Variable"', '"Roboto Flex"', 'Roboto', '"Be Vietnam Pro"', 'system-ui', '-apple-system', 'sans-serif'],
+        roboto: ['"Roboto Flex Variable"', '"Roboto Flex"', 'Roboto', '"Momo Trust Sans"', '"Google Sans"', 'sans-serif'],
         momo: ['"Momo Trust Sans"', '"Google Sans"', '"Be Vietnam Pro"', 'system-ui', '-apple-system', 'sans-serif'],
-        'google-sans': ['"Momo Trust Sans"', '"Google Sans"', '"Be Vietnam Pro"', 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['"Momo Trust Sans"', '"Google Sans"', '"Be Vietnam Pro"', 'system-ui', '-apple-system', 'sans-serif'],
+        'google-sans': ['"Google Sans"', '"Momo Trust Sans"', '"Be Vietnam Pro"', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['"Momo Trust Sans"', '"Google Sans"', '"Roboto Flex Variable"', '"Roboto Flex"', 'Roboto', '"Be Vietnam Pro"', 'system-ui', '-apple-system', 'sans-serif'],
       },
       boxShadow: {
         certificate: '0 20px 40px -15px rgba(37, 53, 157, 0.12), 0 0 0 1px rgba(37, 53, 157, 0.08)',

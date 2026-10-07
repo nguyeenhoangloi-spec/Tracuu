@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Loader2 } from 'lucide-react';
 import LabelInput from '@/components/LabelInput';
-import SecurityCaptcha from '@/components/SecurityCaptcha';
+import SecurityCaptchaModal from '@/components/SecurityCaptchaModal';
 
 interface CnttFormProps {
   onSuccess: (data: any) => void;
@@ -35,8 +35,7 @@ export default function CnttForm({
   const [hoTen, setHoTen] = useState('');
   const [ngaySinh, setNgaySinh] = useState('');
   const [captchaInput, setCaptchaInput] = useState('');
-  const [captchaCode, setCaptchaCode] = useState('');
-  const [captchaError, setCaptchaError] = useState<string | null>(null);
+  const [isCaptchaModalOpen, setIsCaptchaModalOpen] = useState(false);
 
   React.useEffect(() => {
     if (initialCapDo) {
@@ -50,33 +49,61 @@ export default function CnttForm({
     }
   }, [initialSoHieuPhoi]);
 
-  const [fieldErrors, setFieldErrors] = useState<{ soHieuPhoi?: string; hoTen?: string; ngaySinh?: string }>({});
+  const [fieldErrors, setFieldErrors] = useState<{
+    soHieuPhoi?: string;
+    hoTen?: string;
+    ngaySinh?: string;
+    soVaoSo?: string;
+  }>({});
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e?: React.FormEvent | React.MouseEvent) => {
+  const handleSubmit = (e?: React.FormEvent | React.MouseEvent) => {
     if (e) e.preventDefault();
     setError(null);
-    setCaptchaError(null);
 
     let hasError = false;
-    const newErrors: { soHieuPhoi?: string } = {};
+    const newErrors: {
+      hoTen?: string;
+      ngaySinh?: string;
+      soHieuPhoi?: string;
+      soVaoSo?: string;
+    } = {};
+
+    if (!hoTen.trim()) {
+      newErrors.hoTen = 'Vui lòng điền họ tên';
+      hasError = true;
+    }
+    if (!ngaySinh) {
+      newErrors.ngaySinh = 'Vui lòng điền ngày sinh';
+      hasError = true;
+    }
     if (!soHieuPhoi.trim()) {
       newErrors.soHieuPhoi = 'Vui lòng điền số hiệu phôi';
       hasError = true;
     }
-    setFieldErrors(newErrors);
-
-    if (!captchaInput.trim()) {
-      setCaptchaError('Vui lòng xác nhận Tôi không phải là người máy');
+    if (!soVaoSo.trim()) {
+      newErrors.soVaoSo = 'Vui lòng điền số vào sổ';
       hasError = true;
     }
+
+    setFieldErrors(newErrors);
 
     if (hasError) {
       return;
     }
 
+    // Nếu chưa có captcha: mở modal xác thực reCAPTCHA
+    if (!captchaInput.trim()) {
+      setIsCaptchaModalOpen(true);
+      return;
+    }
+
+    doSearch(captchaInput);
+  };
+
+  const doSearch = async (token: string) => {
     const startTime = Date.now();
     setLoading(true);
     onLoading?.(true);
@@ -89,6 +116,7 @@ export default function CnttForm({
           cap_do: capDo,
           ho_ten: hoTen.trim() || undefined,
           ngay_sinh: ngaySinh || undefined,
+          recaptcha_token: token,
         }),
       });
 
@@ -136,7 +164,6 @@ export default function CnttForm({
     setHoTen('');
     setNgaySinh('');
     setCaptchaInput('');
-    setCaptchaError(null);
     setFieldErrors({});
     setError(null);
   };
@@ -153,9 +180,7 @@ export default function CnttForm({
     if (sample.so_vao_so) setSoVaoSo(sample.so_vao_so);
     if (sample.ho_ten) setHoTen(sample.ho_ten);
     if (sample.ngay_sinh) setNgaySinh(sample.ngay_sinh);
-    if (captchaCode) setCaptchaInput(captchaCode);
     setFieldErrors({});
-    setCaptchaError(null);
     setError(null);
   };
 
@@ -172,79 +197,19 @@ export default function CnttForm({
         handleSubmit(e);
       }}
       noValidate
-      className="space-y-3 sm:space-y-3.5"
+      className="space-y-2.5 sm:space-y-3"
     >
-      {/* Bộ chuyển đổi Cấp độ: CNTT Cơ bản vs CNTT Nâng cao chuẩn Apple Segmented Control */}
-      <div className="w-full max-w-sm mx-auto p-1 bg-slate-100/90 rounded-2xl flex items-center gap-1 mb-2">
-        <button
-          type="button"
-          onClick={() => {
-            setCapDo('coban');
-            onCapDoChange?.('coban');
-          }}
-          className={`flex-1 py-2 px-3 rounded-xl text-xs sm:text-[13px] font-bold transition-all duration-200 outline-none focus:outline-none border-0 cursor-pointer ${
-            capDo === 'coban'
-              ? 'bg-white text-[#0369A1] shadow-xs scale-[1.01]'
-              : 'text-slate-600 hover:text-slate-900'
-          }`}
-        >
-          CNTT Cơ bản
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            setCapDo('nangcao');
-            onCapDoChange?.('nangcao');
-          }}
-          className={`flex-1 py-2 px-3 rounded-xl text-xs sm:text-[13px] font-bold transition-all duration-200 outline-none focus:outline-none border-0 cursor-pointer ${
-            capDo === 'nangcao'
-              ? 'bg-gradient-to-r from-[#0F766E] to-[#0D9488] text-white shadow-xs scale-[1.01]'
-              : 'text-slate-600 hover:text-slate-900'
-          }`}
-        >
-          CNTT Nâng cao
-        </button>
-      </div>
-
-      {/* LƯỚI 2x2 CÂN ĐỐI CHUẨN APPLE: Ô NHẬP TO RỘNG 60PX */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
-        {/* Ô 1: Số hiệu phôi (Bắt buộc) */}
+      {/* LƯỚI 2x2 CÂN ĐỐI CHUẨN APPLE: Ô NHẬP 68PX THOÁNG ĐÃNG, BO GÓC 18PX */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+        {/* Ô 1: Họ tên */}
         <div>
           <LabelInput
-            label="Số hiệu phôi"
-            placeholder={capDo === 'nangcao' ? 'Ví dụ: NC-452109' : 'Ví dụ: 001300, CB-982145'}
-            value={soHieuPhoi}
-            height={60}
-            corner={16}
-            onChange={(e) => {
-              setSoHieuPhoi(e.target.value.toUpperCase());
-              if (fieldErrors.soHieuPhoi) setFieldErrors((prev) => ({ ...prev, soHieuPhoi: undefined }));
-            }}
-            error={fieldErrors.soHieuPhoi}
-            required
-          />
-        </div>
-
-        {/* Ô 2: Số vào sổ hoặc Số CCCD (Tùy chọn) */}
-        <div>
-          <LabelInput
-            label="Số vào sổ / CCCD (Tùy chọn)"
-            placeholder="Ví dụ: NCTU-CNTT-2023/142 hoặc 092..."
-            value={soVaoSo}
-            height={60}
-            corner={16}
-            onChange={(e) => setSoVaoSo(e.target.value)}
-          />
-        </div>
-
-        {/* Ô 3: Họ tên (Tùy chọn) */}
-        <div>
-          <LabelInput
-            label="Họ và tên (Tùy chọn)"
-            placeholder="Ví dụ: NGUYỄN THỊ NGỌC CHÂU"
+            label="Họ và tên"
+            placeholder="Ví dụ: NGUYỄN VĂN AN"
             value={hoTen}
-            height={60}
-            corner={16}
+            height={68}
+            corner={18}
+            required
             onChange={(e) => {
               setHoTen(e.target.value);
               if (fieldErrors.hoTen) setFieldErrors((prev) => ({ ...prev, hoTen: undefined }));
@@ -253,14 +218,15 @@ export default function CnttForm({
           />
         </div>
 
-        {/* Ô 4: Ngày sinh (Tùy chọn) */}
+        {/* Ô 2: Ngày sinh */}
         <div>
           <LabelInput
-            label="Ngày sinh (Tùy chọn)"
+            label="Ngày sinh"
             type="date"
             placeholder="dd/mm/yyyy"
-            height={60}
-            corner={16}
+            height={68}
+            corner={18}
+            required
             value={ngaySinh}
             onChange={(e) => {
               setNgaySinh(e.target.value);
@@ -269,44 +235,73 @@ export default function CnttForm({
             error={fieldErrors.ngaySinh}
           />
         </div>
-      </div>
 
-      {/* HÀNG XÁC THỰC VÀ NÚT BẤM: LUÔN CỐ ĐỊNH, KHÔNG BAO GIỜ NHẢY KHUNG HAY ĐẨY NỀN XANH */}
-      <div className="pt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
-        <div className="shrink-0">
-          <SecurityCaptcha
-            id="captcha-cntt"
-            captchaInput={captchaInput}
-            onCaptchaInputChange={(val) => {
-              setCaptchaInput(val);
-              if (captchaError) setCaptchaError(null);
+        {/* Ô 3: Số hiệu phôi */}
+        <div>
+          <LabelInput
+            label="Số hiệu phôi"
+            placeholder={capDo === 'nangcao' ? 'Ví dụ: NC-452109' : 'Ví dụ: 001300, CB-982145'}
+            value={soHieuPhoi}
+            height={68}
+            corner={18}
+            required
+            onChange={(e) => {
+              setSoHieuPhoi(e.target.value.toUpperCase());
+              if (fieldErrors.soHieuPhoi) setFieldErrors((prev) => ({ ...prev, soHieuPhoi: undefined }));
             }}
-            onCaptchaCodeGenerated={setCaptchaCode}
-            captchaError={captchaError || undefined}
-            resetTrigger={resetTrigger}
+            error={fieldErrors.soHieuPhoi}
           />
         </div>
 
-        <div className="flex-1 flex justify-end">
-          <button
-            type="submit"
-            onClick={handleSubmit}
-            disabled={loading}
-            className={`w-full sm:w-auto min-w-[200px] h-[54px] sm:h-[60px] px-6 sm:px-7 rounded-2xl text-white flex items-center justify-center gap-2.5 text-[15px] sm:text-[15.5px] font-bold outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none border-0 transition-all duration-200 cursor-pointer active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed select-none ${
-              capDo === 'nangcao'
-                ? 'bg-gradient-to-r from-[#0F766E] via-[#0D9488] to-[#14B8A6] hover:from-[#042F2E] hover:to-[#0F766E] shadow-[0_8px_20px_-4px_rgba(13,148,136,0.38)]'
-                : 'bg-gradient-to-r from-[#0369A1] via-[#0284C7] to-[#0EA5E9] hover:from-[#075985] hover:to-[#0284C7] shadow-[0_8px_20px_-4px_rgba(2,132,199,0.38)]'
-            }`}
-          >
-            {loading ? (
-              <Loader2 className="w-5 h-5 animate-spin shrink-0 text-white" strokeWidth={2.4} />
-            ) : (
-              <Search className="w-5 h-5 transition-transform duration-200 shrink-0" strokeWidth={2.4} />
-            )}
-            <span>Tra cứu CNTT {capDo === 'nangcao' ? 'Nâng cao' : 'Cơ bản'}</span>
-          </button>
+        {/* Ô 4: Số vào sổ */}
+        <div>
+          <LabelInput
+            label="Số vào sổ"
+            placeholder="Ví dụ: NCTU-CNTT-2023/142"
+            value={soVaoSo}
+            height={68}
+            corner={18}
+            required
+            onChange={(e) => {
+              setSoVaoSo(e.target.value);
+              if (fieldErrors.soVaoSo) setFieldErrors((prev) => ({ ...prev, soVaoSo: undefined }));
+            }}
+            error={fieldErrors.soVaoSo}
+          />
         </div>
       </div>
+
+      {/* HÀNG NÚT TRA CỨU: RỘNG RÃI, SẠCH SẼ, KHÔNG BỊ RECAPTCHA CHIẾM CHỖ TRONG FORM */}
+      <div className="pt-2 flex justify-end">
+        <button
+          type="submit"
+          onClick={handleSubmit}
+          disabled={loading}
+          className={`w-full sm:w-auto min-w-[210px] h-[50px] sm:h-[52px] px-7 rounded-2xl text-white flex items-center justify-center gap-2.5 text-[15px] sm:text-[15.5px] font-bold outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none border-0 transition-all duration-200 cursor-pointer active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed select-none ${
+            capDo === 'nangcao'
+              ? 'bg-gradient-to-r from-[#0F766E] via-[#0D9488] to-[#14B8A6] hover:from-[#042F2E] hover:to-[#0F766E] shadow-[0_8px_20px_-4px_rgba(13,148,136,0.38)]'
+              : 'bg-gradient-to-r from-[#0369A1] via-[#0284C7] to-[#0EA5E9] hover:from-[#075985] hover:to-[#0284C7] shadow-[0_8px_20px_-4px_rgba(2,132,199,0.38)]'
+          }`}
+        >
+          {loading ? (
+            <Loader2 className="w-5 h-5 animate-spin shrink-0 text-white" strokeWidth={2.4} />
+          ) : (
+            <Search className="w-5 h-5 transition-transform duration-200 shrink-0" strokeWidth={2.4} />
+          )}
+          <span>Tra cứu CNTT {capDo === 'nangcao' ? 'Nâng cao' : 'Cơ bản'}</span>
+        </button>
+      </div>
+
+      {/* reCAPTCHA Modal: Chỉ xuất hiện khi người dùng bấm Tra cứu, không chiếm chỗ trong form */}
+      <SecurityCaptchaModal
+        isOpen={isCaptchaModalOpen}
+        onClose={() => setIsCaptchaModalOpen(false)}
+        onVerified={(token) => {
+          setCaptchaInput(token);
+          doSearch(token);
+        }}
+        resetTrigger={resetTrigger}
+      />
     </form>
   );
 }
