@@ -25,28 +25,12 @@ function RippleIconButton({
   onClick: () => void;
   isOpen: boolean;
 }) {
-  const [ripples, setRipples] = useState<RippleWave[]>([]);
-
-  const handlePointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height) * 2.6;
-    const x = e.clientX - rect.left - size / 2;
-    const y = e.clientY - rect.top - size / 2;
-    const id = Date.now() + Math.random();
-
-    setRipples((prev) => [...prev, { x, y, size, id }]);
-
-    setTimeout(() => {
-      setRipples((prev) => prev.filter((r) => r.id !== id));
-    }, 600);
-  };
-
   return (
     <motion.button
       type="button"
       whileTap={{ scale: 0.84 }}
-      onPointerDown={handlePointerDown}
       onClick={onClick}
+      data-ripple="rgba(215, 33, 52, 0.28)"
       className={`relative overflow-hidden p-2 rounded-full bg-transparent hover:bg-transparent active:bg-transparent focus:bg-transparent transition-colors cursor-pointer outline-none border-none select-none [-webkit-tap-highlight-color:transparent] ${
         isOpen ? 'text-[#EC1E24]' : 'text-[#3C3C3C] hover:text-[#EC1E24]'
       }`}
@@ -77,21 +61,6 @@ function RippleIconButton({
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Sóng nước loang từ vị trí bấm ngón tay trên nút Menu */}
-      {ripples.map((r) => (
-        <span
-          key={r.id}
-          className="absolute rounded-full pointer-events-none animate-ripple z-0"
-          style={{
-            left: r.x,
-            top: r.y,
-            width: r.size,
-            height: r.size,
-            backgroundColor: 'rgba(236, 30, 36, 0.32)',
-          }}
-        />
-      ))}
     </motion.button>
   );
 }
@@ -110,31 +79,15 @@ function RippleLink({
   className?: string;
   isExternal?: boolean;
 }) {
-  const [ripples, setRipples] = useState<RippleWave[]>([]);
-
-  const handlePointerDown = (e: React.PointerEvent<HTMLAnchorElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const size = Math.max(rect.width, rect.height) * 2.4;
-    const x = e.clientX - rect.left - size / 2;
-    const y = e.clientY - rect.top - size / 2;
-    const id = Date.now() + Math.random();
-
-    setRipples((prev) => [...prev, { x, y, size, id }]);
-
-    setTimeout(() => {
-      setRipples((prev) => prev.filter((r) => r.id !== id));
-    }, 600);
-  };
-
   const handleClick = () => {
     if (onClick) {
-      setTimeout(onClick, 180);
+      setTimeout(onClick, 160);
     }
   };
 
   const sharedProps = {
-    onPointerDown: handlePointerDown,
     onClick: handleClick,
+    'data-ripple': 'rgba(215, 33, 52, 0.22)',
     className: `relative overflow-hidden block py-2 px-3 sm:py-2.5 sm:px-3.5 rounded-xl whitespace-nowrap transition-colors duration-150 active:bg-red-50/70 cursor-pointer select-none outline-none focus:outline-none not-italic [-webkit-tap-highlight-color:transparent] ${className}`,
   };
 
@@ -142,19 +95,6 @@ function RippleLink({
     return (
       <a href={href} target="_blank" rel="noopener noreferrer" {...sharedProps}>
         <span className="relative z-10">{children}</span>
-        {ripples.map((r) => (
-          <span
-            key={r.id}
-            className="absolute rounded-full pointer-events-none animate-ripple z-0"
-            style={{
-              left: r.x,
-              top: r.y,
-              width: r.size,
-              height: r.size,
-              backgroundColor: 'rgba(236, 30, 36, 0.32)',
-            }}
-          />
-        ))}
       </a>
     );
   }
@@ -162,19 +102,6 @@ function RippleLink({
   return (
     <Link href={href} {...sharedProps}>
       <span className="relative z-10">{children}</span>
-      {ripples.map((r) => (
-        <span
-          key={r.id}
-          className="absolute rounded-full pointer-events-none animate-ripple z-0"
-          style={{
-            left: r.x,
-            top: r.y,
-            width: r.size,
-            height: r.size,
-            backgroundColor: 'rgba(236, 30, 36, 0.32)',
-          }}
-        />
-      ))}
     </Link>
   );
 }
@@ -193,7 +120,7 @@ export default function Navbar({ activeTab = 'vanbang', onTabChange }: NavbarPro
   }, []);
 
   return (
-    <header className="sticky top-0 left-0 right-0 w-full z-50 no-print antialiased select-none bg-white border-0 border-none shadow-none">
+    <header className="relative w-full z-30 no-print antialiased select-none bg-white border-0 border-none shadow-none">
       <div className="max-w-[1430px] mx-auto px-3.5 sm:px-6 relative">
         <div className="flex items-center justify-between gap-3 sm:gap-6 h-[58px] sm:h-[68px] lg:h-[76px]">
           
@@ -232,14 +159,14 @@ export default function Navbar({ activeTab = 'vanbang', onTabChange }: NavbarPro
               href="https://www.nctu.edu.vn/"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium text-[#1A1A1A] hover:text-[#EC1E24] transition-colors py-1 cursor-pointer select-none outline-none focus:outline-none not-italic"
+              className="no-ripple font-medium text-[#1A1A1A] hover:text-[#EC1E24] transition-colors py-1 cursor-pointer select-none outline-none focus:outline-none not-italic"
             >
               Trang chủ
             </a>
 
             <Link
               href="/"
-              className="font-bold text-[#EC1E24] py-1 cursor-pointer select-none relative outline-none focus:outline-none not-italic"
+              className="no-ripple font-bold text-[#EC1E24] py-1 cursor-pointer select-none relative outline-none focus:outline-none not-italic"
               title="Cổng tra cứu văn bằng & chứng chỉ điện tử"
             >
               <span>Tra cứu</span>
@@ -250,7 +177,7 @@ export default function Navbar({ activeTab = 'vanbang', onTabChange }: NavbarPro
               href="https://nctu.edu.vn/trang-sinh-vien"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium text-[#1A1A1A] hover:text-[#EC1E24] transition-colors py-1 cursor-pointer select-none outline-none focus:outline-none not-italic"
+              className="no-ripple font-medium text-[#1A1A1A] hover:text-[#EC1E24] transition-colors py-1 cursor-pointer select-none outline-none focus:outline-none not-italic"
             >
               Sinh viên
             </a>
@@ -259,7 +186,7 @@ export default function Navbar({ activeTab = 'vanbang', onTabChange }: NavbarPro
               href="https://alumni.nctu.edu.vn/"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium text-[#1A1A1A] hover:text-[#EC1E24] transition-colors py-1 cursor-pointer select-none outline-none focus:outline-none not-italic"
+              className="no-ripple font-medium text-[#1A1A1A] hover:text-[#EC1E24] transition-colors py-1 cursor-pointer select-none outline-none focus:outline-none not-italic"
             >
               Cựu sinh viên
             </a>
@@ -268,7 +195,7 @@ export default function Navbar({ activeTab = 'vanbang', onTabChange }: NavbarPro
               href="https://nctu.edu.vn/cb-gv"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium text-[#1A1A1A] hover:text-[#EC1E24] transition-colors py-1 cursor-pointer select-none outline-none focus:outline-none not-italic"
+              className="no-ripple font-medium text-[#1A1A1A] hover:text-[#EC1E24] transition-colors py-1 cursor-pointer select-none outline-none focus:outline-none not-italic"
             >
               CB-GV
             </a>
@@ -277,7 +204,7 @@ export default function Navbar({ activeTab = 'vanbang', onTabChange }: NavbarPro
               href="https://vr360.nctu.edu.vn/"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium text-[#1A1A1A] hover:text-[#EC1E24] transition-colors py-1 cursor-pointer select-none outline-none focus:outline-none not-italic"
+              className="no-ripple font-medium text-[#1A1A1A] hover:text-[#EC1E24] transition-colors py-1 cursor-pointer select-none outline-none focus:outline-none not-italic"
             >
               Tham quan trường
             </a>

@@ -609,14 +609,15 @@ export default function SpotlightBar({
                 e.stopPropagation();
                 handleDirectSearch();
               }}
-              className={`inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full text-white text-[12.5px] sm:text-[14.5px] font-semibold transition-all duration-200 cursor-pointer shrink-0 select-none border-0 outline-none focus:outline-none focus-visible:outline-none ring-0 ${isWindowOpen || query.trim()
+              data-ripple="rgba(255, 255, 255, 0.35)"
+              className={`relative overflow-hidden inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full text-white text-[12.5px] sm:text-[14.5px] font-semibold transition-all duration-200 cursor-pointer shrink-0 select-none border-0 outline-none focus:outline-none focus-visible:outline-none ring-0 ${isWindowOpen || query.trim()
                   ? 'bg-gradient-to-r from-[#142B6F] to-[#2563EB] shadow-[0_4px_16px_rgba(37,99,235,0.4)]'
                   : 'bg-[#142B6F] hover:bg-[#0F1E4A] shadow-[0_4px_16px_rgba(20,43,111,0.3)]'
                 }`}
               title="Tra cứu ngay"
             >
-              <span>Tra cứu</span>
-              <CornerDownLeft className="w-3.5 h-3.5 text-blue-200 hidden min-[400px]:inline" />
+              <span className="relative z-10">Tra cứu</span>
+              <CornerDownLeft className="w-3.5 h-3.5 text-blue-200 hidden min-[400px]:inline relative z-10" />
             </motion.button>
           </div>
         </div>
@@ -630,14 +631,15 @@ export default function SpotlightBar({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.94 }}
             onClick={() => handleCompanionFilterClick('dh')}
-            className={`w-[50px] h-[50px] sm:w-[66px] sm:h-[66px] rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer border-0 border-none outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none active:border-0 select-none overflow-hidden ${categoryFilter === 'dh' && isFocused && !isFormExpanded
+            data-ripple="rgba(215, 33, 52, 0.28)"
+            className={`relative overflow-hidden w-[50px] h-[50px] sm:w-[66px] sm:h-[66px] rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer border-0 border-none outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none active:border-0 select-none ${categoryFilter === 'dh' && isFocused && !isFormExpanded
                 ? 'bg-[#142B6F] text-white shadow-[0_12px_28px_rgba(20,43,111,0.45)] scale-105'
                 : 'bg-white hover:bg-white text-[#142B6F] shadow-[0_8px_20px_-4px_rgba(15,39,90,0.14)]'
               }`}
             style={{ border: 'none', outline: 'none' }}
             title="Lọc: Bằng tốt nghiệp Đại học / Cao đẳng"
           >
-            <GraduationCap className="w-5 h-5 sm:w-7 sm:h-7 stroke-[2.2]" />
+            <GraduationCap className="w-5 h-5 sm:w-7 sm:h-7 stroke-[2.2] relative z-10" />
           </motion.button>
 
           {/* Nút 2: Chứng chỉ CNTT (FolderCode - Chuẩn icon CNTT) */}
@@ -646,14 +648,15 @@ export default function SpotlightBar({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.94 }}
             onClick={() => handleCompanionFilterClick('cntt')}
-            className={`w-[50px] h-[50px] sm:w-[66px] sm:h-[66px] rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer border-0 border-none outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none active:border-0 select-none overflow-hidden ${categoryFilter === 'cntt' && isFocused && !isFormExpanded
+            data-ripple="rgba(215, 33, 52, 0.28)"
+            className={`relative overflow-hidden w-[50px] h-[50px] sm:w-[66px] sm:h-[66px] rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer border-0 border-none outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none active:border-0 select-none ${categoryFilter === 'cntt' && isFocused && !isFormExpanded
                 ? 'bg-[#142B6F] text-white shadow-[0_12px_28px_rgba(20,43,111,0.45)] scale-105'
                 : 'bg-white hover:bg-white text-[#142B6F] shadow-[0_8px_20px_-4px_rgba(15,39,90,0.14)]'
               }`}
             style={{ border: 'none', outline: 'none' }}
             title="Lọc: Chứng chỉ Ứng dụng CNTT"
           >
-            <Laptop className="w-5 h-5 sm:w-7 sm:h-7 stroke-[2.2]" />
+            <Laptop className="w-5 h-5 sm:w-7 sm:h-7 stroke-[2.2] relative z-10" />
           </motion.button>
 
           {/* Nút 3: Chứng chỉ VSTEP (Languages - Chuẩn icon Ngoại ngữ VSTEP) */}
@@ -662,14 +665,15 @@ export default function SpotlightBar({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.94 }}
             onClick={() => handleCompanionFilterClick('vstep')}
-            className={`w-[50px] h-[50px] sm:w-[66px] sm:h-[66px] rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer border-0 border-none outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none active:border-0 select-none overflow-hidden ${categoryFilter === 'vstep' && isFocused && !isFormExpanded
+            data-ripple="rgba(215, 33, 52, 0.28)"
+            className={`relative overflow-hidden w-[50px] h-[50px] sm:w-[66px] sm:h-[66px] rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer border-0 border-none outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none active:border-0 select-none ${categoryFilter === 'vstep' && isFocused && !isFormExpanded
                 ? 'bg-[#142B6F] text-white shadow-[0_12px_28px_rgba(20,43,111,0.45)] scale-105'
                 : 'bg-white hover:bg-white text-[#142B6F] shadow-[0_8px_20px_-4px_rgba(15,39,90,0.14)]'
               }`}
             style={{ border: 'none', outline: 'none' }}
             title="Lọc: Chứng chỉ Tiếng Anh VSTEP"
           >
-            <Languages className="w-5 h-5 sm:w-7 sm:h-7 stroke-[2.2]" />
+            <Languages className="w-5 h-5 sm:w-7 sm:h-7 stroke-[2.2] relative z-10" />
           </motion.button>
         </div>
       </div>
@@ -855,17 +859,17 @@ export default function SpotlightBar({
                                   whileHover={{ scale: 1.05, y: -2 }}
                                   whileTap={{ scale: 0.95 }}
                                   onClick={() => handleSelectDegreeType(deg)}
-                                  className={`group relative flex flex-col items-center justify-start p-2 sm:p-3 rounded-2xl bg-transparent hover:bg-slate-50/80 transition-all duration-200 cursor-pointer text-center min-w-0 outline-none focus:outline-none focus:ring-0 ring-0 border-0 shadow-none select-none ${isMatch
+                                  className={`degree-launchpad-btn group relative flex flex-col items-center justify-start p-2 sm:p-3 rounded-2xl bg-transparent hover:bg-slate-50/80 transition-all duration-200 cursor-pointer text-center min-w-0 outline-none focus:outline-none focus:ring-0 ring-0 border-0 shadow-none select-none ${isMatch
                                       ? 'opacity-100 scale-100'
                                       : 'opacity-35 grayscale-[50%] hover:opacity-100 hover:grayscale-0'
                                     }`}
                                 >
                                   {/* Squircle Apple Icon - Nổi bật tự nhiên, đổ bóng nhẹ nhàng chuẩn macOS */}
                                   <div
-                                    className={`w-[48px] h-[48px] min-[360px]:w-14 min-[360px]:h-14 sm:w-16 sm:h-16 rounded-[16px] sm:rounded-[22px] bg-gradient-to-br ${deg.gradient} text-white flex items-center justify-center shadow-[0_8px_20px_-4px_rgba(0,0,0,0.18)] ${deg.shadow} group-hover:scale-105 group-hover:shadow-[0_12px_26px_-4px_rgba(0,0,0,0.24)] transition-all duration-200 relative shrink-0`}
+                                    className={`degree-squircle-target w-[48px] h-[48px] min-[360px]:w-14 min-[360px]:h-14 sm:w-16 sm:h-16 rounded-[16px] sm:rounded-[22px] bg-gradient-to-br ${deg.gradient} text-white flex items-center justify-center shadow-[0_8px_20px_-4px_rgba(0,0,0,0.18)] ${deg.shadow} group-hover:scale-105 group-hover:shadow-[0_12px_26px_-4px_rgba(0,0,0,0.24)] transition-all duration-200 relative shrink-0 overflow-hidden`}
                                   >
                                     <div className="absolute inset-0 rounded-[16px] sm:rounded-[22px] bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
-                                    <IconComponent className="w-6 h-6 min-[360px]:w-7 min-[360px]:h-7 sm:w-8 sm:h-8 stroke-[2.2] drop-shadow-xs" />
+                                    <IconComponent className="w-6 h-6 min-[360px]:w-7 min-[360px]:h-7 sm:w-8 sm:h-8 stroke-[2.2] drop-shadow-xs relative z-10" />
                                   </div>
 
                                   {/* Tên loại bằng to rõ, duy nhất 1 nhãn chuẩn Apple Launchpad */}
@@ -928,7 +932,7 @@ export default function SpotlightBar({
                                   setSlideDirection('backward');
                                   updateOpenState(true, false);
                                 }}
-                                data-ripple="rgba(20, 43, 111, 0.2)"
+                                data-ripple="rgba(215, 33, 52, 0.28)"
                                 className="group relative overflow-hidden w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200/90 active:bg-slate-300 text-slate-700 hover:text-[#142B6F] transition-colors duration-150 cursor-pointer flex-shrink-0 outline-none border-0 border-none select-none [-webkit-tap-highlight-color:transparent]"
                                 title="Đổi loại bằng (Quay lại)"
                                 aria-label="Đổi loại bằng (Quay lại)"

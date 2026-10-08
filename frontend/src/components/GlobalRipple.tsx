@@ -145,7 +145,50 @@ export default function GlobalRipple() {
         }
       }
 
-      // 3. XỬ LÝ RIPPLE TOÀN BỘ CÁC NÚT BẤM, LIÊN KẾT, TAB, OPTION MENU VÀ NÚT TƯƠNG TÁC
+      // 3. XỬ LÝ RIPPLE TẠI SQUIRCLE ICON CỦA LOẠI BẰNG (LAUNCHPAD GRID): DÍNH ĐÚNG VÀO ICON, KHÔNG LAN RA CHỮ
+      const degreeBtn = targetEl.closest<HTMLElement>('.degree-launchpad-btn');
+      if (degreeBtn) {
+        const squircle = degreeBtn.querySelector<HTMLElement>('.degree-squircle-target');
+        if (squircle) {
+          const rect = squircle.getBoundingClientRect();
+          const posX =
+            e.clientX >= rect.left && e.clientX <= rect.right
+              ? e.clientX - rect.left
+              : squircle.clientWidth / 2;
+          const posY =
+            e.clientY >= rect.top && e.clientY <= rect.bottom
+              ? e.clientY - rect.top
+              : squircle.clientHeight / 2;
+          triggerRipple(squircle, posX, posY, 'rgba(255, 255, 255, 0.38)');
+          return;
+        }
+      }
+
+      // 4. HỖ TRỢ ĐÍNH RIPPLE VÀO COMPONENT CON ĐƯỢC CHỈ ĐỊNH QUA DATA-RIPPLE-TARGET
+      const targetedParent = targetEl.closest<HTMLElement>('[data-ripple-target]');
+      if (targetedParent) {
+        const selector = targetedParent.getAttribute('data-ripple-target');
+        const customTarget = selector ? targetedParent.querySelector<HTMLElement>(selector) : null;
+        if (customTarget) {
+          const rect = customTarget.getBoundingClientRect();
+          const posX =
+            e.clientX >= rect.left && e.clientX <= rect.right
+              ? e.clientX - rect.left
+              : customTarget.clientWidth / 2;
+          const posY =
+            e.clientY >= rect.top && e.clientY <= rect.bottom
+              ? e.clientY - rect.top
+              : customTarget.clientHeight / 2;
+          const customColor =
+            targetedParent.getAttribute('data-ripple') ||
+            customTarget.getAttribute('data-ripple') ||
+            undefined;
+          triggerRipple(customTarget, posX, posY, customColor);
+          return;
+        }
+      }
+
+      // 5. XỬ LÝ RIPPLE TOÀN BỘ CÁC NÚT BẤM, LIÊN KẾT, TAB, OPTION MENU VÀ NÚT TƯƠNG TÁC
       const target = targetEl.closest<HTMLElement>(
         'button, a, [role="button"], [role="option"], .btn-submit, .ripple-effect, .tab-btn'
       );

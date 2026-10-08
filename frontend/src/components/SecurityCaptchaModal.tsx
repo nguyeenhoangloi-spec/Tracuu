@@ -90,9 +90,9 @@ export default function SecurityCaptchaModal({
       className={`fixed inset-0 z-[99999] flex flex-col justify-end sm:justify-center items-center p-0 sm:p-5 md:p-6 overflow-hidden select-none pointer-events-auto ${isClosing ? 'animate-omninotch-backdrop-exit' : 'animate-omninotch-backdrop-enter'
         }`}
     >
-      {/* LỚP BACKDROP BẤM RA NGOÀI ĐỂ ĐÓNG */}
+      {/* LỚP BACKDROP BẤM RA NGOÀI ĐỂ ĐÓNG - ĐỒNG BỘ CHUẨN APPLE DỊU NHẸ, KHÔNG TẠO KHUNG ĐEN TƯƠNG PHẢN */}
       <div
-        className="absolute inset-0 bg-slate-900/50 backdrop-blur-xs cursor-pointer select-none no-print"
+        className="absolute inset-0 bg-slate-950/25 backdrop-blur-[3.5px] cursor-pointer select-none no-print outline-none border-0 ring-0"
         onMouseDown={(e) => e.stopPropagation()}
         onClick={(e) => {
           e.stopPropagation();
@@ -115,7 +115,7 @@ export default function SecurityCaptchaModal({
         }}
       >
         <div
-          className="relative w-full max-w-[400px] bg-white rounded-t-[36px] rounded-b-none sm:rounded-[38px] sm:rounded-b-[38px] p-6 sm:p-7 pt-7 sm:pt-8 pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))] sm:pb-7 shadow-[0_28px_70px_-15px_rgba(15,23,42,0.3),0_10px_28px_-4px_rgba(15,23,42,0.1)] border-0 sm:border sm:border-slate-100 flex flex-col items-center text-center z-10 pointer-events-auto"
+          className="relative w-full max-w-[400px] bg-white rounded-t-[36px] rounded-b-none sm:rounded-[38px] sm:rounded-b-[38px] p-6 sm:p-7 pt-7 sm:pt-8 pb-[calc(1.5rem+env(safe-area-inset-bottom,0px))] sm:pb-7 shadow-[0_24px_65px_-15px_rgba(15,23,42,0.22),0_10px_26px_-4px_rgba(15,23,42,0.08)] border-0 border-none outline-none focus:outline-none ring-0 flex flex-col items-center text-center z-10 pointer-events-auto"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Nút đóng góc phải: Chuẩn nút tròn xám có gợn sóng loang màu Ripple đồng bộ hệ thống */}
