@@ -28,23 +28,16 @@ export default function NotFoundResultCard({
   return (
     <div className="font-google-sans text-[#0F172A] w-full max-w-lg mx-auto flex flex-col justify-end sm:justify-center my-auto">
       {/* THẺ THÔNG BÁO KHÔNG TÌM THẤY KẾT QUẢ - BOTTOM SHEET TRÊN MOBILE, POPUP BO TRÒN 38PX ĐỒNG BỘ TRÊN DESKTOP */}
-      <div className="bg-white rounded-t-[32px] rounded-b-none sm:rounded-[38px] sm:rounded-b-[38px] shadow-[0_24px_70px_-15px_rgba(15,23,42,0.28),0_10px_28px_-4px_rgba(15,23,42,0.12)] overflow-hidden border-0 relative px-4 min-[390px]:px-6 sm:px-10 pt-4 pb-[calc(2rem+env(safe-area-inset-bottom,0px))] sm:py-12 text-center w-full">
-        {/* Thanh gạt Drawer trên mobile: Nhấn hoặc vuốt để đóng */}
-        <div
-          onClick={handleClose}
-          className="w-12 h-1.5 bg-slate-300 hover:bg-slate-400 rounded-full mx-auto mb-4 sm:hidden cursor-pointer active:scale-95 transition-all"
-          title="Nhấn để đóng"
-        />
-
+      <div className="bg-white rounded-t-[36px] rounded-b-none sm:rounded-[38px] sm:rounded-b-[38px] shadow-[0_24px_70px_-15px_rgba(15,23,42,0.28),0_10px_28px_-4px_rgba(15,23,42,0.12)] overflow-hidden border-0 relative px-4 min-[390px]:px-6 sm:px-10 pt-7 pb-[calc(2rem+env(safe-area-inset-bottom,0px))] sm:py-12 text-center w-full">
         {/* Nút đóng góc phải */}
         <button
           type="button"
           onClick={handleClose}
           data-ripple="rgba(215, 33, 52, 0.28)"
-          className="absolute top-4 right-4 sm:top-5 sm:right-5 overflow-hidden w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-slate-200/60 hover:bg-slate-300/80 active:bg-slate-300 text-slate-700 hover:text-slate-900 transition-all duration-150 cursor-pointer active:scale-90 no-print outline-none border-0 border-none backdrop-blur-xs select-none [-webkit-tap-highlight-color:transparent]"
+          className="absolute top-5 right-5 sm:top-6 sm:right-6 overflow-hidden w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-slate-200/60 hover:bg-slate-300/80 active:bg-slate-300 text-slate-700 hover:text-slate-900 transition-all duration-150 cursor-pointer active:scale-90 no-print outline-none border-0 border-none backdrop-blur-xs select-none [-webkit-tap-highlight-color:transparent]"
           title="Đóng (Esc)"
         >
-          <X className="w-5 h-5 sm:w-6 sm:h-6 text-slate-700 pointer-events-none" strokeWidth={2.5} />
+          <X className="w-5 h-5 sm:w-[22px] sm:h-[22px] text-slate-700 pointer-events-none" strokeWidth={2.3} />
         </button>
 
         {/* HÌNH MINH HỌA: HAI VĂN BẰNG CÙNG KÍNH LÚP VÀ DẤU X ĐỎ */}

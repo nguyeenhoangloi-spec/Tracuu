@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Loader2, ShieldCheck } from 'lucide-react';
+import { Search, Loader2 } from 'lucide-react';
 import LabelInput from '@/components/LabelInput';
-import SecurityCaptcha from '@/components/SecurityCaptcha';
+import SecurityCaptchaModal from '@/components/SecurityCaptchaModal';
 
 interface VanBangFormProps {
   onSuccess: (data: any) => void;
@@ -33,6 +33,7 @@ export default function VanBangForm({
   const [soHieuPhoi, setSoHieuPhoi] = useState(initialSoHieuPhoi || '');
   const [soVaoSo, setSoVaoSo] = useState('');
   const [captchaInput, setCaptchaInput] = useState('');
+  const [isCaptchaModalOpen, setIsCaptchaModalOpen] = useState(false);
 
   React.useEffect(() => {
     if (initialLoaiDaoTao) {
@@ -51,7 +52,6 @@ export default function VanBangForm({
     ngaySinh?: string;
     soHieuPhoi?: string;
     soVaoSo?: string;
-    captcha?: string;
   }>({});
 
   const [loading, setLoading] = useState(false);
@@ -67,7 +67,6 @@ export default function VanBangForm({
       ngaySinh?: string;
       soHieuPhoi?: string;
       soVaoSo?: string;
-      captcha?: string;
     } = {};
     if (!hoTen.trim()) {
       newErrors.hoTen = 'Vui lòng điền họ tên';
@@ -83,14 +82,16 @@ export default function VanBangForm({
       newErrors.soVaoSo = 'Vui lòng nhập Số vào sổ hoặc Số hiệu phôi';
       hasError = true;
     }
-    if (!captchaInput.trim()) {
-      newErrors.captcha = 'Vui lòng xác thực Tôi không phải là người máy';
-      hasError = true;
-    }
 
     setFieldErrors(newErrors);
 
     if (hasError) {
+      return;
+    }
+
+    // Nếu chưa xác thực captcha: mở modal xác thực reCAPTCHA ở ngoài
+    if (!captchaInput.trim()) {
+      setIsCaptchaModalOpen(true);
       return;
     }
 
@@ -172,10 +173,10 @@ export default function VanBangForm({
 
   const handleApplySample = (sample: any) => {
     if (sample.loai_dao_tao) setLoaiDaoTao(sample.loai_dao_tao);
-    if (sample.ho_ten) setHoTen(sample.ho_ten);
-    if (sample.ngay_sinh) setNgaySinh(sample.ngay_sinh);
-    if (sample.so_hieu_phoi) setSoHieuPhoi(sample.so_hieu_phoi);
-    if (sample.so_vao_so) setSoVaoSo(sample.so_vao_so);
+    setHoTen(sample.ho_ten || '');
+    setNgaySinh(sample.ngay_sinh || '');
+    setSoHieuPhoi(sample.so_hieu_phoi || '');
+    setSoVaoSo(sample.so_vao_so || '');
     setFieldErrors({});
     setError(null);
   };
@@ -196,7 +197,7 @@ export default function VanBangForm({
       className="space-y-2.5 sm:space-y-3"
     >
       {/* LƯỚI 2x2 CÂN ĐỐI HOÀN HẢO CHUẨN APPLE: GỌN GÀNG, Ô NHẬP 68PX THOÁNG ĐÃNG, BO GÓC 18PX */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
         {/* Ô 1: Họ tên */}
         <div>
           <LabelInput
@@ -275,47 +276,33 @@ export default function VanBangForm({
         </div>
       </div>
 
-      {/* KHỐI XÁC THỰC MÃ BẢO MẬT & HÀNG NÚT TRA CỨU TRỰC TIẾP TRONG BIỂU MẪU */}
-      <div className="pt-2.5 space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/80 p-3 sm:p-3.5 rounded-2xl border border-slate-200/80">
-          <div>
-            <div className="flex items-center gap-1.5 mb-1.5">
-              <ShieldCheck className="w-4 h-4 text-blue-600" />
-              <span className="text-[13px] font-bold text-slate-800">Mã bảo mật:</span>
-              <span className="text-xs text-red-500 font-bold">*</span>
-            </div>
-            <SecurityCaptcha
-              id="vanbang-inline-recaptcha"
-              captchaInput={captchaInput}
-              onCaptchaInputChange={(token) => {
-                setCaptchaInput(token);
-                if (fieldErrors.captcha) {
-                  setFieldErrors((prev) => ({ ...prev, captcha: undefined }));
-                }
-              }}
-              captchaError={fieldErrors.captcha}
-              resetTrigger={resetTrigger}
-            />
-          </div>
-
-          {/* HÀNG NÚT TRA CỨU */}
-          <div className="flex sm:justify-end items-end w-full sm:w-auto pt-1 sm:pt-0">
-            <button
-              type="submit"
-              onClick={handleSubmit}
-              disabled={loading}
-              className="w-full sm:w-auto min-w-[200px] h-[50px] sm:h-[54px] px-7 rounded-2xl bg-gradient-to-r from-[#142B6F] via-[#1E3A8A] to-[#2563EB] hover:from-[#0F1E4A] hover:to-[#1E3A8A] text-white flex items-center justify-center gap-2.5 text-[15px] sm:text-[15.5px] font-bold shadow-[0_8px_20px_-4px_rgba(20,43,111,0.38)] outline-none focus:outline-none ring-0 border-0 transition-all duration-200 cursor-pointer active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed select-none"
-            >
-              {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin shrink-0 text-white" strokeWidth={2.4} />
-              ) : (
-                <Search className="w-5 h-5 transition-transform duration-200 shrink-0" strokeWidth={2.4} />
-              )}
-              <span>Tra cứu văn bằng</span>
-            </button>
-          </div>
-        </div>
+      {/* HÀNG NÚT TRA CỨU: RỘNG RÃI, SẠCH SẼ, KHÔNG BỊ RECAPTCHA CHIẾM CHỖ TRONG FORM */}
+      <div className="pt-1.5 pb-0 sm:pt-2.5 sm:pb-0 flex justify-end">
+        <button
+          type="submit"
+          onClick={handleSubmit}
+          disabled={loading}
+          className="w-full sm:w-auto min-w-[210px] h-[48px] sm:h-[50px] px-7 rounded-2xl bg-gradient-to-r from-[#142B6F] via-[#1E3A8A] to-[#2563EB] hover:from-[#0F1E4A] hover:to-[#1E3A8A] text-white flex items-center justify-center gap-2.5 text-[15px] sm:text-[15.5px] font-bold shadow-[0_8px_20px_-4px_rgba(20,43,111,0.38)] outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none border-0 transition-all duration-200 cursor-pointer active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed select-none"
+        >
+          {loading ? (
+            <Loader2 className="w-5 h-5 animate-spin shrink-0 text-white" strokeWidth={2.4} />
+          ) : (
+            <Search className="w-5 h-5 transition-transform duration-200 shrink-0" strokeWidth={2.4} />
+          )}
+          <span>Tra cứu văn bằng</span>
+        </button>
       </div>
+
+      {/* reCAPTCHA Modal: Chỉ xuất hiện khi người dùng bấm Tra cứu, không chiếm chỗ trong form */}
+      <SecurityCaptchaModal
+        isOpen={isCaptchaModalOpen}
+        onClose={() => setIsCaptchaModalOpen(false)}
+        onVerified={(token) => {
+          setCaptchaInput(token);
+          doSearch(token);
+        }}
+        resetTrigger={resetTrigger}
+      />
     </form>
   );
 }

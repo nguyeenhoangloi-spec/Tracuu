@@ -31,7 +31,7 @@ export default function RootLayout({
         <link rel="preload" href="/fonts/MomoTrustSans-Semibold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/MomoTrustSans-Bold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
-      <body className="min-h-screen flex flex-column flex-col justify-between antialiased font-sans">
+      <body className="min-h-screen flex flex-column flex-col justify-between antialiased font-sans bg-white">
         <GlobalRipple />
         {children}
       </body>

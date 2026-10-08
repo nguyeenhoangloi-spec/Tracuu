@@ -116,6 +116,7 @@ export default function CnttForm({
           cap_do: capDo,
           ho_ten: hoTen.trim() || undefined,
           ngay_sinh: ngaySinh || undefined,
+          so_vao_so: soVaoSo.trim() || undefined,
           recaptcha_token: token,
         }),
       });
@@ -175,11 +176,14 @@ export default function CnttForm({
   }, [resetTrigger]);
 
   const handleApplySample = (sample: any) => {
-    if (sample.cap_do) setCapDo(sample.cap_do);
-    if (sample.so_hieu_phoi) setSoHieuPhoi(sample.so_hieu_phoi);
-    if (sample.so_vao_so) setSoVaoSo(sample.so_vao_so);
-    if (sample.ho_ten) setHoTen(sample.ho_ten);
-    if (sample.ngay_sinh) setNgaySinh(sample.ngay_sinh);
+    if (sample.cap_do) {
+      setCapDo(sample.cap_do);
+      onCapDoChange?.(sample.cap_do);
+    }
+    setSoHieuPhoi(sample.so_hieu_phoi || '');
+    setSoVaoSo(sample.so_vao_so || '');
+    setHoTen(sample.ho_ten || '');
+    setNgaySinh(sample.ngay_sinh || '');
     setFieldErrors({});
     setError(null);
   };
@@ -200,7 +204,7 @@ export default function CnttForm({
       className="space-y-2.5 sm:space-y-3"
     >
       {/* LƯỚI 2x2 CÂN ĐỐI CHUẨN APPLE: Ô NHẬP 68PX THOÁNG ĐÃNG, BO GÓC 18PX */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
         {/* Ô 1: Họ tên */}
         <div>
           <LabelInput
@@ -272,16 +276,12 @@ export default function CnttForm({
       </div>
 
       {/* HÀNG NÚT TRA CỨU: RỘNG RÃI, SẠCH SẼ, KHÔNG BỊ RECAPTCHA CHIẾM CHỖ TRONG FORM */}
-      <div className="pt-2 flex justify-end">
+      <div className="pt-1.5 pb-0 sm:pt-2.5 sm:pb-0 flex justify-end">
         <button
           type="submit"
           onClick={handleSubmit}
           disabled={loading}
-          className={`w-full sm:w-auto min-w-[210px] h-[50px] sm:h-[52px] px-7 rounded-2xl text-white flex items-center justify-center gap-2.5 text-[15px] sm:text-[15.5px] font-bold outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none border-0 transition-all duration-200 cursor-pointer active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed select-none ${
-            capDo === 'nangcao'
-              ? 'bg-gradient-to-r from-[#0F766E] via-[#0D9488] to-[#14B8A6] hover:from-[#042F2E] hover:to-[#0F766E] shadow-[0_8px_20px_-4px_rgba(13,148,136,0.38)]'
-              : 'bg-gradient-to-r from-[#0369A1] via-[#0284C7] to-[#0EA5E9] hover:from-[#075985] hover:to-[#0284C7] shadow-[0_8px_20px_-4px_rgba(2,132,199,0.38)]'
-          }`}
+          className="w-full sm:w-auto min-w-[210px] h-[48px] sm:h-[50px] px-7 rounded-2xl bg-gradient-to-r from-[#142B6F] via-[#1E3A8A] to-[#2563EB] hover:from-[#0F1E4A] hover:to-[#1E3A8A] text-white flex items-center justify-center gap-2.5 text-[15px] sm:text-[15.5px] font-bold shadow-[0_8px_20px_-4px_rgba(20,43,111,0.38)] outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none border-0 transition-all duration-200 cursor-pointer active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed select-none"
         >
           {loading ? (
             <Loader2 className="w-5 h-5 animate-spin shrink-0 text-white" strokeWidth={2.4} />

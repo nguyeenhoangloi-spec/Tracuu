@@ -123,7 +123,7 @@ optgroup,
 
 body {
   color: #202124;
-  background-color: #f8fafc;
+  background-color: #ffffff;
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -207,6 +207,21 @@ body {
 .animate-ripple {
   animation: ripple-wave 550ms cubic-bezier(0.1, 0.75, 0.25, 1) forwards;
   will-change: transform, opacity;
+}
+
+/* ══ ẨN DÒNG CHỮ CẢNH BÁO TEST TRÊN RECAPTCHA V2 ══ */
+.recaptcha-clean-box {
+  width: 304px;
+  height: 78px;
+  overflow: hidden !important;
+  position: relative;
+}
+
+.recaptcha-clean-box iframe {
+  margin-top: -26px !important;
+  height: 104px !important;
+  position: relative !important;
+  z-index: 1;
 }
 
 /* Custom Guilloche & Certificate Border */

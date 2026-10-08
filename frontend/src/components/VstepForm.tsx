@@ -26,7 +26,7 @@ export default function VstepForm({
   initialSoHieuPhoi,
 }: VstepFormProps) {
   const [soHieuPhoi, setSoHieuPhoi] = useState(initialSoHieuPhoi || '');
-  const [soBaoDanh, setSoBaoDanh] = useState('');
+  const [soVaoSo, setSoVaoSo] = useState('');
   const [hoTen, setHoTen] = useState('');
   const [ngaySinh, setNgaySinh] = useState('');
   const [captchaInput, setCaptchaInput] = useState('');
@@ -40,7 +40,7 @@ export default function VstepForm({
 
   const [fieldErrors, setFieldErrors] = useState<{
     soHieuPhoi?: string;
-    soBaoDanh?: string;
+    soVaoSo?: string;
     hoTen?: string;
     ngaySinh?: string;
   }>({});
@@ -55,7 +55,7 @@ export default function VstepForm({
     let hasError = false;
     const newErrors: {
       soHieuPhoi?: string;
-      soBaoDanh?: string;
+      soVaoSo?: string;
       hoTen?: string;
       ngaySinh?: string;
     } = {};
@@ -67,9 +67,9 @@ export default function VstepForm({
       newErrors.ngaySinh = 'Vui lòng điền ngày sinh';
       hasError = true;
     }
-    if (!soHieuPhoi.trim() && !soBaoDanh.trim()) {
-      newErrors.soHieuPhoi = 'Vui lòng điền số hiệu phôi hoặc số báo danh';
-      newErrors.soBaoDanh = 'Vui lòng điền số báo danh hoặc số hiệu phôi';
+    if (!soHieuPhoi.trim() && !soVaoSo.trim()) {
+      newErrors.soHieuPhoi = 'Vui lòng điền số hiệu phôi hoặc số vào sổ';
+      newErrors.soVaoSo = 'Vui lòng điền số vào sổ hoặc số hiệu phôi';
       hasError = true;
     }
     setFieldErrors(newErrors);
@@ -96,7 +96,9 @@ export default function VstepForm({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          so_hieu_phoi: soHieuPhoi.trim() || soBaoDanh.trim(),
+          so_hieu_phoi: soHieuPhoi.trim() || undefined,
+          so_vao_so: soVaoSo.trim() || undefined,
+          so_bao_danh: soVaoSo.trim() || undefined,
           ho_ten: hoTen.trim() || undefined,
           ngay_sinh: ngaySinh || undefined,
           recaptcha_token: token,
@@ -126,7 +128,8 @@ export default function VstepForm({
       if (onNotFound) {
         onNotFound({
           query: {
-            soHieuPhoi: soHieuPhoi.trim() || soBaoDanh.trim(),
+            soHieuPhoi: soHieuPhoi.trim() || undefined,
+            soVaoSo: soVaoSo.trim() || undefined,
             hoTen: hoTen.trim(),
             ngaySinh,
           },
@@ -141,7 +144,7 @@ export default function VstepForm({
 
   const handleReset = () => {
     setSoHieuPhoi('');
-    setSoBaoDanh('');
+    setSoVaoSo('');
     setHoTen('');
     setNgaySinh('');
     setCaptchaInput('');
@@ -156,10 +159,10 @@ export default function VstepForm({
   }, [resetTrigger]);
 
   const handleApplySample = (sample: any) => {
-    if (sample.so_hieu_phoi) setSoHieuPhoi(sample.so_hieu_phoi);
-    if (sample.so_bao_danh) setSoBaoDanh(sample.so_bao_danh);
-    if (sample.ho_ten) setHoTen(sample.ho_ten);
-    if (sample.ngay_sinh) setNgaySinh(sample.ngay_sinh);
+    setSoHieuPhoi(sample.so_hieu_phoi || '');
+    setSoVaoSo(sample.so_vao_so || sample.so_bao_danh || '');
+    setHoTen(sample.ho_ten || '');
+    setNgaySinh(sample.ngay_sinh || '');
     setFieldErrors({});
     setError(null);
   };
@@ -180,7 +183,7 @@ export default function VstepForm({
       className="space-y-2.5 sm:space-y-3"
     >
       {/* LƯỚI 2x2 CÂN ĐỐI CHUẨN APPLE: Ô NHẬP 68PX THOÁNG ĐÃNG, BO GÓC 18PX */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
         {/* Ô 1: Họ tên */}
         <div>
           <LabelInput
@@ -226,8 +229,8 @@ export default function VstepForm({
             corner={18}
             onChange={(e) => {
               setSoHieuPhoi(e.target.value.toUpperCase());
-              if (fieldErrors.soHieuPhoi || fieldErrors.soBaoDanh) {
-                setFieldErrors((prev) => ({ ...prev, soHieuPhoi: undefined, soBaoDanh: undefined }));
+              if (fieldErrors.soHieuPhoi || fieldErrors.soVaoSo) {
+                setFieldErrors((prev) => ({ ...prev, soHieuPhoi: undefined, soVaoSo: undefined }));
               }
             }}
             error={fieldErrors.soHieuPhoi}
@@ -235,33 +238,33 @@ export default function VstepForm({
           />
         </div>
 
-        {/* Ô 4: Số báo danh */}
+        {/* Ô 4: Số vào sổ cấp chứng chỉ */}
         <div>
           <LabelInput
-            label="Số báo danh"
-            placeholder="Ví dụ: B2-0192"
-            value={soBaoDanh}
+            label="Số vào sổ"
+            placeholder="Ví dụ: NCTU-VSTEP/2024/088"
+            value={soVaoSo}
             height={68}
             corner={18}
             onChange={(e) => {
-              setSoBaoDanh(e.target.value.toUpperCase());
-              if (fieldErrors.soBaoDanh || fieldErrors.soHieuPhoi) {
-                setFieldErrors((prev) => ({ ...prev, soBaoDanh: undefined, soHieuPhoi: undefined }));
+              setSoVaoSo(e.target.value.toUpperCase());
+              if (fieldErrors.soVaoSo || fieldErrors.soHieuPhoi) {
+                setFieldErrors((prev) => ({ ...prev, soVaoSo: undefined, soHieuPhoi: undefined }));
               }
             }}
-            error={fieldErrors.soBaoDanh}
+            error={fieldErrors.soVaoSo}
             required
           />
         </div>
       </div>
 
       {/* HÀNG NÚT TRA CỨU: RỘNG RÃI, SẠCH SẼ, KHÔNG BỊ RECAPTCHA CHIẾM CHỖ TRONG FORM */}
-      <div className="pt-2 flex justify-end">
+      <div className="pt-1.5 pb-0 sm:pt-2.5 sm:pb-0 flex justify-end">
         <button
           type="submit"
           onClick={handleSubmit}
           disabled={loading}
-          className="w-full sm:w-auto min-w-[210px] h-[50px] sm:h-[52px] px-7 rounded-2xl bg-gradient-to-r from-[#9F1239] via-[#BE123C] to-[#E11D48] hover:from-[#881337] hover:to-[#BE123C] text-white flex items-center justify-center gap-2.5 text-[15px] sm:text-[15.5px] font-bold shadow-[0_8px_20px_-4px_rgba(225,29,72,0.38)] outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none border-0 transition-all duration-200 cursor-pointer active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed select-none"
+          className="w-full sm:w-auto min-w-[210px] h-[48px] sm:h-[50px] px-7 rounded-2xl bg-gradient-to-r from-[#142B6F] via-[#1E3A8A] to-[#2563EB] hover:from-[#0F1E4A] hover:to-[#1E3A8A] text-white flex items-center justify-center gap-2.5 text-[15px] sm:text-[15.5px] font-bold shadow-[0_8px_20px_-4px_rgba(20,43,111,0.38)] outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none border-0 transition-all duration-200 cursor-pointer active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed select-none"
         >
           {loading ? (
             <Loader2 className="w-5 h-5 animate-spin shrink-0 text-white" strokeWidth={2.4} />

@@ -193,16 +193,35 @@ export default function Navbar({ activeTab = 'vanbang', onTabChange }: NavbarPro
   }, []);
 
   return (
-    <header className="sticky top-0 left-0 right-0 w-full z-50 no-print antialiased select-none bg-white border-b border-slate-200/80 shadow-[0_2px_8px_rgba(0,0,0,0.03)] transition-all duration-200">
+    <header className="sticky top-0 left-0 right-0 w-full z-50 no-print antialiased select-none bg-white border-0 border-none shadow-none">
       <div className="max-w-[1430px] mx-auto px-3.5 sm:px-6 relative">
         <div className="flex items-center justify-between gap-3 sm:gap-6 h-[58px] sm:h-[68px] lg:h-[76px]">
           
-          {/* LOGO TRƯỜNG: CO GIÃN THÔNG MINH, KHÔNG BAO GIỜ TRÀN MÀN HÌNH */}
-          <Link href="/" className="flex items-center select-none shrink-0" title="Trường Đại học Nam Cần Thơ">
+          {/* LOGO TRƯỜNG: CO GIÃN THÔNG MINH, KHÔNG BAO GIỜ TRÀN MÀN HÌNH HOẶC BỊ NHẢY KÍCH THƯỚC KHI TẢI TRANG */}
+          <Link
+            href="/"
+            className="flex items-center select-none shrink-0 h-[36px] min-[400px]:h-[40px] sm:h-[50px] lg:h-[56px] overflow-hidden"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              height: '56px',
+              maxHeight: '56px',
+              overflow: 'hidden',
+            }}
+            title="Trường Đại học Nam Cần Thơ"
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="https://nctu.edu.vn/images/png/logo_truong_3.png"
+              src="/images/logo_truong_3.png"
               alt="Trường Đại học Nam Cần Thơ"
+              width={193}
+              height={56}
+              style={{
+                height: '56px',
+                maxHeight: '56px',
+                width: 'auto',
+                aspectRatio: '1920/558',
+              }}
               className="w-auto h-[36px] min-[400px]:h-[40px] sm:h-[50px] lg:h-[56px] max-w-[180px] min-[400px]:max-w-[210px] sm:max-w-none object-contain"
             />
           </Link>

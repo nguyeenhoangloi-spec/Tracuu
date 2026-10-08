@@ -183,7 +183,7 @@ export class LookupService {
       ngay_sinh: '03/12/2001',
       gioi_tinh: 'Nữ',
       noi_sinh: 'Trà Vinh',
-      so_cccd: '',
+      so_cccd: '084301007892',
       khoa_thi: 'Khoá 2022',
       ngay_thi: '10/10/2022',
       diem_ly_thuyet: 5.3,
@@ -194,7 +194,7 @@ export class LookupService {
       xep_loai: 'Đạt',
       so_hieu_phoi: '001300',
       so_vao_so: 'NCTU-CNTT-CB/2022/1300',
-      so_quyet_dinh: '',
+      so_quyet_dinh: '358/QĐ-TTTH',
       ngay_cap: '10/10/2022',
       trang_thai: 'Hợp lệ',
     },
@@ -437,163 +437,130 @@ export class LookupService {
     return record;
   }
 
-  // Tra cứu CNTT (Xác thực theo Số phôi / CCCD / Số vào sổ - Chỉ cần mã là đủ, nếu có họ tên/ngày sinh thì đối soát thêm)
+  // Tra cứu CNTT (Bắt buộc Họ tên, Ngày sinh, Số hiệu phôi hoặc Số vào sổ)
   traCuuCntt(query: {
     so_hieu_phoi: string;
     cap_do?: string;
     ho_ten?: string;
     ngay_sinh?: string;
+    so_vao_so?: string;
   }): CnttRecord {
     const qKey = query.so_hieu_phoi?.trim().toLowerCase();
     const qCapDo = query.cap_do?.trim().toLowerCase();
     const qHoten = this.normalizeString(query.ho_ten || '');
     const qNgaysinh = query.ngay_sinh?.trim() || '';
+    const qSoVaoSo = query.so_vao_so?.trim().toLowerCase();
 
-    if (!qKey) {
-      throw new NotFoundException('Vui lòng nhập Số hiệu phôi chứng chỉ để tra cứu.');
+    if (!qHoten) {
+      throw new NotFoundException('Vui lòng nhập Họ và tên để tra cứu.');
+    }
+    if (!qNgaysinh) {
+      throw new NotFoundException('Vui lòng chọn Ngày sinh để tra cứu.');
+    }
+    if (!qKey && !qSoVaoSo) {
+      throw new NotFoundException('Vui lòng nhập Số hiệu phôi hoặc Số vào sổ cấp chứng chỉ.');
     }
 
     const record = this.cnttDb.find((item) => {
-      // Mã phôi / CCCD / Số vào sổ: Phải khớp
-      const matchPhoi = item.so_hieu_phoi.toLowerCase() === qKey;
-      const matchCccd = item.so_cccd.toLowerCase() === qKey;
-      const matchVaoSo = item.so_vao_so.toLowerCase() === qKey;
-      const matchCode = matchPhoi || matchCccd || matchVaoSo;
+      // 1. Họ tên: Bắt buộc khớp chính xác
+      const normDbName = this.normalizeString(item.ho_ten);
+      const matchName = normDbName === qHoten;
 
-      // Cấp độ (nếu có)
+      // 2. Ngày sinh: Bắt buộc khớp đúng ngày sinh
+      const matchBirth = this.matchDate(item.ngay_sinh, qNgaysinh);
+
+      // 3. Cấp độ (nếu có chọn)
       const matchCapDo = !qCapDo || item.cap_do === qCapDo;
 
-      // Họ tên: Nếu có nhập thì kiểm tra khớp
-      const matchName = qHoten ? this.normalizeString(item.ho_ten) === qHoten : true;
+      // 4. Số hiệu phôi
+      const matchPhoi = qKey ? (item.so_hieu_phoi.toLowerCase() === qKey || item.so_cccd.toLowerCase() === qKey) : true;
 
-      // Ngày sinh: Nếu có nhập thì kiểm tra khớp
-      const matchBirth = qNgaysinh ? this.matchDate(item.ngay_sinh, qNgaysinh) : true;
+      // 5. Số vào sổ
+      const matchVaoSo = qSoVaoSo ? item.so_vao_so.toLowerCase() === qSoVaoSo : true;
 
-      return matchCode && matchCapDo && matchName && matchBirth;
+      return matchName && matchBirth && matchCapDo && matchPhoi && matchVaoSo;
     });
 
     if (!record) {
       throw new NotFoundException(
-        `Không tìm thấy chứng chỉ CNTT phù hợp với mã: "${query.so_hieu_phoi}". Vui lòng kiểm tra lại số hiệu phôi.`,
+        'Không tìm thấy chứng chỉ CNTT phù hợp. Vui lòng kiểm tra lại Họ tên, Ngày sinh, Số hiệu phôi hoặc Số vào sổ.',
       );
     }
 
     return record;
   }
 
-  // Tra cứu VSTEP (Xác thực theo Số phôi/SBD/CCCD - Chỉ cần mã là đủ, nếu có họ tên/ngày sinh thì đối soát thêm)
+  // Tra cứu VSTEP (Bắt buộc Họ tên, Ngày sinh, Số hiệu phôi hoặc Số vào sổ / Số báo danh)
   traCuuVstep(query: {
     so_hieu_phoi: string;
     ho_ten?: string;
     ngay_sinh?: string;
+    so_bao_danh?: string;
+    so_vao_so?: string;
   }): VstepRecord {
     const qKey = query.so_hieu_phoi?.trim().toLowerCase();
     const qHoten = this.normalizeString(query.ho_ten || '');
     const qNgaysinh = query.ngay_sinh?.trim() || '';
+    const qSbd = query.so_bao_danh?.trim().toLowerCase();
+    const qSoVaoSo = query.so_vao_so?.trim().toLowerCase();
 
-    if (!qKey) {
-      throw new NotFoundException('Vui lòng nhập Số hiệu phôi, Số báo danh hoặc CCCD để tra cứu.');
+    if (!qHoten) {
+      throw new NotFoundException('Vui lòng nhập Họ và tên để tra cứu.');
+    }
+    if (!qNgaysinh) {
+      throw new NotFoundException('Vui lòng chọn Ngày sinh để tra cứu.');
+    }
+    if (!qKey && !qSbd && !qSoVaoSo) {
+      throw new NotFoundException('Vui lòng nhập Số hiệu phôi hoặc Số vào sổ để tra cứu.');
     }
 
     const record = this.vstepDb.find((item) => {
-      const matchPhoi = item.so_hieu_phoi.toLowerCase() === qKey;
-      const matchSbd = item.so_bao_danh.toLowerCase() === qKey;
-      const matchCccd = item.so_cccd.toLowerCase() === qKey;
-      const matchVaoSo = item.so_vao_so.toLowerCase() === qKey;
-      const matchCode = matchPhoi || matchSbd || matchCccd || matchVaoSo;
+      // 1. Họ tên: Bắt buộc khớp chính xác
+      const normDbName = this.normalizeString(item.ho_ten);
+      const matchName = normDbName === qHoten;
 
-      // Họ tên: Nếu có nhập thì kiểm tra khớp
-      const matchName = qHoten ? this.normalizeString(item.ho_ten) === qHoten : true;
+      // 2. Ngày sinh: Bắt buộc khớp đúng ngày sinh
+      const matchBirth = this.matchDate(item.ngay_sinh, qNgaysinh);
 
-      // Ngày sinh: Nếu có nhập thì kiểm tra khớp
-      const matchBirth = qNgaysinh ? this.matchDate(item.ngay_sinh, qNgaysinh) : true;
+      // 3. Số hiệu phôi / CCCD
+      const matchPhoi = qKey ? (item.so_hieu_phoi.toLowerCase() === qKey || item.so_cccd.toLowerCase() === qKey || item.so_bao_danh.toLowerCase() === qKey) : true;
 
-      return matchCode && matchName && matchBirth;
+      // 4. Số báo danh
+      const matchSbd = qSbd ? (item.so_bao_danh.toLowerCase() === qSbd || item.so_vao_so.toLowerCase() === qSbd) : true;
+
+      // 5. Số vào sổ
+      const matchVaoSo = qSoVaoSo ? (item.so_vao_so.toLowerCase() === qSoVaoSo || item.so_bao_danh.toLowerCase() === qSoVaoSo) : true;
+
+      return matchName && matchBirth && matchPhoi && (qSoVaoSo ? matchVaoSo : matchSbd);
     });
 
     if (!record) {
       throw new NotFoundException(
-        `Không tìm thấy chứng chỉ VSTEP phù hợp với mã: "${query.so_hieu_phoi}". Vui lòng kiểm tra lại số hiệu phôi hoặc SBD.`,
+        'Không tìm thấy chứng chỉ VSTEP phù hợp. Vui lòng kiểm tra lại Họ tên, Ngày sinh hoặc Số hiệu phôi / Số vào sổ.',
       );
     }
 
     return record;
   }
 
-  // Dữ liệu gợi ý để test nhanh (Quick fill samples)
+  // Dữ liệu gợi ý để test nhanh (Quick fill samples) với đầy đủ trường thông tin
   getSampleData() {
     return {
-      vanbang: [
-        {
-          label: 'Dương Thị Anh Thư - TT Đa phương tiện (DNC/CN.006026)',
-          ho_ten: 'Dương Thị Anh Thư',
-          ngay_sinh: '2004-12-24',
-          loai_dao_tao: 'dh',
-          so_hieu_phoi: 'DNC/CN.006026',
-          so_vao_so: 'K10/1947',
-        },
-        {
-          label: 'Nguyễn Văn An - CNTT (Bằng Đại học)',
-          ho_ten: 'Nguyễn Văn An',
-          ngay_sinh: '2001-05-15',
-          loai_dao_tao: 'dh',
-          so_hieu_phoi: 'B6829104',
-          so_vao_so: 'NCTU-CNTT-2023/142',
-        },
-        {
-          label: 'Trần Thị Ngọc Mai - Dược học (Bằng Đại học)',
-          ho_ten: 'Trần Thị Ngọc Mai',
-          ngay_sinh: '2002-11-20',
-          loai_dao_tao: 'dh',
-          so_hieu_phoi: 'B7910245',
-          so_vao_so: 'NCTU-DH-2024/098',
-        },
-        {
-          label: 'Phạm Minh Đức - Quản lý kinh tế (Thạc sĩ)',
-          ho_ten: 'Phạm Minh Đức',
-          ngay_sinh: '1995-03-25',
-          loai_dao_tao: 'ths',
-          so_hieu_phoi: 'TS203918',
-          so_vao_so: 'NCTU-THS-2023/045',
-        },
-      ],
-      cntt: [
-        {
-          label: 'Số phôi: 001300 (Nguyễn Thị Ngọc Châu)',
-          so_hieu_phoi: '001300',
-          ho_ten: 'Nguyễn Thị Ngọc Châu',
-          ngay_sinh: '2001-12-03',
-          cap_do: 'coban',
-        },
-        {
-          label: 'CNTT Cơ bản: Nguyễn Văn An (CB-982145)',
-          so_hieu_phoi: 'CB-982145',
-          ho_ten: 'Nguyễn Văn An',
-          ngay_sinh: '2001-05-15',
-          cap_do: 'coban',
-        },
-        {
-          label: 'CNTT Nâng cao: Trần Thị Ngọc Mai (NC-452109)',
-          so_hieu_phoi: 'NC-452109',
-          ho_ten: 'Trần Thị Ngọc Mai',
-          ngay_sinh: '2002-11-20',
-          cap_do: 'nangcao',
-        },
-      ],
-      vstep: [
-        {
-          label: 'VSTEP B2 (Bậc 4): Nguyễn Văn An (VSTEP-881923)',
-          so_hieu_phoi: 'VSTEP-881923',
-          ho_ten: 'Nguyễn Văn An',
-          ngay_sinh: '2001-05-15',
-        },
-        {
-          label: 'VSTEP B1 (Bậc 3): Lê Hoàng Nam (VSTEP-772019)',
-          so_hieu_phoi: 'VSTEP-772019',
-          ho_ten: 'Lê Hoàng Nam',
-          ngay_sinh: '2000-08-10',
-        },
-      ],
+      vanbang: this.vanBangDb.map((item) => ({
+        label: `${item.ho_ten} - ${item.nganh_dao_tao} (${item.ten_van_bang})`,
+        badge: item.loai_dao_tao === 'ths' ? 'Thạc sĩ' : item.loai_dao_tao === 'ts' ? 'Tiến sĩ' : item.loai_dao_tao === 'cd' ? 'Cao đẳng' : 'Đại học',
+        ...item,
+      })),
+      cntt: this.cnttDb.map((item) => ({
+        label: `${item.ho_ten} - ${item.ten_chung_chi}`,
+        badge: item.cap_do === 'nangcao' ? 'Nâng cao' : 'Cơ bản',
+        ...item,
+      })),
+      vstep: this.vstepDb.map((item) => ({
+        label: `${item.ho_ten} - ${item.ten_chung_chi} (${item.bac_nang_luc})`,
+        badge: item.bac_nang_luc,
+        ...item,
+      })),
     };
   }
 

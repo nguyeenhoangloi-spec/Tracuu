@@ -44,7 +44,8 @@ export default function Home() {
   const [spotlightState, setSpotlightState] = useState<{
     isOpen: boolean;
     isFormExpanded: boolean;
-  }>({ isOpen: false, isFormExpanded: false });
+    panelHeight?: number;
+  }>({ isOpen: false, isFormExpanded: false, panelHeight: 0 });
 
   // Kiểm tra thiết bị Mobile để tối ưu hóa biên độ lướt mượt mà chuẩn Apple
   const [isMobile, setIsMobile] = useState(false);
@@ -55,12 +56,20 @@ export default function Home() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Tọa độ lướt mượt mà chuẩn Apple: Khi đóng nằm chính giữa, khi mở lướt lên giữ card 100% trong nền xanh
+  // Tọa độ lướt mượt mà chuẩn Apple:
+  // - Khi đóng: nằm chính giữa tự nhiên (0)
+  // - Khi mở danh mục tra cứu (Grid): lướt nhẹ -55px
+  // - Khi mở Form chuẩn: lướt vừa vặn -130px (không chừa sẵn quá cao làm dồn lên trên)
+  // - Khi có báo lỗi khiến form dài thêm: tự động lướt đẩy lên thêm tương ứng để không bị đụng viền
+  const baseFormGlideY = -130;
+  const extraErrorGlideY = spotlightState.isFormExpanded && spotlightState.panelHeight
+    ? Math.max(0, spotlightState.panelHeight - 355)
+    : 0;
   const heroGlideY = !spotlightState.isOpen
     ? 0
     : isMobile
     ? 0
-    : (spotlightState.isFormExpanded ? -145 : -55);
+    : (spotlightState.isFormExpanded ? (baseFormGlideY - extraErrorGlideY) : -55);
 
   // Hồ sơ mẫu được áp dụng từ Floating Widget
   const [sampleToApply, setSampleToApply] = useState<{
@@ -106,19 +115,17 @@ export default function Home() {
   };
 
   const handleApplySample = (sample: any) => {
+    const targetTab = sample._targetTab || activeTab;
+    if (targetTab !== activeTab) {
+      setActiveTab(targetTab);
+    }
     setSampleToApply({
-      tab: activeTab,
+      tab: targetTab,
       data: sample,
       ts: Date.now(),
     });
-    const cardEl = document.getElementById('khung-tra-cuu-card');
-    if (cardEl) {
-      cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      setTimeout(() => {
-        setIsCardRevealed(true);
-      }, 140);
-    } else {
-      setIsCardRevealed(true);
+    if (typeof window !== 'undefined' && window.scrollY > 160) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -524,187 +531,145 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen print:min-h-0 print:h-auto flex flex-col bg-[#ECEFF3] lg:bg-[#F8FAFC] print:bg-white text-gray-900 relative">
+    <div className="min-h-screen print:min-h-0 print:h-auto flex flex-col bg-white print:bg-white text-gray-900 relative">
 
       {/* 1. NAVBAR */}
       <Navbar activeTab={activeTab} onTabChange={handleTabChange} />
 
-      {/* 2. HERO STAGE & SPOTLIGHT SEARCH - TRÊN MOBILE LÀ CARD BO GÓC TRÒN NỔI BẬT CHUẨN APP UI, TRÊN PC LÀ HERO RỘNG RÃI */}
-      <section
-        id="hero-stage"
-        className="relative flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#143B80] via-[#1D54A8] to-[#2267CA] text-white no-print mx-3 sm:mx-6 lg:mx-0 my-2.5 sm:my-4 lg:my-0 rounded-[24px] sm:rounded-[32px] lg:rounded-none shadow-[0_12px_36px_rgba(20,59,128,0.22)] lg:shadow-none min-h-[330px] sm:min-h-[380px] lg:min-h-[685px] px-3 sm:px-6 lg:px-8 py-5.5 sm:py-8 lg:py-12 transition-all duration-300"
-      >
-        {/* 1. LỚP ẢNH NỀN HỌC THUẬT DNC CHÍNH THỨC (TRÊN MOBILE LÀM DỊU OPACITY ĐỂ CHỮ NỔI RÕ RÀNG KHÔNG BỊ RỐI MẮT) */}
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 -right-4 sm:-right-10 pointer-events-none select-none bg-cover bg-right mix-blend-luminosity opacity-[0.06] sm:opacity-[0.28]"
-          style={{
-            backgroundImage: "url('/images/hero/dnc-hero-campus-banner.png')",
-            filter: 'contrast(115%) brightness(120%)',
-            maskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 92%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 92%)',
-          }}
-        />
-
-        {/* 2. HOA VĂN BẢO MẬT PHÔI VĂN BẰNG CHÌM (GUILLOCHE ROSETTE THEO ĐÚNG ẢNH MẪU BẠN CHỤP) */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-[0.035] sm:opacity-[0.07] overflow-hidden select-none z-0"
-          aria-hidden="true"
+      {/* 2. HERO STAGE WRAPPER - THU VỪA PHẢI 2 BÊN NẰM TRÊN NỀN TRẮNG, GIỮ NGUYÊN ĐỘ DÀI/CAO GỐC, BO 4 GÓC, KHÔNG VIỀN, KHÔNG BÓNG ĐỔ */}
+      <div className="w-full bg-white px-4 sm:px-6 lg:px-8 pt-2 sm:pt-3 lg:pt-4 pb-3 sm:pb-5 lg:pb-6 no-print border-0 border-none shadow-none">
+        <section
+          id="hero-stage"
+          className="relative w-full max-w-[1420px] mx-auto flex flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#1E52A4] via-[#2767CC] to-[#3A82E6] text-white rounded-2xl sm:rounded-3xl lg:rounded-[32px] border-0 border-none shadow-none min-h-[380px] sm:min-h-[480px] lg:min-h-[685px] px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16"
         >
-          <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <pattern
-                id="hero-guilloche-rosette"
-                width="110"
-                height="110"
-                patternUnits="userSpaceOnUse"
-              >
-                {/* Vòng tròn chấm bi vàng kim bảo mật */}
-                <circle cx="55" cy="55" r="20" fill="none" stroke="#FDE68A" strokeWidth="0.8" strokeDasharray="3 3" />
-                {/* Vòng tròn cánh hoa đan xen màu xanh ngọc nhạt */}
-                <circle cx="55" cy="55" r="33" fill="none" stroke="#BFDBFE" strokeWidth="0.65" />
-                {/* Cánh hoa dọc đối xứng */}
-                <path d="M 55 11 C 37 33 37 77 55 99 C 73 77 73 33 55 11 Z" fill="none" stroke="#FFFFFF" strokeWidth="0.75" />
-                {/* Cánh hoa ngang đối xứng */}
-                <path d="M 11 55 C 33 37 77 37 99 55 C 77 73 33 73 11 55 Z" fill="none" stroke="#FFFFFF" strokeWidth="0.75" />
-                {/* Đường uốn lượn liên hoàn kết nối các mắt lưới */}
-                <path d="M 0 55 Q 27.5 11 55 11 Q 82.5 11 110 55 Q 82.5 99 55 99 Q 27.5 99 0 55" fill="none" stroke="#93C5FD" strokeWidth="0.7" />
-                <path d="M 55 0 Q 11 27.5 11 55 Q 11 82.5 55 110 Q 99 82.5 99 55 Q 99 27.5 55 0" fill="none" stroke="#93C5FD" strokeWidth="0.7" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#hero-guilloche-rosette)" />
-          </svg>
-        </div>
+          {/* 1. LỚP ẢNH NỀN HỌC THUẬT DNC CHÍNH THỨC (WEBP SIÊU NHẸ 98KB LOAD TỨC THÌ 0MS KHÔNG CHỚP SÁNG) */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 -right-4 sm:-right-10 pointer-events-none select-none bg-cover bg-right mix-blend-luminosity opacity-[0.06] sm:opacity-[0.28]"
+            style={{
+              backgroundImage: "url('/images/hero/dnc-hero-campus-banner.webp')",
+              filter: 'contrast(115%) brightness(120%)',
+              maskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 92%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 80%, transparent 92%)',
+            }}
+          />
 
-        {/* 3. DẤU ẤN VĂN BẰNG & NÓN CỬ NHÂN TỐT NGHIỆP CHÌM ĐẶT VÀO KHOẢNG TRỐNG BÊN TRÁI (CHUẨN 100% ẢNH MẪU - CHỈ HIỆN TRÊN DESKTOP/TABLET ĐỂ MOBILE GỌN GÀNG) */}
-        <div
-          className="absolute left-2 sm:left-6 lg:left-12 top-1/2 -translate-y-1/2 w-[320px] sm:w-[420px] lg:w-[480px] h-[320px] sm:h-[420px] lg:h-[480px] pointer-events-none select-none opacity-[0.09] sm:opacity-[0.13] text-blue-100 z-[1] hidden min-[640px]:block"
-          aria-hidden="true"
-        >
-          <svg viewBox="0 0 300 300" className="w-full h-full fill-none stroke-current">
-            {/* Các vòng tròn bảo mật đồng tâm */}
-            <circle cx="150" cy="150" r="142" strokeWidth="1.2" />
-            <circle cx="150" cy="150" r="134" strokeWidth="0.9" strokeDasharray="4 3" />
-            <circle cx="150" cy="150" r="120" strokeWidth="0.7" />
-            <circle cx="150" cy="150" r="95" strokeWidth="0.85" />
-
-            {/* Vòng nhành nguyệt quế vinh danh tốt nghiệp */}
-            <path d="M 75 150 C 75 198 108 232 150 232 C 192 232 225 198 225 150" strokeWidth="1.3" />
-
-            {/* Biểu tượng Nón Cử nhân (Graduation Mortarboard Cap) */}
-            <polygon points="150,88 210,114 150,140 90,114" strokeWidth="1.8" fill="rgba(255,255,255,0.06)" />
-            <path d="M 118 128 L 118 150 C 118 164 182 164 182 150 L 182 128" strokeWidth="1.8" />
-            {/* Dây tua nón tốt nghiệp */}
-            <path d="M 150 114 Q 172 120 180 134 L 180 166" strokeWidth="1.4" stroke="#FBBF24" />
-            <circle cx="180" cy="170" r="3.5" fill="#FBBF24" stroke="none" />
-
-            {/* Cuộn Văn bằng Tốt nghiệp (Diploma Scroll) */}
-            <rect x="114" y="178" width="72" height="15" rx="3" strokeWidth="1.4" />
-            <path d="M 150 174 L 150 196" strokeWidth="1.4" stroke="#FBBF24" />
-            <path d="M 146 196 L 154 196" strokeWidth="1.4" stroke="#FBBF24" />
-
-            {/* Ngôi sao chứng thực đỉnh và đáy */}
-            <polygon
-              points="150,44 153,52 161,52 155,57 157,65 150,60 143,65 145,57 139,52 147,52"
-              fill="#FBBF24"
-              stroke="none"
-            />
-            <polygon
-              points="150,238 153,246 161,246 155,251 157,259 150,254 143,259 145,251 139,246 147,246"
-              fill="#FBBF24"
-              stroke="none"
-            />
-          </svg>
-        </div>
-
-        {/* 4. CHÒM SAO TRI THỨC ĐIỂM XUYẾT GÓC TRÊN TRÁI */}
-        <div
-          aria-hidden="true"
-          className="absolute left-6 sm:left-12 lg:left-16 top-6 sm:top-10 pointer-events-none select-none opacity-[0.25] sm:opacity-[0.32] hidden sm:block z-[1]"
-        >
-          <svg className="w-20 sm:w-26 h-auto text-blue-100" viewBox="0 0 140 100" fill="none">
-            <path d="M20 12L22 19L29 21L22 23L20 30L18 23L11 21L18 19L20 12Z" fill="#FBBF24" opacity="0.85" />
-            <path d="M110 20L111 24L115 25L111 26L110 30L109 26L105 25L109 24L110 20Z" fill="#93C5FD" opacity="0.85" />
-          </svg>
-        </div>
-
-        {/* 5. CUỘN BẰNG DANH DỰ Ở GÓC DƯỚI BÊN TRÁI */}
-        <div
-          aria-hidden="true"
-          className="absolute left-8 sm:left-14 bottom-8 sm:bottom-12 pointer-events-none select-none opacity-[0.22] sm:opacity-[0.28] hidden sm:block z-[1]"
-        >
-          <svg className="w-24 sm:w-32 h-auto text-blue-100" viewBox="0 0 160 110" fill="none">
-            <g transform="translate(10, 10) rotate(-6)">
-              <rect x="25" y="30" width="85" height="18" rx="4" fill="rgba(255,255,255,0.75)" stroke="#93C5FD" strokeWidth="1.8" />
-              <path d="M60 28 L60 50" stroke="#F59E0B" strokeWidth="2.5" />
-              <circle cx="60" cy="51" r="5" fill="#F59E0B" />
-              <path d="M60 54 L54 68 L60 64 L66 68 Z" fill="#FBBF24" />
-            </g>
-          </svg>
-        </div>
-
-        {/* 2. KHỐI TIÊU ĐỀ & THANH SPOTLIGHT: CĂN GIỮA NGUYÊN BẢN, TRƯỢT LƯỚT SIÊU MƯỢT ĐỒNG BỘ 100% */}
-        <motion.div
-          animate={{ y: isMobile ? 0 : heroGlideY }}
-          transition={{
-            duration: 0.35,
-            ease: [0.16, 1, 0.3, 1],
-          }}
-          className="w-full max-w-[1080px] mx-auto flex flex-col items-center text-center relative z-20 sm:transform"
-        >
-          {/* Tiêu đề cổng tra cứu: Cố định vị trí tự nhiên, không reflow margin gây giật khung */}
-          <h1 className="text-[22px] min-[360px]:text-[24px] sm:text-4xl lg:text-[46px] font-bold text-white tracking-tight leading-[1.25] drop-shadow-[0_2px_14px_rgba(0,0,0,0.35)] max-w-[340px] sm:max-w-none origin-center mb-1.5 sm:mb-3.5">
-            Cổng Tra Cứu Văn Bằng Chứng Chỉ
-          </h1>
-
-          {/* Phụ đề mô tả quyền hạn và dịch vụ: Luôn ổn định trong layout, không làm giật khung khi mở */}
-          <p className="text-[12px] min-[360px]:text-[13px] sm:text-[15.5px] text-blue-100/90 max-w-[320px] sm:max-w-xl mx-auto font-normal leading-relaxed drop-shadow-[0_1px_4px_rgba(0,0,0,0.25)] mb-3.5 sm:mb-8">
-            Hệ thống xác thực văn bằng điện tử chính thức Trường Đại học Nam Cần Thơ
-          </p>
-
-          {/* Thanh tra cứu Spotlight căn giữa: Nền cố định 100%, popover mở nổi tuyệt đối */}
-          <div className="w-full max-w-[980px] relative">
-            <SpotlightBar
-              activeTab={activeTab}
-              onTabChange={handleTabChange}
-              onSelectResult={handleLookupSuccess}
-              onNotFound={handleLookupNotFound}
-              onReset={handleGlobalReset}
-              sampleData={sampleData}
-              onOpenStateChange={setSpotlightState}
-            />
-          </div>
-        </motion.div>
-
-        {/* 3. ĐƯỜNG LƯỢN SÓNG CHUYỂN NỀN MỀM MẠI Ở CHÂN TRANG NỐI VÀO NỀN DƯỚI (CHỈ TRÊN DESKTOP) */}
-        <div
-          aria-hidden="true"
-          className="hidden lg:block absolute -bottom-px left-0 right-0 w-full overflow-hidden leading-none pointer-events-none z-10"
-        >
-          <svg
-            className="w-full h-10 sm:h-16 md:h-20 lg:h-24 block text-[#F8FAFC]"
-            viewBox="0 0 1440 90"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="none"
+          {/* 2. HOA VĂN BẢO MẬT PHÔI VĂN BẰNG CHÌM CHUẨN HỌC THUẬT (GUILLOCHE ROSETTE BẢO MẬT TINH TẾ, ĐƠN SẮC, KHÔNG RỐI MẮT) */}
+          <div
+            aria-hidden="true"
+            className="absolute left-3 sm:left-8 lg:left-14 top-1/2 -translate-y-1/2 w-[300px] sm:w-[350px] lg:w-[380px] h-[300px] sm:h-[350px] lg:h-[380px] pointer-events-none select-none opacity-[0.05] sm:opacity-[0.07] text-blue-100 z-[1] hidden min-[640px]:block"
+            style={{
+              position: 'absolute',
+              width: '360px',
+              height: '360px',
+              maxWidth: '380px',
+              maxHeight: '380px',
+            }}
           >
-            <path
-              d="M0 45C320 72 680 24 1040 60C1240 76 1360 54 1440 46V90H0V45Z"
-              fill="rgba(255, 255, 255, 0.18)"
-            />
-            <path
-              d="M0 52C360 82 760 32 1120 70C1280 84 1380 66 1440 58V90H0V52Z"
-              fill="currentColor"
-            />
-          </svg>
-        </div>
-      </section>
+            <svg viewBox="0 0 400 400" className="w-full h-full fill-none stroke-current" style={{ width: '100%', height: '100%' }}>
+              {/* Các vòng tròn đồng tâm hoa văn an toàn phôi bằng */}
+              <circle cx="200" cy="200" r="185" strokeWidth="0.8" strokeDasharray="3 3" />
+              <circle cx="200" cy="200" r="168" strokeWidth="0.7" />
+              <circle cx="200" cy="200" r="148" strokeWidth="0.6" strokeDasharray="4 2" />
+              <circle cx="200" cy="200" r="95" strokeWidth="0.65" />
+              <circle cx="200" cy="200" r="50" strokeWidth="0.5" strokeDasharray="2 2" />
+
+              {/* Mạng lưới đường vân Guilloche hình học bảo mật học thuật đan xen đối xứng */}
+              <g strokeWidth="0.65" opacity="0.9">
+                <path d="M 200 32 C 120 120 120 280 200 368 C 280 280 280 120 200 32 Z" />
+                <path d="M 32 200 C 120 120 280 120 368 200 C 280 280 120 280 32 200 Z" />
+                <path d="M 81 81 C 120 176 280 224 319 319 C 280 224 120 176 81 81 Z" />
+                <path d="M 319 81 C 224 120 176 280 81 319 C 176 280 224 120 319 81 Z" />
+                <path d="M 200 52 C 145 130 145 270 200 348 C 255 270 255 130 200 52 Z" />
+                <path d="M 52 200 C 130 145 270 145 348 200 C 270 255 130 255 52 200 Z" />
+                <path d="M 200 75 C 160 140 160 260 200 325 C 240 260 240 140 200 75 Z" />
+                <path d="M 75 200 C 140 160 260 160 325 200 C 260 240 140 240 75 200 Z" />
+              </g>
+            </svg>
+          </div>
+
+          {/* 2. KHỐI TIÊU ĐỀ & THANH SPOTLIGHT: CĂN GIỮA NGUYÊN BẢN, TRƯỢT LƯỚT SIÊU MƯỢT ĐỒNG BỘ 100% */}
+          <motion.div
+            animate={{ y: isMobile ? 0 : heroGlideY }}
+            transition={{
+              duration: 0.42,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="w-full max-w-[1080px] mx-auto flex flex-col items-center text-center relative z-20 sm:transform"
+          >
+            {/* KHỐI CHỮ PHÍA TRÊN: Mặt nạ overflow-hidden có mép dưới trùng mép trên thanh tìm kiếm.
+                Khi tải trang, chữ nằm khuất dưới mép này rồi trồi lên mượt mà từ thanh tìm kiếm. */}
+            <div className="w-full overflow-hidden pt-1 flex flex-col items-center">
+              <motion.h1
+                initial={false}
+                animate={{
+                  y: 0,
+                  opacity: 1,
+                  marginBottom: spotlightState.isFormExpanded ? (isMobile ? 16 : 24) : (isMobile ? 8 : 12),
+                }}
+                transition={{
+                  marginBottom: { duration: 0.42, ease: [0.22, 1, 0.36, 1] },
+                }}
+                className="text-[25px] min-[360px]:text-[28px] sm:text-3xl lg:text-[42px] font-bold sm:font-semibold text-white tracking-tight leading-[1.2] sm:leading-[1.25] drop-shadow-[0_1.5px_3px_rgba(0,0,0,0.3)] max-w-[360px] sm:max-w-none origin-center text-balance"
+              >
+                <span className="block sm:inline">Tra cứu Văn bằng </span>
+                <span className="block sm:inline">&amp; Chứng chỉ</span>
+              </motion.h1>
+
+              {/* Phụ đề: Khi mở Form tra cứu sẽ thu gọn mượt mà (animate height: 0, opacity: 0) để nhường khoảng trống cho Form, chống đụng viền */}
+              <motion.div
+                initial={false}
+                animate={
+                  spotlightState.isFormExpanded
+                    ? {
+                        height: 0,
+                        opacity: 0,
+                        marginBottom: 0,
+                        y: -8,
+                        filter: 'blur(3.5px)',
+                      }
+                    : {
+                        height: 'auto',
+                        opacity: 1,
+                        marginBottom: isMobile ? 14 : 24,
+                        y: 0,
+                        filter: 'blur(0px)',
+                      }
+                }
+                transition={{
+                  duration: 0.42,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="overflow-hidden"
+              >
+                <p className="text-[13.5px] min-[360px]:text-[14.5px] sm:text-[15px] lg:text-[15.5px] text-blue-100/95 max-w-[340px] sm:max-w-xl mx-auto font-normal leading-relaxed drop-shadow-[0_1px_2px_rgba(0,0,0,0.2)] select-none pb-0.5">
+                  Hệ thống xác thực văn bằng điện tử – Trường Đại học Nam Cần Thơ
+                </p>
+              </motion.div>
+            </div>
+
+            {/* Thanh tra cứu Spotlight: Nền tảng vững chắc, sẵn sàng tức thì 0ms, không nhấp nháy */}
+            <div className="w-full max-w-[980px] relative z-10">
+              <SpotlightBar
+                activeTab={activeTab}
+                onTabChange={handleTabChange}
+                onSelectResult={handleLookupSuccess}
+                onNotFound={handleLookupNotFound}
+                onReset={handleGlobalReset}
+                sampleData={sampleData}
+                sampleToApply={sampleToApply}
+                onOpenStateChange={setSpotlightState}
+              />
+            </div>
+          </motion.div>
+        </section>
+      </div>
 
       {/* 3. MAIN ANCHOR */}
       <main
         id="khung-tra-cuu"
         ref={cardSectionRef}
-        className="flex-1 bg-[#F8FAFC] min-h-[30px] sm:min-h-[50px] no-print"
+        className="flex-1 bg-white min-h-0 no-print border-0 border-none"
       />
 
       {/* THANH THÔNG BÁO DYNAMIC ISLAND (KHI KẾT QUẢ ĐANG Ở CHẾ ĐỘ THU GỌN - ĐEN TRONG SUỐT APPLE SMOKED GLASS, BỎ CHẤM XANH, KHÔNG VIỀN, HỖ TRỢ KÉO ĐẶT Ở GIỮA TRÊN, GIỮA DƯỚI VÀ 4 GÓC, HIỆU ỨNG ĐỒNG BỘ 100%) */}
@@ -844,6 +809,7 @@ export default function Home() {
         sampleData={sampleData}
         onApplySample={handleApplySample}
         isSpotlightOpen={spotlightState.isOpen}
+        isResultOpen={Boolean(result && isResultVisible)}
       />
 
       {/* 5. FOOTER */}

@@ -35,6 +35,7 @@ export class LookupController {
       cap_do?: string;
       ho_ten?: string;
       ngay_sinh?: string;
+      so_vao_so?: string;
     },
   ) {
     const data = this.lookupService.traCuuCntt(body);
@@ -54,6 +55,8 @@ export class LookupController {
       so_hieu_phoi: string;
       ho_ten?: string;
       ngay_sinh?: string;
+      so_bao_danh?: string;
+      so_vao_so?: string;
     },
   ) {
     const data = this.lookupService.traCuuVstep(body);
