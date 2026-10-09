@@ -543,8 +543,7 @@ body {
   font-family: var(--font-ui);
   width: 100%;
   display: block;
-  /* room above the field for the lifted label */
-  padding-top: 6px;
+  padding-top: 0;
 }
 
 /* Custom Card Wrapper: Thiết kế chuẩn xác, viền siêu nét nhẹ nhàng, bóng đổ đa tầng bồng bềnh cao cấp */
@@ -776,6 +775,7 @@ input:focus, input:focus-visible, input:active {
 .lbi-box {
   position: relative;
   width: 100%;
+  box-sizing: border-box;
   border-radius: 18px;
   border: 1px solid var(--color-input-border, #D2D2D7);
   background-color: var(--color-surface-white, #ffffff);
@@ -786,11 +786,7 @@ input:focus, input:focus-visible, input:active {
   cursor: text;
 }
 
-.lbi-box:hover {
-  border-color: var(--color-input-border-hover, #86868B);
-  background-color: var(--color-surface-white, #ffffff);
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.06);
-}
+
 
 .lbi-box[data-is-select="true"] {
   cursor: pointer;
@@ -827,10 +823,7 @@ input:focus, input:focus-visible, input:active {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
 }
 
-.lbi[data-filled="true"]:not([data-focus="true"]):not(:focus-within):not([data-error="true"]) .lbi-box:hover {
-  border-color: var(--color-input-border-hover, #86868B);
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.06);
-}
+
 
 /* Khi ô bị lỗi (Error): Nền trắng tinh, viền đỏ 2px tinh tế */
 .lbi[data-error="true"] .lbi-box,
@@ -879,10 +872,10 @@ input:focus, input:focus-visible, input:active {
 .lbi-error-msg {
   display: flex;
   align-items: center;
-  gap: 6.5px;
+  gap: 6px;
   padding-top: 6px;
   padding-bottom: 2px;
-  padding-left: 8px;
+  padding-left: 14px;
   font-size: 13.5px;
   font-weight: 500;
   color: #D72134;
@@ -1063,7 +1056,7 @@ input:focus, input:focus-visible, input:active {
 }
 
 .lbi[data-up="true"] .lbi-label {
-  transform: translateY(calc(-50% - 15.5px)) scale(0.8125); /* 16px * 0.8125 = chuẩn 13px */
+  transform: translateY(calc(-50% - 10px)) scale(0.875);
   color: #6E6E73;
   font-weight: 600;
   background: transparent !important;
@@ -1099,14 +1092,16 @@ input:focus, input:focus-visible, input:active {
   height: 100%;
   padding-left: var(--lbi-x, 22px);
   padding-right: 22px;
-  padding-top: 24px;
-  padding-bottom: 6px;
+  padding-top: 35px;
+  padding-bottom: 13px;
+  box-sizing: border-box;
   border: 0;
   border-radius: inherit;
   background: transparent;
   font: inherit;
   font-size: 16px;
   font-weight: 500;
+  line-height: 22px;
   letter-spacing: -0.015em;
   color: #1D1D1F;
   outline: none;
@@ -1124,16 +1119,16 @@ input:focus, input:focus-visible, input:active {
 }
 
 .lbi-field::placeholder {
-  color: #6E6E73;
+  color: #86868B;
   font-size: 15px;
-  font-weight: 450;
-  opacity: 1;
+  font-weight: 400;
+  opacity: 0.65;
 }
 
 /* Support browser autofill gracefully */
 .lbi:has(.lbi-field:-webkit-autofill) .lbi-label,
 .lbi:has(.lbi-field:autofill) .lbi-label {
-  transform: translateY(calc(-50% - 15.5px)) scale(0.8125) !important;
+  transform: translateY(calc(-50% - 7.5px)) scale(0.8125) !important;
   color: #6E6E73 !important;
   font-weight: 600 !important;
 }

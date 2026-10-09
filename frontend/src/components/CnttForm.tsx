@@ -207,7 +207,7 @@ export default function CnttForm({
             label="Họ và tên"
             placeholder="Ví dụ: NGUYỄN VĂN AN"
             value={hoTen}
-            height={68}
+            height={70}
             corner={18}
             required
             onChange={(e) => {
@@ -225,7 +225,7 @@ export default function CnttForm({
             label="Ngày sinh"
             type="date"
             placeholder="dd/mm/yyyy"
-            height={68}
+            height={70}
             corner={18}
             required
             value={ngaySinh}
@@ -244,7 +244,7 @@ export default function CnttForm({
             label="Số hiệu phôi"
             placeholder={capDo === 'nangcao' ? 'Ví dụ: NC-452109' : 'Ví dụ: 001300, CB-982145'}
             value={soHieuPhoi}
-            height={68}
+            height={70}
             corner={18}
             required
             onChange={(e) => {
@@ -262,7 +262,7 @@ export default function CnttForm({
             label="Số vào sổ"
             placeholder="Ví dụ: NCTU-CNTT-2023/142"
             value={soVaoSo}
-            height={68}
+            height={70}
             corner={18}
             required
             onChange={(e) => {

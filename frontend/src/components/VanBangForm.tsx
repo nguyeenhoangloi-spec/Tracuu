@@ -200,7 +200,7 @@ export default function VanBangForm({
             label="Họ và tên"
             placeholder="Ví dụ: NGUYỄN VĂN AN"
             value={hoTen}
-            height={68}
+            height={70}
             corner={18}
             onChange={(e) => {
               setHoTen(e.target.value);
@@ -220,7 +220,7 @@ export default function VanBangForm({
             label="Ngày sinh"
             type="date"
             placeholder="dd/mm/yyyy"
-            height={68}
+            height={70}
             corner={18}
             required
             value={ngaySinh}
@@ -241,7 +241,7 @@ export default function VanBangForm({
             label="Số hiệu phôi"
             placeholder="Ví dụ: B6829104"
             value={soHieuPhoi}
-            height={68}
+            height={70}
             corner={18}
             onChange={(e) => {
               setSoHieuPhoi(e.target.value.toUpperCase());
@@ -261,7 +261,7 @@ export default function VanBangForm({
             label="Số vào sổ"
             placeholder="Ví dụ: NCTU-CNTT-2023/142"
             value={soVaoSo}
-            height={68}
+            height={70}
             corner={18}
             onChange={(e) => {
               setSoVaoSo(e.target.value);

@@ -186,7 +186,7 @@ export default function VstepForm({
             label="Họ và tên"
             placeholder="Ví dụ: NGUYỄN VĂN AN"
             value={hoTen}
-            height={68}
+            height={70}
             corner={18}
             required
             onChange={(e) => {
@@ -204,7 +204,7 @@ export default function VstepForm({
             label="Ngày sinh"
             type="date"
             placeholder="dd/mm/yyyy"
-            height={68}
+            height={70}
             corner={18}
             required
             value={ngaySinh}
@@ -223,7 +223,7 @@ export default function VstepForm({
             label="Số hiệu phôi"
             placeholder="Ví dụ: B1-092348"
             value={soHieuPhoi}
-            height={68}
+            height={70}
             corner={18}
             onChange={(e) => {
               setSoHieuPhoi(e.target.value.toUpperCase());
@@ -243,7 +243,7 @@ export default function VstepForm({
             label="Số vào sổ"
             placeholder="Ví dụ: NCTU-VSTEP/2024/088"
             value={soVaoSo}
-            height={68}
+            height={70}
             corner={18}
             onChange={(e) => {
               setSoVaoSo(e.target.value.toUpperCase());

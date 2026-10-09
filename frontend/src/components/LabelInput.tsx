@@ -73,7 +73,7 @@ export function LabelInput({
   id: customId,
   subLabel,
   corner = 18,
-  height: customH = 68,
+  height: customH = 70,
   showcase = false,
   className = "",
   autoComplete = "off",
@@ -411,7 +411,7 @@ export function LabelInput({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [dropdownOpen, datePickerOpen]);
 
-  /* Only lift label when field is focused, popover is open, or has value */
+  /* Natural Apple & Stripe floating label: rests centered when empty, floats up when active/filled */
   const hasValue = Boolean(value !== undefined && value !== null && String(value).trim().length > 0);
   const up = Boolean(focus || dropdownOpen || datePickerOpen || hasValue);
 
@@ -420,7 +420,7 @@ export function LabelInput({
     : null;
 
   /* ── where the label sits ────────────────────────────────
-     Aligned naturally with rounded corner (16px) */
+     Aligned naturally with rounded corner (22px) */
   const lx = Math.max(20, r + 4);
 
   const reveal = () => {
@@ -454,6 +454,7 @@ export function LabelInput({
         style={{
           width: "100%",
           height: H,
+          boxSizing: "border-box",
           borderRadius: r,
           "--lbi-x": `${lx}px`,
           "--lbi-half-h": `${(H / 2).toFixed(1)}px`,
@@ -481,7 +482,7 @@ export function LabelInput({
             <button
               type="button"
               id={id}
-              className="lbi-field no-ripple appearance-none cursor-pointer flex items-center justify-between text-left select-none outline-none focus:outline-none transition-colors"
+              className="lbi-field no-ripple appearance-none cursor-pointer flex items-center text-left select-none outline-none focus:outline-none transition-colors"
               style={{ paddingLeft: lx, paddingRight: 52 }}
               onClick={(e) => handleToggleDatePicker(e)}
               onFocus={() => setFocus(true)}
@@ -491,8 +492,8 @@ export function LabelInput({
               aria-haspopup="dialog"
               aria-expanded={datePickerOpen}
             >
-              <span className={`truncate text-[16px] ${displayDate ? "font-semibold text-[#1D1D1F]" : "text-[#6E6E73] font-medium"}`}>
-                {displayDate || (focus || datePickerOpen ? placeholder || "dd/mm/yyyy" : "")}
+              <span className={`text-[16px] leading-[22px] tracking-[-0.015em] whitespace-nowrap ${displayDate ? "font-semibold text-[#1D1D1F]" : "text-[#86868B] font-normal"}`}>
+                {displayDate || (up ? placeholder || "dd/mm/yyyy" : "")}
               </span>
             </button>
 
@@ -862,7 +863,7 @@ export function LabelInput({
             <button
               type="button"
               id={id}
-              className="lbi-field appearance-none cursor-pointer flex items-center justify-between text-left select-none outline-none focus:outline-none transition-colors"
+              className="lbi-field appearance-none cursor-pointer flex items-center text-left select-none outline-none focus:outline-none transition-colors"
               style={{ paddingLeft: lx, paddingRight: 52 }}
               onClick={(e) => handleToggleDropdown(e)}
               onFocus={() => setFocus(true)}
@@ -873,7 +874,7 @@ export function LabelInput({
               aria-expanded={dropdownOpen}
             >
               <div className="flex items-center min-w-0 w-full pr-1">
-                <span className={`truncate text-[16px] ${selectedOption ? "font-semibold text-[#1D1D1F]" : "text-[#6E6E73] font-normal"}`}>
+                <span className={`truncate text-[16px] leading-[22px] tracking-[-0.015em] ${selectedOption ? "font-semibold text-[#1D1D1F]" : "text-[#86868B] font-normal"}`}>
                   {up ? selectedOption?.label || placeholder || "" : ""}
                 </span>
               </div>
@@ -975,7 +976,7 @@ export function LabelInput({
             value={value}
             required={required}
             disabled={disabled}
-            placeholder={focus && !hasValue ? placeholder : ""}
+            placeholder={up ? (placeholder || "") : ""}
             onChange={(e) => {
               if (!isControlled) setUncontrolledValue(e.target.value);
               if (onChange) onChange(e);

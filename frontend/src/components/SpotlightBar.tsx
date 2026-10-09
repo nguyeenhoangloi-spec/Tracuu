@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import {
   Search,
@@ -327,8 +327,10 @@ export default function SpotlightBar({
   }, [categoryFilter, isFocused, displayMode]);
 
   const [gridHeight, setGridHeight] = useState<number>(330);
-  const [formHeight, setFormHeight] = useState<number>(390);
+  const [formHeight, setFormHeight] = useState<number>(440);
   const bodyContentRef = useRef<HTMLDivElement | null>(null);
+  const gridRoRef = useRef<ResizeObserver | null>(null);
+  const formRoRef = useRef<ResizeObserver | null>(null);
 
   const isFocusedRef = useRef(isFocused);
   const isFormExpandedRef = useRef(isFormExpanded);
@@ -560,50 +562,84 @@ export default function SpotlightBar({
     });
   }, [isWindowOpen, isFormExpanded, formHeight, gridHeight, onOpenStateChange]);
 
-  // 1. Đo đạc chiều cao độc lập của Lưới Launchpad (Grid view)
-  useEffect(() => {
-    if (!gridRef.current) return;
-    const measure = () => {
-      if (!gridRef.current) return;
-      const h = Math.round(
-        gridRef.current.offsetHeight ||
-        gridRef.current.getBoundingClientRect().height
-      );
+  // 1. Đo đạc chiều cao Lưới Launchpad (Grid view) bằng Callback Ref đảm bảo bắt trúng 100% khi AnimatePresence mount
+  const setGridRef = useCallback((node: HTMLDivElement | null) => {
+    gridRef.current = node;
+    gridRoRef.current?.disconnect();
+    gridRoRef.current = null;
+
+    if (node) {
+      const h = Math.round(node.offsetHeight || node.getBoundingClientRect().height);
       if (h >= 75) setGridHeight(h);
-    };
-    measure();
 
-    const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const h = Math.round(
-          entry.borderBoxSize?.[0]?.blockSize ?? entry.target.getBoundingClientRect().height
-        );
-        if (h >= 75) setGridHeight(h);
-      }
-    });
-    ro.observe(gridRef.current);
-    return () => ro.disconnect();
-  }, [isWindowOpen, isFormExpanded, categoryFilter, query, displayMode]);
+      const ro = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          const measuredH = Math.round(
+            entry.borderBoxSize?.[0]?.blockSize ??
+            (entry.target as HTMLElement).offsetHeight ??
+            entry.target.getBoundingClientRect().height
+          );
+          if (measuredH >= 75) setGridHeight(measuredH);
+        }
+      });
+      ro.observe(node);
+      gridRoRef.current = ro;
+    }
+  }, []);
 
-  // 2. Đo đạc chiều cao độc lập của Form tra cứu (Form view)
+  // 2. Đo đạc chiều cao Form tra cứu (Form view) bằng Callback Ref - Cập nhật liên tục khi có dòng lỗi xuất hiện
+  const setFormRef = useCallback((node: HTMLDivElement | null) => {
+    formRef.current = node;
+    formRoRef.current?.disconnect();
+    formRoRef.current = null;
+
+    if (node) {
+      const h = Math.round(node.offsetHeight || node.getBoundingClientRect().height);
+      if (h >= 75) setFormHeight(h);
+
+      const ro = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          const measuredH = Math.round(
+            entry.borderBoxSize?.[0]?.blockSize ??
+            (entry.target as HTMLElement).offsetHeight ??
+            entry.target.getBoundingClientRect().height
+          );
+          if (measuredH >= 75) setFormHeight(measuredH);
+        }
+      });
+      ro.observe(node);
+      formRoRef.current = ro;
+    }
+  }, []);
+
+  // 3. Giữ bộ lắng nghe transitionend khi dòng lỗi CSS hoàn tất chuyển động để đồng bộ mượt mà
   useEffect(() => {
-    if (!formRef.current) return;
-    const initialH = Math.round(formRef.current.getBoundingClientRect().height);
-    if (initialH >= 75) setFormHeight(initialH);
-
-    const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const h = Math.round(
-          entry.borderBoxSize?.[0]?.blockSize ?? entry.target.getBoundingClientRect().height
-        );
-        if (h >= 75) {
-          setFormHeight(h);
+    const handleTransitionEnd = (e: TransitionEvent) => {
+      if (
+        (e.target as HTMLElement)?.classList?.contains('lbi-error-wrapper') ||
+        (e.target as HTMLElement)?.closest?.('.lbi-error-wrapper')
+      ) {
+        if (formRef.current) {
+          const h = Math.round(formRef.current.offsetHeight || formRef.current.getBoundingClientRect().height);
+          if (h >= 75) setFormHeight(h);
         }
       }
-    });
-    ro.observe(formRef.current);
-    return () => ro.disconnect();
-  }, [isWindowOpen, isFormExpanded, activeTab, selectedDegree]);
+    };
+
+    const node = bodyContentRef.current;
+    if (node) {
+      node.addEventListener('transitionend', handleTransitionEnd);
+      return () => node.removeEventListener('transitionend', handleTransitionEnd);
+    }
+  }, [isWindowOpen, isFormExpanded]);
+
+  // Dọn dẹp observers khi component unmount
+  useEffect(() => {
+    return () => {
+      gridRoRef.current?.disconnect();
+      formRoRef.current?.disconnect();
+    };
+  }, []);
 
   // Xử lý khi nhấn chọn 1 loại bằng từ Grid -> Chuyển cảnh sang Form (Desktop) hoặc mở Bottom Sheet (Mobile)
   const handleSelectDegreeType = (deg: DegreeTypeConfig) => {
@@ -961,17 +997,18 @@ export default function SpotlightBar({
           {isWindowOpen && (
             <motion.div
               key="floodlight-body-flow"
+              layout="size"
               initial={{ opacity: 0, height: 0 }}
               animate={{
                 opacity: 1,
-                height: isFormExpanded && !isMobile ? formHeight : gridHeight,
+                height: 'auto',
               }}
               exit={{
                 opacity: 0,
                 height: 0,
                 transition: {
                   height: {
-                    duration: 0.36,
+                    duration: 0.34,
                     ease: [0.22, 1, 0.36, 1], // Thu gọn êm ái, kéo nền lên thanh thoát
                   },
                   opacity: {
@@ -981,9 +1018,13 @@ export default function SpotlightBar({
                 },
               }}
               transition={{
+                layout: {
+                  duration: 0.36,
+                  ease: [0.22, 1, 0.36, 1],
+                },
                 height: {
-                  duration: 0.40,
-                  ease: [0.22, 1, 0.36, 1], // Chuẩn Apple WWDC Fluid Momentum Ease: nở êm dịu, co giãn đẩy nền mượt mà
+                  duration: 0.38,
+                  ease: [0.22, 1, 0.36, 1], // Chuẩn Apple WWDC Fluid Momentum Ease
                 },
                 opacity: {
                   duration: 0.28,
@@ -1000,7 +1041,7 @@ export default function SpotlightBar({
                     /* ===================================================================== */
                     <motion.div
                       key="spotlight-list-view"
-                      ref={gridRef}
+                      ref={setGridRef}
                       custom={slideDirection}
                       variants={viewVariants}
                       initial={isSwitchingView && !isMobile ? "enter" : false}
@@ -1262,14 +1303,14 @@ export default function SpotlightBar({
                     /* ===================================================================== */
                     <motion.div
                       key="spotlight-form-view"
-                      ref={formRef}
+                      ref={setFormRef}
                       custom={slideDirection}
                       variants={viewVariants}
                       initial={isSwitchingView ? "enter" : false}
                       animate="center"
                       exit="exit"
                       style={{ willChange: 'transform, opacity' }}
-                      className="hidden sm:block w-full px-5 min-[390px]:px-6 sm:px-8 pt-4 pb-6 sm:pb-7"
+                      className="hidden sm:block w-full px-5 min-[390px]:px-6 sm:px-8 pt-4 pb-7 sm:pb-8"
                     >
                       {/* Header Form: Hiển thị đúng biểu tượng Squircle của loại bằng đã chọn + Nút quay lại gọn gàng 1 dòng */}
                       <div className="flex items-center justify-between mb-2.5 sm:mb-3 gap-2.5">
@@ -1307,7 +1348,7 @@ export default function SpotlightBar({
                               setSlideDirection('backward');
                               updateOpenState(true, false);
                             }}
-                            className="group inline-flex items-center justify-center gap-2 h-10 sm:h-11 px-3.5 sm:px-4.5 rounded-full bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] text-[#1D1D1F] transition-all duration-150 cursor-pointer text-[13.5px] sm:text-[14.5px] font-semibold select-none border-0 outline-none focus:outline-none shrink-0 [-webkit-tap-highlight-color:transparent]"
+                            className="group inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] text-[#1D1D1F] transition-all duration-150 cursor-pointer select-none border-0 outline-none focus:outline-none shrink-0 [-webkit-tap-highlight-color:transparent]"
                             title="Đổi loại bằng (Quay lại)"
                             aria-label="Đổi loại bằng (Quay lại)"
                           >
@@ -1315,23 +1356,21 @@ export default function SpotlightBar({
                               variants={{
                                 rest: { x: 0 },
                                 hover: {
-                                  x: [0, -3.5, -1, -2.5],
+                                  x: [0, -2.5, -0.5, -1.5],
                                   transition: {
-                                    duration: 0.45,
+                                    duration: 0.4,
                                     times: [0, 0.4, 0.7, 1],
                                     ease: 'easeOut',
                                   },
                                 },
-                                tap: { x: -4, scale: 0.94 },
+                                tap: { x: -3, scale: 0.92 },
                               }}
-                              className="flex items-center justify-center shrink-0"
+                              className="flex items-center justify-center"
                             >
-                              <ArrowLeft
-                                className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] text-[#1D1D1F] pointer-events-none transition-colors duration-150"
-                                strokeWidth={2.4}
-                              />
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.4} stroke="currentColor" className="w-[18px] h-[18px] sm:w-5 sm:h-5 pointer-events-none">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                              </svg>
                             </motion.div>
-                            <span className="inline leading-none translate-y-[0.5px]">Quay lại</span>
                           </motion.button>
                         </div>
                       </div>
@@ -1471,7 +1510,9 @@ export default function SpotlightBar({
                   title="Đổi loại bằng (Quay lại)"
                   aria-label="Đổi loại bằng (Quay lại)"
                 >
-                  <ArrowLeft className="w-5 h-5" strokeWidth={2.4} />
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.4} stroke="currentColor" className="w-5 h-5">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                  </svg>
                 </button>
               </div>
 

@@ -98,9 +98,9 @@ export default function CertificateCard({
   const certificateTitle = formatCertificateTitle(type, data);
   const fullLegalTitle = data.ten_van_bang || data.ten_chung_chi || certificateTitle;
 
-  const labelClass = 'text-[14px] min-[390px]:text-[15.5px] sm:text-[17px] md:text-[18px] lg:text-[20px] font-semibold text-apple-muted shrink-0 font-sans leading-normal whitespace-nowrap text-left sm:w-[155px] md:w-[175px] lg:w-[195px]';
+  const labelClass = 'text-[14px] min-[390px]:text-[15.5px] sm:text-[17px] md:text-[18px] lg:text-[20px] font-medium text-apple-muted shrink-0 font-sans leading-normal whitespace-nowrap text-left sm:w-[155px] md:w-[175px] lg:w-[195px]';
   const valueClass = 'text-[14px] min-[390px]:text-[15.5px] sm:text-[17px] md:text-[18px] lg:text-[20px] font-semibold text-apple-text font-sans leading-normal break-words min-w-0 flex-1 text-right sm:text-left';
-  const boldValueClass = 'text-[14px] min-[390px]:text-[15.5px] sm:text-[17px] md:text-[18px] lg:text-[20px] font-bold text-apple-text font-sans leading-normal break-words min-w-0 flex-1 text-right sm:text-left';
+  const boldValueClass = 'text-[14px] min-[390px]:text-[15.5px] sm:text-[17px] md:text-[18px] lg:text-[20px] font-semibold text-apple-text font-sans leading-normal break-words min-w-0 flex-1 text-right sm:text-left';
   const itemRowClass = 'flex items-start justify-between sm:justify-start gap-3 sm:gap-3.5 py-2 sm:py-0 w-full';
   const gridRowClass = 'grid grid-cols-1 md:grid-cols-2 gap-x-6 lg:gap-x-12 sm:py-3 lg:py-3.5';
 
@@ -195,7 +195,7 @@ export default function CertificateCard({
             {/* 1. HỌ TÊN: XANH NAVY THƯƠNG HIỆU CHUẨN NCTU (#25359D) */}
             <div className="flex items-start justify-between sm:justify-start gap-3 sm:gap-3.5 py-2 sm:py-3.5 w-full">
               <span className={labelClass}>Họ tên:</span>
-              <span className="text-[18px] min-[390px]:text-[20px] sm:text-[24px] md:text-[26px] lg:text-[28px] font-bold text-brand-navy uppercase tracking-wide break-words min-w-0 flex-1 text-right sm:text-left leading-tight sm:leading-snug">
+              <span className="text-[18px] min-[390px]:text-[20px] sm:text-[24px] md:text-[26px] lg:text-[28px] font-semibold text-brand-navy uppercase tracking-wide break-words min-w-0 flex-1 text-right sm:text-left leading-tight sm:leading-snug">
                 {data.ho_ten}
               </span>
             </div>
