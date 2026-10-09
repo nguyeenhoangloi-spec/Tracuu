@@ -81,10 +81,10 @@ const menuItemVariants: Variants = {
   },
   closed: {
     opacity: 0,
-    y: -16,
+    y: -14,
     transition: {
-      duration: 0.18,
-      ease: [0.4, 0, 0.2, 1],
+      duration: 0.24,
+      ease: [0.32, 0.72, 0, 1],
     },
   },
 };
@@ -228,27 +228,19 @@ export default function Navbar({ activeTab = 'vanbang', onTabChange }: NavbarPro
       document.body.style.overflow = 'hidden';
       document.documentElement.style.overflow = 'hidden';
     } else {
-      const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      document.body.style.overflow = '';
-      document.documentElement.style.overflow = '';
-      if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
-      }
+      const timer = setTimeout(() => {
+        const scrollY = document.body.style.top;
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        document.documentElement.style.overflow = '';
+        if (scrollY) {
+          window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
+        }
+      }, 300);
+      return () => clearTimeout(timer);
     }
-    return () => {
-      const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      document.body.style.overflow = '';
-      document.documentElement.style.overflow = '';
-      if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0', 10) * -1);
-      }
-    };
   }, [mobileMenuOpen]);
 
   // Đóng Menu khi nhấn phím Escape
@@ -382,10 +374,10 @@ export default function Navbar({ activeTab = 'vanbang', onTabChange }: NavbarPro
                 }}
                 exit={{
                   opacity: 0,
-                  y: -14,
+                  y: -20,
                   transition: {
-                    duration: 0.22,
-                    ease: [0.4, 0, 0.2, 1],
+                    duration: 0.32,
+                    ease: [0.32, 0.72, 0, 1], // Chuẩn Apple WWDC Fluid Curve: trượt thu lại êm dịu, không giật
                   },
                 }}
                 className="fixed top-[58px] sm:top-[68px] inset-x-0 bottom-0 z-[200] bg-white text-[#1d1d1f] flex flex-col justify-between overflow-y-auto overscroll-contain touch-pan-y lg:hidden"

@@ -1296,7 +1296,7 @@ export default function SpotlightBar({
                       className="hidden sm:block w-full px-3.5 min-[380px]:px-4 sm:px-7 pt-4 pb-7 sm:pb-8"
                     >
                       {/* Header Form: Hiển thị đúng biểu tượng Squircle của loại bằng đã chọn + Nút quay lại gọn gàng 1 dòng */}
-                      <div className="flex items-center justify-between mb-2.5 sm:mb-3 gap-2.5">
+                      <div className="flex items-center justify-between mb-5 sm:mb-6 gap-2.5">
                         <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
                           {/* Icon Squircle chuẩn xác của loại bằng đang chọn */}
                           <div
@@ -1502,7 +1502,7 @@ export default function SpotlightBar({
               </div>
 
               {/* Thân Form cuộn mượt mà, bàn phím ảo bật lên tự co giãn không che nút */}
-              <div className="flex-1 overflow-y-auto overscroll-contain px-5 pt-4 pb-[calc(2.5rem+env(safe-area-inset-bottom,0px))] touch-pan-y">
+              <div className="flex-1 overflow-y-auto overscroll-contain px-5 pt-5 pb-[calc(2.5rem+env(safe-area-inset-bottom,0px))] touch-pan-y">
                 {renderFormContent()}
               </div>
             </div>

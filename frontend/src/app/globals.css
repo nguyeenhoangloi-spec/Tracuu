@@ -792,16 +792,18 @@ input:focus, input:focus-visible, input:active {
   width: 100%;
   box-sizing: border-box;
   border-radius: 18px;
-  border: 1px solid var(--color-input-border, #D2D2D7);
+  border: 1.5px solid var(--color-input-border, #D2D2D7);
   background-color: var(--color-surface-white, #ffffff);
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
-  transition: border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
-    background-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: border-color 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 200ms cubic-bezier(0.16, 1, 0.3, 1);
   cursor: text;
 }
 
-
+.lbi-box:hover {
+  border-color: #B0B0B5;
+}
 
 .lbi-box[data-is-select="true"] {
   cursor: pointer;
@@ -812,7 +814,7 @@ input:focus, input:focus-visible, input:active {
   z-index: 60;
 }
 
-/* Khi người dùng nhấn vào ô nhập (Focus / Active): Viền 2px sắc nét xanh Apple Blue chuẩn Token */
+/* Khi người dùng nhấn vào ô nhập (Focus / Active): Viền chuyển màu xanh Apple Blue êm ái, hào quang mềm mại */
 .lbi[data-focus="true"] .lbi-box,
 .lbi[data-focus="true"] .lbi-box:hover,
 .lbi:focus-within .lbi-box,
@@ -820,27 +822,25 @@ input:focus, input:focus-visible, input:active {
 .lbi-box:focus-within,
 .lbi-box:focus-within:hover {
   background-color: #ffffff !important;
-  border: 2px solid var(--color-input-focus-border, #2563EB) !important;
+  border: 1.5px solid var(--color-input-focus-border, #2563EB) !important;
   border-color: var(--color-input-focus-border, #2563EB) !important;
-  box-shadow: 0 0 0 1px var(--color-input-focus-ring, rgba(37, 99, 235, 0.12)), 0 3px 12px 0 var(--color-input-focus-ring, rgba(37, 99, 235, 0.12)) !important;
+  box-shadow: 0 0 0 3.5px var(--color-input-focus-ring, rgba(37, 99, 235, 0.14)), 0 2px 8px 0 rgba(37, 99, 235, 0.06) !important;
   outline: none !important;
 }
 
 .lbi[data-focus="true"] .lbi-label,
 .lbi:focus-within .lbi-label {
   color: var(--color-input-focus-label, #2563EB) !important;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .lbi[data-filled="true"]:not([data-focus="true"]):not(:focus-within):not([data-error="true"]) .lbi-box {
   background-color: var(--color-surface-white, #ffffff);
-  border: 1px solid var(--color-input-border, #D2D2D7);
+  border: 1.5px solid var(--color-input-border, #D2D2D7);
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
 }
 
-
-
-/* Khi ô bị lỗi (Error): Nền trắng tinh, viền đỏ 2px tinh tế */
+/* Khi ô bị lỗi (Error): Nền trắng tinh, viền đỏ tinh tế */
 .lbi[data-error="true"] .lbi-box,
 .lbi[data-error="true"] .lbi-box:hover,
 .lbi[data-error="true"][data-focus="true"] .lbi-box,
@@ -848,15 +848,15 @@ input:focus, input:focus-visible, input:active {
 .lbi[data-error="true"]:focus-within .lbi-box,
 .lbi[data-error="true"]:focus-within .lbi-box:hover {
   background-color: #ffffff !important;
-  border: 2px solid #D72134 !important;
+  border: 1.5px solid #D72134 !important;
   border-color: #D72134 !important;
-  box-shadow: 0 0 0 1px rgba(215, 33, 52, 0.08), 0 3px 12px 0 rgba(215, 33, 52, 0.10) !important;
+  box-shadow: 0 0 0 3.5px rgba(215, 33, 52, 0.12), 0 2px 8px 0 rgba(215, 33, 52, 0.08) !important;
   outline: none !important;
 }
 
 .lbi[data-error="true"] .lbi-label {
   color: #D72134 !important;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 /* ══ HIỆU ỨNG HIỂN THỊ DÒNG LỖI CỰC KỲ MƯỢT MÀ (APPLE & LINEAR GRADE ACCORDION MOTION) ══ */
@@ -1057,14 +1057,14 @@ input:focus, input:focus-visible, input:active {
   line-height: 1;
   letter-spacing: -0.015em;
   white-space: pre;
-  color: #1D1D1F;
+  color: #6E6E73;
   cursor: text;
   -webkit-user-select: none;
   user-select: none;
   pointer-events: none;
   z-index: 5;
-  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
-    color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1),
+    color 260ms cubic-bezier(0.32, 0.72, 0, 1);
   will-change: transform, color;
   backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
@@ -1073,7 +1073,7 @@ input:focus, input:focus-visible, input:active {
 .lbi[data-up="true"] .lbi-label {
   transform: translateY(calc(-50% - 14px)) scale(0.875);
   color: #6E6E73;
-  font-weight: 600;
+  font-weight: 500;
   background: transparent !important;
   padding: 0 !important;
   border-radius: 0 !important;
@@ -1082,17 +1082,17 @@ input:focus, input:focus-visible, input:active {
 
 .lbi[data-focus="true"] .lbi-label,
 .lbi:focus-within .lbi-label {
-  color: #2563EB !important;
-  font-weight: 600;
+  color: var(--color-input-focus-label, #2563EB) !important;
+  font-weight: 500;
 }
 
 .lbi[data-error="true"] .lbi-label {
   color: #EC1E24 !important;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .lbi-label span {
-  display: inline-block;
+  display: inline;
 }
 
 /* Giữ nhãn tĩnh, mượt mà, không giật từng chữ khi focus/chuyển tab */
@@ -1121,16 +1121,26 @@ input:focus, input:focus-visible, input:active {
   color: #1D1D1F;
   outline: none;
   z-index: 2;
-  transition: opacity 240ms cubic-bezier(0.16, 1, 0.3, 1),
-    color 200ms ease;
+  will-change: opacity, transform;
 }
 
+/* Khi chưa kích hoạt: Ẩn hoàn toàn, hơi lệch xuống 4px */
 .lbi:not([data-up="true"]) .lbi-field {
   opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  transition: opacity 140ms cubic-bezier(0.32, 0.72, 0, 1),
+    transform 140ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 
+/* Khi kích hoạt (nhấn vào): Trượt lướt lên và hiện ra êm ái sau nhịp nhãn bay lên */
 .lbi[data-up="true"] .lbi-field {
   opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  transition: opacity 240ms cubic-bezier(0.32, 0.72, 0, 1) 60ms,
+    transform 280ms cubic-bezier(0.32, 0.72, 0, 1) 40ms,
+    color 200ms ease;
 }
 
 .lbi-field::placeholder {
@@ -1138,6 +1148,7 @@ input:focus, input:focus-visible, input:active {
   font-size: 16px;
   font-weight: 400;
   opacity: 1;
+  transition: opacity 220ms ease;
 }
 
 /* Support browser autofill gracefully */
@@ -1537,7 +1548,7 @@ input:focus, input:focus-visible, input:active {
   }
 
   .mobile-drawer-exit {
-    animation: mobileDrawerSlideDown 300ms cubic-bezier(0.32, 0, 0.67, 0) forwards !important;
+    animation: mobileDrawerSlideDown 320ms cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
     will-change: transform;
     transform-origin: bottom center;
   }
@@ -1549,7 +1560,7 @@ input:focus, input:focus-visible, input:active {
 }
 
 .animate-drawer-slide-down {
-  animation: mobileDrawerSlideDown 280ms cubic-bezier(0.32, 0, 0.67, 0) forwards;
+  animation: mobileDrawerSlideDown 320ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
   will-change: transform;
 }
 

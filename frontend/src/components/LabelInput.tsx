@@ -493,7 +493,7 @@ export function LabelInput({
               aria-expanded={datePickerOpen}
             >
               <span className={`text-[16px] leading-[22px] tracking-[-0.015em] whitespace-nowrap ${displayDate ? "font-semibold text-apple-text" : "text-apple-muted font-normal"}`}>
-                {displayDate || (up ? placeholder || "dd/mm/yyyy" : "")}
+                {displayDate || placeholder || "dd/mm/yyyy"}
               </span>
             </button>
 
@@ -875,7 +875,7 @@ export function LabelInput({
             >
               <div className="flex items-center min-w-0 w-full pr-1">
                 <span className={`truncate text-[16px] leading-[22px] tracking-[-0.015em] ${selectedOption ? "font-semibold text-apple-text" : "text-apple-muted font-normal"}`}>
-                  {up ? selectedOption?.label || placeholder || "" : ""}
+                  {selectedOption?.label || placeholder || ""}
                 </span>
               </div>
             </button>
@@ -976,7 +976,7 @@ export function LabelInput({
             value={value}
             required={required}
             disabled={disabled}
-            placeholder={up ? (placeholder || "") : ""}
+            placeholder={placeholder || ""}
             onChange={(e) => {
               if (!isControlled) setUncontrolledValue(e.target.value);
               if (onChange) onChange(e);
