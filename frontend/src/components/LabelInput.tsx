@@ -492,7 +492,7 @@ export function LabelInput({
               aria-haspopup="dialog"
               aria-expanded={datePickerOpen}
             >
-              <span className={`text-[16px] leading-[22px] tracking-[-0.015em] whitespace-nowrap ${displayDate ? "font-semibold text-[#1D1D1F]" : "text-[#86868B] font-normal"}`}>
+              <span className={`text-[16px] leading-[22px] tracking-[-0.015em] whitespace-nowrap ${displayDate ? "font-semibold text-apple-text" : "text-apple-muted font-normal"}`}>
                 {displayDate || (up ? placeholder || "dd/mm/yyyy" : "")}
               </span>
             </button>
@@ -874,7 +874,7 @@ export function LabelInput({
               aria-expanded={dropdownOpen}
             >
               <div className="flex items-center min-w-0 w-full pr-1">
-                <span className={`truncate text-[16px] leading-[22px] tracking-[-0.015em] ${selectedOption ? "font-semibold text-[#1D1D1F]" : "text-[#86868B] font-normal"}`}>
+                <span className={`truncate text-[16px] leading-[22px] tracking-[-0.015em] ${selectedOption ? "font-semibold text-apple-text" : "text-apple-muted font-normal"}`}>
                   {up ? selectedOption?.label || placeholder || "" : ""}
                 </span>
               </div>

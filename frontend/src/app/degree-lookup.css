@@ -193,16 +193,27 @@
   text-align: center;
 }
 
-.degree-lookup-hero__copy > * {
+.degree-lookup-hero__copy>* {
   opacity: 0;
   translate: 0 0.75rem;
   animation: degree-lookup-rise 900ms var(--degree-lookup-ease) forwards;
 }
 
-.degree-lookup-hero__copy > :nth-child(1) { animation-delay: 60ms; }
-.degree-lookup-hero__copy > :nth-child(2) { animation-delay: 150ms; }
-.degree-lookup-hero__copy > :nth-child(3) { animation-delay: 260ms; }
-.degree-lookup-hero__copy > :nth-child(4) { animation-delay: 370ms; }
+.degree-lookup-hero__copy> :nth-child(1) {
+  animation-delay: 60ms;
+}
+
+.degree-lookup-hero__copy> :nth-child(2) {
+  animation-delay: 150ms;
+}
+
+.degree-lookup-hero__copy> :nth-child(3) {
+  animation-delay: 260ms;
+}
+
+.degree-lookup-hero__copy> :nth-child(4) {
+  animation-delay: 370ms;
+}
 
 @keyframes degree-lookup-rise {
   to {
@@ -264,9 +275,9 @@
 .degree-lookup-lede {
   max-width: 56rem;
   margin: 0;
-  color: var(--degree-lookup-text-muted);
+  color: #6E6E73;
   font-size: var(--degree-lookup-t-lede);
-  font-weight: 400;
+  font-weight: 450;
   line-height: 1.45;
   letter-spacing: -0.012em;
   text-wrap: balance;
@@ -589,7 +600,8 @@
 /* Motion preferences ----------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .degree-lookup-hero__copy > *,
+
+  .degree-lookup-hero__copy>*,
   .degree-lookup-hero__stage,
   .degree-lookup-stage__light {
     animation-duration: 1ms;

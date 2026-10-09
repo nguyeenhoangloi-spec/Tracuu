@@ -294,17 +294,15 @@ export default function Home() {
       <section className="degree-lookup-hero no-print">
         <div className="degree-lookup-hero__copy degree-lookup-wrap">
 
-          {/* Tiêu đề chính chữ đen #1D1D1F sắc nét */}
+          {/* Tiêu đề chính */}
           <h1
-            className="degree-lookup-h1 text-[32px] md:text-[64px] text-apple-text mb-2 sm:mb-3"
+            className="degree-lookup-h1 text-[32px] md:text-[64px] text-apple-text mb-1 sm:mb-2"
             style={{ color: 'var(--color-apple-text)' }}
           >
-            Xác Thực Văn Bằng
-            <br />
-            &amp; Chứng Chỉ
+            Tra Cứu Văn Bằng
           </h1>
 
-          {/* Phụ đề chữ chuẩn Apple thanh lịch - LUÔN HIỂN THỊ CỐ ĐỊNH, KHÔNG ẨN KHI MỞ FORM */}
+          {/* Phụ đề */}
           <div className="mb-3.5 sm:mb-6">
             <p className="degree-lookup-lede text-apple-text whitespace-normal sm:whitespace-nowrap" style={{ color: 'var(--color-apple-text)' }}>
               Cổng tra cứu văn bằng điện tử chính thức <br className="sm:hidden" />– Trường Đại học Nam Cần Thơ
@@ -344,9 +342,8 @@ export default function Home() {
       {result && isResultVisible && (
         <div
           id="omninotch-overlay"
-          className={`fixed inset-0 z-[1000] flex flex-col justify-end sm:justify-center items-center p-0 sm:p-5 md:p-6 overflow-hidden sm:overflow-y-auto no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-colors duration-300 ${
-            isCardExpanded ? 'bg-slate-950/60 backdrop-blur-[6px]' : 'bg-slate-950/50 backdrop-blur-[6px]'
-          } ${isClosingResult ? 'animate-omninotch-backdrop-exit' : 'animate-omninotch-backdrop-enter'}`}
+          className={`fixed inset-0 z-[1000] flex flex-col justify-end sm:justify-center items-center p-0 sm:p-5 md:p-6 overflow-hidden sm:overflow-y-auto no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-colors duration-300 ${isCardExpanded ? 'bg-slate-950/60 backdrop-blur-[6px]' : 'bg-slate-950/50 backdrop-blur-[6px]'
+            } ${isClosingResult ? 'animate-omninotch-backdrop-exit' : 'animate-omninotch-backdrop-enter'}`}
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               handleBackdropClick(e);

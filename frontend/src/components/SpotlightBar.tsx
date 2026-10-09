@@ -168,7 +168,7 @@ const POPULAR_SEARCH_SHORTCUTS: PopularShortcut[] = [
     id: 'dh',
     title: 'Bằng Đại học',
     shortTitle: 'Đại học',
-    desc: 'Cử nhân, Kỹ sư, Dược sĩ chính quy',
+    desc: 'Cử nhân • Kỹ sư',
     degreeId: 'dh',
     icon: GraduationCap,
     gradient: 'from-[#1E40AF] via-[#2563EB] to-[#3B82F6]',
@@ -178,7 +178,7 @@ const POPULAR_SEARCH_SHORTCUTS: PopularShortcut[] = [
     id: 'vstep',
     title: 'Chứng chỉ VSTEP',
     shortTitle: 'VSTEP',
-    desc: 'Bậc 3 – 5 (B1, B2, C1) tiếng Anh',
+    desc: 'Bậc 3 – 5 tiếng Anh',
     degreeId: 'vstep',
     icon: Languages,
     gradient: 'from-[#9F1239] via-[#E11D48] to-[#F43F5E]',
@@ -188,7 +188,7 @@ const POPULAR_SEARCH_SHORTCUTS: PopularShortcut[] = [
     id: 'cntt-cb',
     title: 'Chứng chỉ CNTT',
     shortTitle: 'CNTT',
-    desc: 'Chuẩn CNTT Cơ bản & Nâng cao',
+    desc: 'Chuẩn TT 03/2014',
     degreeId: 'cntt-cb',
     icon: Laptop,
     gradient: 'from-[#0369A1] via-[#0284C7] to-[#0EA5E9]',
@@ -230,6 +230,7 @@ export default function SpotlightBar({
   const [displayMode, setDisplayMode] = useState<'list' | 'grid'>('list');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectedDegree, setSelectedDegree] = useState<DegreeTypeConfig>(DEGREE_TYPES[0]);
+  const [isOpenedFromShortcut, setIsOpenedFromShortcut] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const isWindowOpen = isFocused || (isFormExpanded && !isMobile);
 
@@ -327,7 +328,7 @@ export default function SpotlightBar({
   }, [categoryFilter, isFocused, displayMode]);
 
   const [gridHeight, setGridHeight] = useState<number>(330);
-  const [formHeight, setFormHeight] = useState<number>(440);
+  const [formHeight, setFormHeight] = useState<number>(325);
   const bodyContentRef = useRef<HTMLDivElement | null>(null);
   const gridRoRef = useRef<ResizeObserver | null>(null);
   const formRoRef = useRef<ResizeObserver | null>(null);
@@ -569,14 +570,19 @@ export default function SpotlightBar({
     gridRoRef.current = null;
 
     if (node) {
-      const h = Math.round(node.offsetHeight || node.getBoundingClientRect().height);
-      if (h >= 75) setGridHeight(h);
+      const measure = () => {
+        const h = Math.round(node.offsetHeight || node.scrollHeight || node.getBoundingClientRect().height);
+        if (h >= 75) setGridHeight(h);
+      };
+      measure();
+      requestAnimationFrame(measure);
 
       const ro = new ResizeObserver((entries) => {
         for (const entry of entries) {
           const measuredH = Math.round(
             entry.borderBoxSize?.[0]?.blockSize ??
             (entry.target as HTMLElement).offsetHeight ??
+            entry.target.scrollHeight ??
             entry.target.getBoundingClientRect().height
           );
           if (measuredH >= 75) setGridHeight(measuredH);
@@ -594,14 +600,19 @@ export default function SpotlightBar({
     formRoRef.current = null;
 
     if (node) {
-      const h = Math.round(node.offsetHeight || node.getBoundingClientRect().height);
-      if (h >= 75) setFormHeight(h);
+      const measure = () => {
+        const h = Math.round(node.offsetHeight || node.scrollHeight || node.getBoundingClientRect().height);
+        if (h >= 75) setFormHeight(h);
+      };
+      measure();
+      requestAnimationFrame(measure);
 
       const ro = new ResizeObserver((entries) => {
         for (const entry of entries) {
           const measuredH = Math.round(
             entry.borderBoxSize?.[0]?.blockSize ??
             (entry.target as HTMLElement).offsetHeight ??
+            entry.target.scrollHeight ??
             entry.target.getBoundingClientRect().height
           );
           if (measuredH >= 75) setFormHeight(measuredH);
@@ -642,7 +653,8 @@ export default function SpotlightBar({
   }, []);
 
   // Xử lý khi nhấn chọn 1 loại bằng từ Grid -> Chuyển cảnh sang Form (Desktop) hoặc mở Bottom Sheet (Mobile)
-  const handleSelectDegreeType = (deg: DegreeTypeConfig) => {
+  const handleSelectDegreeType = (deg: DegreeTypeConfig, fromShortcut: boolean = false) => {
+    setIsOpenedFromShortcut(fromShortcut);
     if (!isMobile) {
       setIsSwitchingView(true);
       setSlideDirection('forward');
@@ -659,10 +671,8 @@ export default function SpotlightBar({
     }
     if (isMobile) {
       inputRef.current?.blur();
-      // Trên Mobile: GIỮ NGUYÊN trạng thái isFocused hiện tại của thanh tìm kiếm
-      // Tuyệt đối không thu thanh tìm kiếm lại khi mở Bottom Sheet
-      // để nền phía dưới đứng yên hoàn toàn, không gây giật cục / đẩy layout lên
-      updateOpenState(isFocused, true);
+      // Trên Mobile: Nếu mở từ lối tắt ngoài, giữ isFocused = false để khi đóng quay về đúng trang chủ
+      updateOpenState(fromShortcut ? false : isFocused, true);
     } else {
       updateOpenState(true, true);
     }
@@ -839,10 +849,10 @@ export default function SpotlightBar({
       {/* ========================================================================= */}
       <div
         id="floodlight-panel"
-        className={`w-full bg-white border border-[#D2D2D7] overflow-hidden transition-[box-shadow,border-color,border-radius] duration-500 ease-out ${isWindowOpen
-            ? 'rounded-[26px] sm:rounded-[32px] border-[#D2D2D7] shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12),0_4px_16px_rgba(0,0,0,0.04)]'
-            : 'rounded-[30px] sm:rounded-[38px] shadow-[0_4px_20px_rgba(0,0,0,0.05)]'
-          }`}
+        className={`w-full border-0 outline-none overflow-hidden transition-[box-shadow,border-radius,background] duration-500 ease-out ${isWindowOpen
+          ? 'rounded-[26px] sm:rounded-[32px] bg-white/80 backdrop-blur-2xl shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12),0_4px_16px_rgba(0,0,0,0.04)]'
+          : 'rounded-[30px] sm:rounded-[38px] bg-white shadow-[0_16px_48px_-6px_rgba(0,0,0,0.10),0_4px_16px_rgba(0,0,0,0.05)] active:scale-[0.985]'
+          } transition-transform duration-100`}
       >
         {/* HÀNG TRÊN CÙNG: INPUT TÌM KIẾM DÍNH LIỀN TRONG CÙNG KHUNG */}
         <div
@@ -850,18 +860,17 @@ export default function SpotlightBar({
             inputRef.current?.focus();
             updateOpenState(true, isFormExpanded);
           }}
-          className="w-full h-[60px] sm:h-[76px] flex items-center px-3.5 min-[380px]:px-4 sm:px-7 gap-2.5 sm:gap-4.5 cursor-text select-none sm:select-auto bg-white"
+          className="w-full h-[60px] sm:h-[76px] flex items-center px-3.5 min-[380px]:px-4 sm:px-7 gap-2.5 sm:gap-4.5 cursor-text select-none sm:select-auto bg-transparent"
         >
-          {/* Kính lúp icon: Tối giản, nhấn xanh thương hiệu chuẩn token apple-blue khi mở */}
+          {/* Kính lúp icon: Luôn đồng bộ màu xám chuẩn token apple-muted cùng chữ placeholder */}
           <motion.div
             animate={{
-              scale: isWindowOpen ? 1.12 : 1,
-              rotate: isWindowOpen ? -6 : 0,
+              scale: isWindowOpen ? 1.05 : 1,
             }}
-            transition={{ type: 'spring', damping: 20, stiffness: 350 }}
-            className="flex-shrink-0 text-[#6E6E73] transition-colors duration-200"
+            transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
+            className="flex-shrink-0 text-apple-muted"
           >
-            <Search className="w-[24px] h-[24px] sm:w-[30px] sm:h-[30px] stroke-[2]" />
+            <Search className="w-[22px] h-[22px] sm:w-[26px] sm:h-[26px] stroke-[2.2]" />
           </motion.div>
 
           {/* Input text tìm kiếm: Cỡ chữ 19.5px to rõ, gõ siêu êm */}
@@ -912,7 +921,7 @@ export default function SpotlightBar({
               }
             }}
             placeholder="Tra cứu văn bằng, chứng chỉ..."
-            className="flex-1 h-full py-0 my-0 min-w-0 bg-transparent text-[16px] sm:text-[19.5px] font-medium tracking-tight outline-none focus:outline-none focus:ring-0 border-0 text-[#1D1D1F] placeholder:text-[#6E6E73] caret-apple-blue"
+            className="flex-1 h-full py-0 my-0 min-w-0 bg-transparent text-[16px] sm:text-[19.5px] font-medium tracking-tight outline-none focus:outline-none focus:ring-0 border-0 text-apple-text placeholder:text-apple-muted caret-apple-blue"
             style={{
               backgroundColor: 'transparent',
               background: 'transparent',
@@ -931,7 +940,7 @@ export default function SpotlightBar({
                 setQuery('');
                 inputRef.current?.focus();
               }}
-              className="p-1.5 sm:p-2 rounded-full text-[#6E6E73] hover:text-[#1D1D1F] hover:bg-[#F5F5F7] transition-colors cursor-pointer outline-none focus:outline-none"
+              className="p-1.5 sm:p-2 rounded-full text-apple-muted hover:text-apple-text hover:bg-graySurface-subtle transition-colors cursor-pointer outline-none focus:outline-none"
               title="Xóa nội dung"
             >
               <X className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.4]" />
@@ -941,28 +950,7 @@ export default function SpotlightBar({
           {/* Nút hành động phải: Chuyển đổi siêu mượt giữa "Tra cứu" (khi đóng) và "Nút X" (khi mở) */}
           <div className="relative flex items-center justify-end shrink-0">
             <AnimatePresence mode="wait" initial={false}>
-              {!isWindowOpen ? (
-                <motion.button
-                  key="action-search-btn"
-                  type="button"
-                  initial={{ opacity: 0, scale: 0.88, rotate: -8 }}
-                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                  exit={{ opacity: 0, scale: 0.88, rotate: 8 }}
-                  transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-                  whileHover={{ scale: 1.03, y: -1 }}
-                  whileTap={{ scale: 0.96, y: 0 }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDirectSearch();
-                  }}
-                  data-ripple="rgba(255, 255, 255, 0.35)"
-                  className="btn-primary-apple group inline-flex items-center gap-1 sm:gap-2 px-3.5 min-[380px]:px-4.5 sm:px-6 h-[38px] sm:h-[48px] rounded-full text-[14px] sm:text-[16px] font-semibold shrink-0 select-none shadow-sm"
-                  title="Tra cứu ngay"
-                >
-                  <span>Tra cứu</span>
-                  <CornerDownLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 hidden min-[420px]:inline text-white/90 transition-transform duration-200 group-hover:translate-x-0.5" />
-                </motion.button>
-              ) : (
+              {isWindowOpen && (
                 <motion.button
                   key="action-close-btn"
                   type="button"
@@ -976,7 +964,7 @@ export default function SpotlightBar({
                     e.stopPropagation();
                     updateOpenState(false, false);
                   }}
-                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-transparent text-[#1D1D1F] hover:bg-[#F5F5F7] active:bg-[#E8E8ED] transition-colors duration-150 cursor-pointer shrink-0 select-none border-0 outline-none focus:outline-none"
+                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-transparent text-apple-text hover:bg-graySurface-subtle active:bg-apple-hover transition-colors duration-150 cursor-pointer shrink-0 select-none border-0 outline-none focus:outline-none"
                   title="Đóng (Esc)"
                   aria-label="Đóng bảng tra cứu"
                 >
@@ -997,11 +985,10 @@ export default function SpotlightBar({
           {isWindowOpen && (
             <motion.div
               key="floodlight-body-flow"
-              layout="size"
               initial={{ opacity: 0, height: 0 }}
               animate={{
                 opacity: 1,
-                height: 'auto',
+                height: isFormExpanded && !isMobile ? formHeight : gridHeight,
               }}
               exit={{
                 opacity: 0,
@@ -1018,10 +1005,6 @@ export default function SpotlightBar({
                 },
               }}
               transition={{
-                layout: {
-                  duration: 0.36,
-                  ease: [0.22, 1, 0.36, 1],
-                },
                 height: {
                   duration: 0.38,
                   ease: [0.22, 1, 0.36, 1], // Chuẩn Apple WWDC Fluid Momentum Ease
@@ -1065,7 +1048,7 @@ export default function SpotlightBar({
                               width: `${tabIndicator.width}px`,
                               opacity: tabIndicator.ready ? 1 : 0,
                               zIndex: 1,
-                              transition: 'left 380ms cubic-bezier(0.16, 1, 0.3, 1), width 380ms cubic-bezier(0.16, 1, 0.3, 1)',
+                              transition: 'left 500ms cubic-bezier(0.16, 1, 0.3, 1), width 500ms cubic-bezier(0.16, 1, 0.3, 1)',
                               willChange: 'left, width',
                             }}
                           />
@@ -1098,9 +1081,9 @@ export default function SpotlightBar({
                                     }
                                   }
                                 }}
-                                className={`relative z-10 h-full inline-flex items-center justify-center px-3 sm:px-2.5 md:px-3 rounded-full text-[14px] sm:text-[17px] whitespace-nowrap shrink-0 sm:flex-1 transition-colors duration-250 cursor-pointer select-none outline-none focus:outline-none [-webkit-tap-highlight-color:transparent] ${isCurrent
-                                    ? 'text-[#000000] font-semibold'
-                                    : 'text-[#1D1D1F] hover:text-black font-medium'
+                                className={`relative z-10 h-full inline-flex items-center justify-center px-3 sm:px-2.5 md:px-3 rounded-full text-[14px] sm:text-[17px] whitespace-nowrap shrink-0 sm:flex-1 transition-colors duration-300 cursor-pointer select-none outline-none focus:outline-none [-webkit-tap-highlight-color:transparent] ${isCurrent
+                                  ? 'text-[#000000] font-semibold'
+                                  : 'text-[#1D1D1F] hover:text-black font-medium'
                                   }`}
                               >
                                 <span className="relative z-10 whitespace-nowrap">{chip.label}</span>
@@ -1157,7 +1140,7 @@ export default function SpotlightBar({
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -6 }}
                             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                            className="p-2 sm:p-2.5 pb-3.5 sm:pb-3.5 max-h-[255px] min-[420px]:max-h-[270px] sm:max-h-[310px] overflow-y-auto overscroll-contain touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                            className="p-2.5 sm:p-3 pb-3.5 sm:pb-3.5 max-h-[280px] min-[420px]:max-h-[305px] sm:max-h-[345px] overflow-y-auto overscroll-contain touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
                           >
                             <div className="relative flex flex-col gap-1 sm:gap-1.5 w-full">
                               <AnimatePresence mode="popLayout" initial={false}>
@@ -1199,38 +1182,38 @@ export default function SpotlightBar({
                                         aria-selected={isSelected}
                                         onClick={() => handleSelectDegreeType(deg)}
                                         onMouseEnter={() => setSelectedIndex(idx)}
-                                        className={`group w-full flex items-center gap-2.5 sm:gap-3.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl cursor-pointer transition-colors duration-150 text-left select-none will-change-[transform,opacity] ${isSelected
-                                            ? 'bg-[#E8E8ED] text-[#1D1D1F] shadow-2xs'
-                                            : 'hover:bg-[#E8E8ED] text-[#1D1D1F]'
+                                        className={`group w-full flex items-center gap-2.5 sm:gap-3.5 px-3 sm:px-4.5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl cursor-pointer transition-colors duration-150 text-left select-none will-change-[transform,opacity] ${isSelected
+                                          ? 'bg-[#E8E8ED] text-[#1D1D1F] shadow-2xs'
+                                          : 'hover:bg-[#E8E8ED] text-[#1D1D1F]'
                                           }`}
                                       >
-                                        {/* Squircle Icon: Kích thước 38px chuẩn Apple, bo góc 12px không bị lẹm viền */}
+                                        {/* Squircle Icon: Kích thước đồng bộ với form bên trong, bo góc chuẩn Apple */}
                                         <div
-                                          className={`w-[38px] h-[38px] sm:w-10 sm:h-10 rounded-[12px] sm:rounded-[13px] bg-gradient-to-br ${deg.gradient} text-white flex items-center justify-center shrink-0 shadow-sm ${deg.shadow} group-hover:scale-105 transition-transform duration-200`}
+                                          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-br ${deg.gradient} text-white flex items-center justify-center shrink-0 shadow-sm ${deg.shadow} group-hover:scale-105 transition-transform duration-200`}
                                         >
-                                          <IconComponent className="w-5 h-5 sm:w-5.5 sm:h-5.5 stroke-[2.2]" />
+                                          <IconComponent className="w-5.5 h-5.5 sm:w-6 sm:h-6 stroke-[2.2]" />
                                         </div>
 
-                                        {/* Text: Title + Kind Badge + Subtitle */}
+                                        {/* Text: Title + Kind Badge + Subtitle - Kích thước bằng chuẩn form bên trong */}
                                         <div className="flex-1 min-w-0">
                                           <div className="flex items-center gap-2 flex-wrap">
-                                            <span className="text-[15px] sm:text-[16px] font-semibold text-[#1D1D1F] tracking-tight leading-snug">
+                                            <span className="text-[15.5px] sm:text-[18px] font-semibold text-[#1D1D1F] tracking-tight leading-snug">
                                               {deg.title}
                                             </span>
-                                            <span className="text-[10px] sm:text-[10.5px] font-semibold px-2 py-0.5 rounded-[6px] bg-white text-[#1D1D1F] border border-[#E8E8ED] shrink-0">
+                                            <span className="text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded-[6px] bg-white text-[#1D1D1F] border border-[#E8E8ED] shrink-0">
                                               {deg.kindLabel}
                                             </span>
                                           </div>
-                                          <p className="text-[12.5px] sm:text-[13px] text-[#1D1D1F] truncate mt-0.5">
+                                          <p className="text-[13px] sm:text-[14px] text-[#1D1D1F] truncate mt-0.5 leading-snug">
                                             {deg.subTitle}
                                           </p>
                                         </div>
 
                                         {/* Enter key shortcut ↵: Đổi sang xanh thương hiệu chuẩn token apple-blue */}
                                         <span
-                                          className={`w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-lg flex items-center justify-center text-xs font-mono transition-all duration-150 shrink-0 ${isSelected
-                                              ? 'bg-apple-blue text-white shadow-xs'
-                                              : 'bg-white/80 text-[#6E6E73] group-hover:bg-white group-hover:text-[#1D1D1F]'
+                                          className={`w-6.5 h-6.5 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center text-xs font-mono transition-all duration-150 shrink-0 ${isSelected
+                                            ? 'bg-apple-blue text-white shadow-xs'
+                                            : 'bg-white/80 text-[#6E6E73] group-hover:bg-white group-hover:text-[#1D1D1F]'
                                             }`}
                                         >
                                           ↵
@@ -1275,8 +1258,8 @@ export default function SpotlightBar({
                                     whileTap={{ scale: 0.95 }}
                                     onClick={() => handleSelectDegreeType(deg)}
                                     className={`degree-launchpad-btn group relative flex flex-col items-center justify-start p-1.5 sm:p-2.5 rounded-2xl bg-transparent hover:bg-[#F5F5F7] transition-all duration-200 cursor-pointer text-center min-w-0 outline-none focus:outline-none focus:ring-0 ring-0 border-0 shadow-none select-none ${isMatch
-                                        ? 'grayscale-0'
-                                        : 'grayscale-[50%] hover:opacity-100 hover:grayscale-0'
+                                      ? 'grayscale-0'
+                                      : 'grayscale-[50%] hover:opacity-100 hover:grayscale-0'
                                       }`}
                                   >
                                     <div
@@ -1310,7 +1293,7 @@ export default function SpotlightBar({
                       animate="center"
                       exit="exit"
                       style={{ willChange: 'transform, opacity' }}
-                      className="hidden sm:block w-full px-5 min-[390px]:px-6 sm:px-8 pt-4 pb-7 sm:pb-8"
+                      className="hidden sm:block w-full px-3.5 min-[380px]:px-4 sm:px-7 pt-4 pb-7 sm:pb-8"
                     >
                       {/* Header Form: Hiển thị đúng biểu tượng Squircle của loại bằng đã chọn + Nút quay lại gọn gàng 1 dòng */}
                       <div className="flex items-center justify-between mb-2.5 sm:mb-3 gap-2.5">
@@ -1344,13 +1327,18 @@ export default function SpotlightBar({
                             whileTap="tap"
                             transition={{ type: 'spring', stiffness: 450, damping: 22 }}
                             onClick={() => {
-                              setIsSwitchingView(true);
-                              setSlideDirection('backward');
-                              updateOpenState(true, false);
+                              if (isOpenedFromShortcut) {
+                                setIsOpenedFromShortcut(false);
+                                updateOpenState(false, false);
+                              } else {
+                                setIsSwitchingView(true);
+                                setSlideDirection('backward');
+                                updateOpenState(true, false);
+                              }
                             }}
                             className="group inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] text-[#1D1D1F] transition-all duration-150 cursor-pointer select-none border-0 outline-none focus:outline-none shrink-0 [-webkit-tap-highlight-color:transparent]"
-                            title="Đổi loại bằng (Quay lại)"
-                            aria-label="Đổi loại bằng (Quay lại)"
+                            title={isOpenedFromShortcut ? "Đóng (Quay lại trang chủ)" : "Đổi loại bằng (Quay lại)"}
+                            aria-label={isOpenedFromShortcut ? "Đóng (Quay lại trang chủ)" : "Đổi loại bằng (Quay lại)"}
                           >
                             <motion.div
                               variants={{
@@ -1388,61 +1376,58 @@ export default function SpotlightBar({
         </AnimatePresence>
       </div>
 
-      {/* HÀNG GỢI Ý NHANH CÁC MỤC ĐƯỢC CHỌN NHIỀU NHẤT (CHUẨN WIDGET GOOGLE - NỀN XÁM MỊN, BỎ HOÀN TOÀN VIỀN & BÓNG LEM) */}
-      <AnimatePresence>
+      {/* HÀNG GỢI Ý NHANH CÁC MỤC ĐƯỢC CHỌN NHIỀU NHẤT */}
+      <AnimatePresence initial={false}>
         {!isWindowOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0, marginTop: 0 }}
-            animate={{ opacity: 1, height: 'auto', marginTop: isMobile ? 14 : 24 }}
+            initial={false}
+            animate={{ opacity: 1, height: 'auto' }}
             exit={{
               opacity: 0,
               height: 0,
-              marginTop: 0,
               transition: {
                 height: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
                 opacity: { duration: 0.16, ease: [0.22, 1, 0.36, 1] },
-                marginTop: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
               },
             }}
             transition={{
               height: { duration: 0.36, ease: [0.22, 1, 0.36, 1] },
               opacity: { duration: 0.26, delay: 0.06, ease: [0.22, 1, 0.36, 1] },
-              marginTop: { duration: 0.36, ease: [0.22, 1, 0.36, 1] },
             }}
-            className="grid grid-cols-3 gap-2 sm:gap-3.5 w-full"
+            className="w-full overflow-hidden"
           >
-            {POPULAR_SEARCH_SHORTCUTS.map((item) => {
-              const IconComponent = item.icon;
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => {
-                    const targetDeg = DEGREE_TYPES.find((d) => d.id === item.degreeId);
-                    if (targetDeg) {
-                      handleSelectDegreeType(targetDeg);
-                    }
-                  }}
-                  className="h-[52px] sm:h-[78px] px-2.5 sm:px-5 py-2.5 sm:py-4 rounded-[16px] sm:rounded-[22px] bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] border-0 outline-none focus:outline-none focus:ring-0 transition-all duration-150 flex items-center justify-center sm:justify-start gap-2 sm:gap-4 text-center sm:text-left cursor-pointer active:scale-[0.98] select-none shadow-none overflow-hidden isolate [-webkit-tap-highlight-color:transparent] group min-w-0"
-                >
-                  {/* Squircle Icon Apple: Gradient màu sắc đặc trưng từng loại bằng + icon trắng nổi bật, kích thước cân đối to rõ */}
-                  <div
-                    className={`w-[36px] h-[36px] sm:w-[48px] sm:h-[48px] rounded-[11px] sm:rounded-[15px] bg-gradient-to-br ${item.gradient} text-white flex items-center justify-center shrink-0 shadow-sm ${item.shadow} group-hover:scale-105 transition-transform duration-200`}
-                  >
-                    <IconComponent className="w-5 h-5 sm:w-[28px] sm:h-[28px] stroke-[2.2]" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-[12.5px] min-[380px]:text-[13.5px] sm:text-[16px] font-semibold text-[#1D1D1F] tracking-tight leading-snug truncate">
-                      <span className="sm:hidden">{item.shortTitle}</span>
-                      <span className="hidden sm:inline">{item.title}</span>
-                    </p>
-                    <p className="hidden sm:block text-[12px] sm:text-[13px] text-[#1D1D1F] font-normal truncate mt-1 leading-snug">
-                      {item.desc}
-                    </p>
-                  </div>
-                </button>
-              );
-            })}
+            <div className="pt-6 pb-2 sm:pt-9 md:pt-10 sm:pb-3 flex justify-center w-full px-3 sm:px-2">
+              <div className="grid grid-cols-3 gap-2.5 sm:flex sm:items-center sm:justify-center sm:gap-5 md:gap-6 w-full max-w-[375px] sm:max-w-none mx-auto">
+                {POPULAR_SEARCH_SHORTCUTS.map((item) => {
+                  const IconComponent = item.icon;
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => {
+                        const targetDeg = DEGREE_TYPES.find((d) => d.id === item.degreeId);
+                        if (targetDeg) {
+                          handleSelectDegreeType(targetDeg, true);
+                        }
+                      }}
+                      className="group w-full sm:w-[152px] md:w-[164px] min-h-[108px] sm:min-h-[135px] py-3.5 sm:py-5.5 px-1.5 sm:px-4 rounded-[20px] sm:rounded-[26px] bg-white/80 hover:bg-white backdrop-blur-2xl border-0 outline-none ring-0 shadow-[0_8px_24px_-6px_rgba(0,0,0,0.06),0_2px_6px_-1px_rgba(0,0,0,0.03)] hover:shadow-[0_14px_32px_-6px_rgba(0,0,0,0.10),0_4px_10px_-2px_rgba(0,0,0,0.04)] hover:-translate-y-1 active:translate-y-0 active:scale-[0.98] transition-all duration-200 flex flex-col items-center justify-center text-center cursor-pointer select-none isolate [-webkit-tap-highlight-color:transparent]"
+                    >
+                      {/* Squircle Icon Apple: Tỷ lệ hài hòa cho cả mobile và desktop */}
+                      <div
+                        className={`w-[44px] h-[44px] sm:w-[62px] sm:h-[62px] rounded-[14px] sm:rounded-[19px] bg-gradient-to-br ${item.gradient} text-white flex items-center justify-center shadow-md ${item.shadow} group-hover:scale-105 transition-transform duration-200`}
+                      >
+                        <IconComponent className="w-5 h-5 sm:w-8 sm:h-8 stroke-[2.2]" />
+                      </div>
+
+                      {/* Tiêu đề: Mobile 13.5px, Web 15px chuẩn xác theo yêu cầu */}
+                      <span className="w-full mt-2 sm:mt-2.5 text-[13.5px] sm:text-[15px] font-semibold text-[#1D1D1F] tracking-tight text-center leading-[1.25] sm:leading-snug break-words">
+                        {item.title}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -1493,10 +1478,10 @@ export default function SpotlightBar({
                   </div>
 
                   <div className="min-w-0 text-left flex-1">
-                    <h2 className="text-[15.5px] min-[380px]:text-[16.5px] font-bold text-[#1D1D1F] tracking-tight leading-snug truncate">
+                    <h2 className="text-[15px] sm:text-[18px] font-semibold text-[#1D1D1F] tracking-tight leading-snug truncate">
                       Tra cứu {selectedDegree.title}
                     </h2>
-                    <p className="text-[13px] sm:text-[14px] text-[#6E6E73] truncate leading-tight mt-0.5">
+                    <p className="text-[13px] sm:text-[14px] text-[#1D1D1F] truncate leading-tight mt-0.5">
                       {selectedDegree.kindLabel} — {selectedDegree.subTitle}
                     </p>
                   </div>
@@ -1505,10 +1490,10 @@ export default function SpotlightBar({
                 {/* Nút dấu mũi tên quay lại/đổi loại (bỏ chữ, dạng nút tròn ở góc phải) */}
                 <button
                   type="button"
-                  onClick={() => handleCloseMobileSheet(true)}
+                  onClick={() => handleCloseMobileSheet(!isOpenedFromShortcut)}
                   className="w-9 h-9 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] text-[#1D1D1F] transition-colors shrink-0 select-none border-0 outline-none cursor-pointer"
-                  title="Đổi loại bằng (Quay lại)"
-                  aria-label="Đổi loại bằng (Quay lại)"
+                  title={isOpenedFromShortcut ? "Đóng (Quay lại trang chủ)" : "Đổi loại bằng (Quay lại)"}
+                  aria-label={isOpenedFromShortcut ? "Đóng (Quay lại trang chủ)" : "Đổi loại bằng (Quay lại)"}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.4} stroke="currentColor" className="w-5 h-5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
