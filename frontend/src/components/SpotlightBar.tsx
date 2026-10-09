@@ -1,12 +1,14 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Search,
   GraduationCap,
   Folder,
   Layers,
   LayoutGrid,
+  List,
   CornerDownLeft,
   X,
   Award,
@@ -33,10 +35,12 @@ interface SpotlightBarProps {
   sampleData?: any;
   sampleToApply?: any;
   onOpenStateChange?: (state: { isOpen: boolean; isFormExpanded: boolean; panelHeight?: number }) => void;
+  collapseTrigger?: number;
+  /** 'dark' = giao diện kính tối, điểm nhấn hổ phách. Mặc định 'light' cho giao diện nền sáng. */
+  variant?: 'light' | 'dark';
 }
 
-// Cấu hình 7 Loại Bằng & Chứng chỉ xác thực chuẩn Apple Squircle
-// "CÁC LOẠI BẰNG ĐỂ TRA CỨU: ĐẠI HỌC, THẠC SĨ, TIẾN SĨ... CHỨ KHÔNG CÓ PHÂN MÔN"
+// Cấu hình 7 Loại Bằng & Chứng chỉ xác thực chuẩn Apple Squircle & Floodlight
 interface DegreeTypeConfig {
   id: string;
   category: 'vanbang' | 'cntt' | 'vstep';
@@ -45,6 +49,7 @@ interface DegreeTypeConfig {
   title: string;
   subTitle: string;
   badge: string;
+  kindLabel: string;
   gradient: string;
   shadow: string;
   icon: any;
@@ -56,8 +61,9 @@ const DEGREE_TYPES: DegreeTypeConfig[] = [
     category: 'vanbang',
     loaiDaoTao: 'dh',
     title: 'Bằng Đại học',
-    subTitle: 'Đại học chính quy',
+    subTitle: 'Cử nhân, Kỹ sư, Dược sĩ, Bác sĩ chính quy',
     badge: 'Đại học',
+    kindLabel: 'Bằng tốt nghiệp',
     gradient: 'from-[#1E40AF] via-[#2563EB] to-[#3B82F6]',
     shadow: 'shadow-blue-600/35',
     icon: GraduationCap,
@@ -67,8 +73,9 @@ const DEGREE_TYPES: DegreeTypeConfig[] = [
     category: 'vanbang',
     loaiDaoTao: 'ths',
     title: 'Bằng Thạc sĩ',
-    subTitle: 'Đào tạo Sau đại học',
+    subTitle: 'Đào tạo Sau đại học - Học vị Thạc sĩ',
     badge: 'Thạc sĩ',
+    kindLabel: 'Sau đại học',
     gradient: 'from-[#581C87] via-[#7C3AED] to-[#9333EA]',
     shadow: 'shadow-purple-600/35',
     icon: Award,
@@ -78,8 +85,9 @@ const DEGREE_TYPES: DegreeTypeConfig[] = [
     category: 'vanbang',
     loaiDaoTao: 'ts',
     title: 'Bằng Tiến sĩ',
-    subTitle: 'Học vị Tiến sĩ',
+    subTitle: 'Nghiên cứu sinh - Học vị Tiến sĩ',
     badge: 'Tiến sĩ',
+    kindLabel: 'Sau đại học',
     gradient: 'from-[#92400E] via-[#D97706] to-[#F59E0B]',
     shadow: 'shadow-amber-600/35',
     icon: Crown,
@@ -89,8 +97,9 @@ const DEGREE_TYPES: DegreeTypeConfig[] = [
     category: 'cntt',
     capDo: 'coban',
     title: 'CNTT Cơ bản',
-    subTitle: 'Chuẩn TT 03/2014',
+    subTitle: 'Chuẩn kỹ năng CNTT cơ bản TT 03/2014',
     badge: 'CNTT Cơ bản',
+    kindLabel: 'Tin học',
     gradient: 'from-[#0369A1] via-[#0284C7] to-[#0EA5E9]',
     shadow: 'shadow-cyan-600/35',
     icon: Laptop,
@@ -100,8 +109,9 @@ const DEGREE_TYPES: DegreeTypeConfig[] = [
     category: 'cntt',
     capDo: 'nangcao',
     title: 'CNTT Nâng cao',
-    subTitle: 'Chuẩn TT 03/2014',
+    subTitle: 'Chuẩn kỹ năng CNTT nâng cao TT 03/2014',
     badge: 'CNTT Nâng cao',
+    kindLabel: 'Tin học',
     gradient: 'from-[#0F766E] via-[#0D9488] to-[#14B8A6]',
     shadow: 'shadow-teal-600/35',
     icon: Cpu,
@@ -110,8 +120,9 @@ const DEGREE_TYPES: DegreeTypeConfig[] = [
     id: 'vstep',
     category: 'vstep',
     title: 'Chứng chỉ VSTEP',
-    subTitle: 'Tiếng Anh B1 - C1',
+    subTitle: 'Đánh giá năng lực tiếng Anh B1 - C1',
     badge: 'VSTEP',
+    kindLabel: 'Ngoại ngữ',
     gradient: 'from-[#9F1239] via-[#E11D48] to-[#F43F5E]',
     shadow: 'shadow-rose-600/35',
     icon: Languages,
@@ -121,11 +132,67 @@ const DEGREE_TYPES: DegreeTypeConfig[] = [
     category: 'vanbang',
     loaiDaoTao: 'cd',
     title: 'Bằng Cao đẳng',
-    subTitle: 'Chính quy',
+    subTitle: 'Hệ Cao đẳng chính quy DNC',
     badge: 'Cao đẳng',
+    kindLabel: 'Cao đẳng',
     gradient: 'from-[#065F46] via-[#059669] to-[#10B981]',
     shadow: 'shadow-emerald-600/35',
     icon: BookOpen,
+  },
+];
+
+const FILTER_CHIPS = [
+  { id: 'all', label: 'Tất cả' },
+  { id: 'dh', label: 'Đại học' },
+  { id: 'sdh', label: 'Sau đại học' },
+  { id: 'cntt', label: 'Tin học' },
+  { id: 'vstep', label: 'Ngoại ngữ' },
+  { id: 'cd', label: 'Cao đẳng' },
+] as const;
+
+type FilterChipId = typeof FILTER_CHIPS[number]['id'];
+
+interface PopularShortcut {
+  id: string;
+  title: string;
+  shortTitle: string;
+  desc: string;
+  degreeId: string;
+  icon: any;
+  gradient: string;
+  shadow: string;
+}
+
+const POPULAR_SEARCH_SHORTCUTS: PopularShortcut[] = [
+  {
+    id: 'dh',
+    title: 'Bằng Đại học',
+    shortTitle: 'Đại học',
+    desc: 'Cử nhân, Kỹ sư, Dược sĩ chính quy',
+    degreeId: 'dh',
+    icon: GraduationCap,
+    gradient: 'from-[#1E40AF] via-[#2563EB] to-[#3B82F6]',
+    shadow: 'shadow-blue-600/30',
+  },
+  {
+    id: 'vstep',
+    title: 'Chứng chỉ VSTEP',
+    shortTitle: 'VSTEP',
+    desc: 'Bậc 3 – 5 (B1, B2, C1) tiếng Anh',
+    degreeId: 'vstep',
+    icon: Languages,
+    gradient: 'from-[#9F1239] via-[#E11D48] to-[#F43F5E]',
+    shadow: 'shadow-rose-600/30',
+  },
+  {
+    id: 'cntt-cb',
+    title: 'Chứng chỉ CNTT',
+    shortTitle: 'CNTT',
+    desc: 'Chuẩn CNTT Cơ bản & Nâng cao',
+    degreeId: 'cntt-cb',
+    icon: Laptop,
+    gradient: 'from-[#0369A1] via-[#0284C7] to-[#0EA5E9]',
+    shadow: 'shadow-cyan-600/30',
   },
 ];
 
@@ -148,7 +215,10 @@ export default function SpotlightBar({
   sampleData = { vanbang: [], cntt: [], vstep: [] },
   sampleToApply,
   onOpenStateChange,
+  collapseTrigger,
+  variant = 'light',
 }: SpotlightBarProps) {
+  const isDark = variant === 'dark';
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [isFormExpanded, setIsFormExpanded] = useState(false);
@@ -156,39 +226,105 @@ export default function SpotlightBar({
   const [slideDirection, setSlideDirection] = useState<'forward' | 'backward'>('forward');
   const [selectedLoaiDaoTao, setSelectedLoaiDaoTao] = useState('dh');
   const [selectedCapDo, setSelectedCapDo] = useState<'coban' | 'nangcao'>('coban');
-  const [categoryFilter, setCategoryFilter] = useState<'all' | 'dh' | 'sdh' | 'cntt' | 'vstep'>('all');
+  const [categoryFilter, setCategoryFilter] = useState<FilterChipId>('all');
+  const [displayMode, setDisplayMode] = useState<'list' | 'grid'>('list');
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectedDegree, setSelectedDegree] = useState<DegreeTypeConfig>(DEGREE_TYPES[0]);
   const [isMobile, setIsMobile] = useState(false);
+  const isWindowOpen = isFocused || (isFormExpanded && !isMobile);
+
+  // Thu gọn khung SpotlightBar khi nhận trigger đóng kết quả từ trang chủ (page.tsx)
+  const prevCollapseTriggerRef = useRef(collapseTrigger);
+  useEffect(() => {
+    if (collapseTrigger && collapseTrigger !== prevCollapseTriggerRef.current) {
+      prevCollapseTriggerRef.current = collapseTrigger;
+      updateOpenState(false, false);
+    }
+  }, [collapseTrigger]);
+
+  const [isMounted, setIsMounted] = useState(false);
+  const [isClosingMobileSheet, setIsClosingMobileSheet] = useState(false);
+
+  // Đóng/thu lại Mobile Bottom Sheet mượt mà đồng bộ đúng hiệu ứng mobile-drawer-exit (280ms)
+  const handleCloseMobileSheet = (targetIsFocused: boolean) => {
+    if (isClosingMobileSheet) return;
+    setIsClosingMobileSheet(true);
+    setTimeout(() => {
+      updateOpenState(targetIsFocused, false);
+      setIsClosingMobileSheet(false);
+    }, 280);
+  };
 
   useEffect(() => {
+    setIsMounted(true);
     const checkMobile = () => setIsMobile(window.innerWidth < 640);
     checkMobile();
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Khóa cuộn trang nền khi mở Bottom Sheet trên mobile
+  // Không khóa cuộn trang nền để trải nghiệm mở rộng tự nhiên đẩy nội dung bên dưới (chuẩn Floodlight)
   useEffect(() => {
-    const isOpen = isFocused || isFormExpanded;
-    if (isOpen && typeof window !== 'undefined' && window.innerWidth < 640) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    document.body.style.overflow = '';
     return () => {
       document.body.style.overflow = '';
     };
-  }, [isFocused, isFormExpanded]);
+  }, []);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const gridRef = useRef<HTMLDivElement | null>(null);
   const formRef = useRef<HTMLDivElement | null>(null);
-  const [gridHeight, setGridHeight] = useState<number>(265);
+  const platterRef = useRef<HTMLDivElement | null>(null);
+  const chipRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
+
+  // Tọa độ và kích thước viên con nhộng trượt liên tục chuẩn Apple Mac
+  const [tabIndicator, setTabIndicator] = useState<{ left: number; width: number; ready: boolean }>({
+    left: 4,
+    width: 65,
+    ready: false,
+  });
+
+  // Đo đạc tọa độ offsetLeft và offsetWidth của tab đang chọn để trượt mượt mà không dùng scaleX
+  useEffect(() => {
+    const measure = () => {
+      const activeEl = chipRefs.current[categoryFilter];
+      if (activeEl) {
+        setTabIndicator({
+          left: activeEl.offsetLeft,
+          width: activeEl.offsetWidth,
+          ready: true,
+        });
+      }
+    };
+    measure();
+    // Đo lại phòng khi font chữ tải xong hoặc cửa sổ co giãn
+    const t = setTimeout(measure, 60);
+    const t2 = setTimeout(measure, 200);
+    window.addEventListener('resize', measure);
+    let ro: ResizeObserver | null = null;
+    if (platterRef.current && typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(() => measure());
+      ro.observe(platterRef.current);
+    }
+    return () => {
+      clearTimeout(t);
+      clearTimeout(t2);
+      window.removeEventListener('resize', measure);
+      if (ro) ro.disconnect();
+    };
+  }, [categoryFilter, isFocused, displayMode]);
+
+  const [gridHeight, setGridHeight] = useState<number>(480);
   const [formHeight, setFormHeight] = useState<number>(350);
+  const bodyContentRef = useRef<HTMLDivElement | null>(null);
 
   // Hàm cập nhật trạng thái mở/đóng đồng bộ tức thì 0ms sang component cha (page.tsx)
   const updateOpenState = (newFocused: boolean, newFormExpanded: boolean) => {
+    // Chống kích hoạt dồn dập nhiều lần (focus + click + bubble): chỉ cập nhật khi trạng thái thực sự thay đổi
+    if (newFocused === isFocused && newFormExpanded === isFormExpanded) {
+      return;
+    }
     if (newFormExpanded !== isFormExpanded) {
       setIsSwitchingView(true);
       setSlideDirection(newFormExpanded ? 'forward' : 'backward');
@@ -218,29 +354,56 @@ export default function SpotlightBar({
         updateOpenState(true, isFormExpanded);
       }
       if (e.key === 'Escape') {
-        // Nếu modal xác thực bảo mật reCAPTCHA đang mở: để modal tự xử lý đóng của nó, TUYỆT ĐỐI KHÔNG đóng form SpotlightBar
-        if (document.getElementById('security-captcha-overlay')) {
+        // Nếu modal xác thực bảo mật reCAPTCHA hoặc khung kết quả tra cứu đang mở: để các thành phần này tự xử lý đóng của nó, TUYỆT ĐỐI KHÔNG đóng form SpotlightBar
+        if (
+          document.getElementById('security-captcha-overlay') ||
+          document.getElementById('omninotch-overlay')
+        ) {
+          return;
+        }
+        if (isMobile && (isFormExpanded || isClosingMobileSheet)) {
+          handleCloseMobileSheet(true);
           return;
         }
         updateOpenState(false, false);
-        setCategoryFilter('all');
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [isMobile, isFormExpanded, isClosingMobileSheet]);
 
-  // Đóng cửa sổ khi click ra ngoài container (Bảo vệ không đóng khi click chọn ngày DatePicker hoặc reCAPTCHA)
+  // Khóa cuộn trang nền khi Bottom Sheet Form đang mở trên mobile
+  useEffect(() => {
+    if (isMobile && (isFormExpanded || isClosingMobileSheet)) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      if (
+        !document.getElementById('omninotch-overlay') &&
+        !document.getElementById('security-captcha-overlay')
+      ) {
+        document.body.style.overflow = '';
+      }
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobile, isFormExpanded, isClosingMobileSheet]);
+
+  // Đóng cửa sổ khi click ra ngoài container (Bảo vệ không đóng khi click chọn ngày DatePicker, reCAPTCHA hoặc thẻ kết quả tra cứu)
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;
       if (!target) return;
 
-      // 0. Nếu đang có modal xác thực bảo mật reCAPTCHA (#security-captcha-overlay) trên màn hình hoặc click tương tác với modal này:
+      // 0. Nếu đang có modal xác thực bảo mật reCAPTCHA, khung kết quả tra cứu hoặc Mobile Bottom Sheet:
       // TUYỆT ĐỐI KHÔNG đóng form SpotlightBar!
       if (
         document.getElementById('security-captcha-overlay') ||
-        target.closest('#security-captcha-overlay')
+        target.closest('#security-captcha-overlay') ||
+        document.getElementById('omninotch-overlay') ||
+        target.closest('#omninotch-overlay') ||
+        document.getElementById('mobile-form-bottom-sheet') ||
+        target.closest('#mobile-form-bottom-sheet')
       ) {
         return;
       }
@@ -270,7 +433,6 @@ export default function SpotlightBar({
 
       if (containerRef.current && !containerRef.current.contains(target)) {
         updateOpenState(false, false);
-        setCategoryFilter('all');
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -312,34 +474,51 @@ export default function SpotlightBar({
     updateOpenState(true, true);
   }, [sampleToApply]);
 
-  // Kiểm tra 6 biểu tượng Loại Bằng có khớp danh mục hoặc từ khóa hay không (không cắt xén bớt để tránh rung giật khung)
-  const isDegreeMatch = (deg: DegreeTypeConfig) => {
-    // 1. Lọc theo danh mục
-    if (categoryFilter === 'dh') {
-      if (deg.category !== 'vanbang') return false;
-    } else if (categoryFilter === 'sdh') {
-      if (deg.id !== 'ths' && deg.id !== 'ts') return false;
-    } else if (categoryFilter === 'cntt') {
-      if (deg.category !== 'cntt') return false;
-    } else if (categoryFilter === 'vstep') {
-      if (deg.category !== 'vstep') return false;
-    }
-
-    // 2. Lọc theo từ khóa gõ
-    const qNorm = normalizeText(query);
-    if (qNorm) {
-      const titleNorm = normalizeText(deg.title);
-      const subNorm = normalizeText(deg.subTitle);
-      const badgeNorm = normalizeText(deg.badge);
-      return titleNorm.includes(qNorm) || subNorm.includes(qNorm) || badgeNorm.includes(qNorm);
-    }
-
+  // Lọc theo danh mục chip và từ khóa
+  const matchesFilter = (deg: DegreeTypeConfig, cat: string) => {
+    if (cat === 'all') return true;
+    if (cat === 'dh') return deg.id === 'dh';
+    if (cat === 'sdh') return deg.id === 'ths' || deg.id === 'ts';
+    if (cat === 'cntt') return deg.category === 'cntt';
+    if (cat === 'vstep') return deg.category === 'vstep';
+    if (cat === 'cd') return deg.id === 'cd';
     return true;
   };
 
+  const matchesQuery = (deg: DegreeTypeConfig, q: string) => {
+    const qNorm = normalizeText(q);
+    if (!qNorm) return true;
+    const titleNorm = normalizeText(deg.title);
+    const subNorm = normalizeText(deg.subTitle);
+    const badgeNorm = normalizeText(deg.badge);
+    const kindNorm = normalizeText(deg.kindLabel || '');
+    return (
+      titleNorm.includes(qNorm) ||
+      subNorm.includes(qNorm) ||
+      badgeNorm.includes(qNorm) ||
+      kindNorm.includes(qNorm)
+    );
+  };
 
-  // Trạng thái mở của cửa sổ Spotlight
-  const isWindowOpen = isFocused || isFormExpanded;
+  const getChipCount = (catId: string) => {
+    return DEGREE_TYPES.filter((deg) => matchesFilter(deg, catId) && matchesQuery(deg, query)).length;
+  };
+
+  const filteredDegrees = useMemo(() => {
+    return DEGREE_TYPES.filter(
+      (deg) => matchesFilter(deg, categoryFilter) && matchesQuery(deg, query)
+    );
+  }, [categoryFilter, query]);
+
+  useEffect(() => {
+    setSelectedIndex(0);
+  }, [categoryFilter, query]);
+
+  const isDegreeMatch = (deg: DegreeTypeConfig) => {
+    return matchesFilter(deg, categoryFilter) && matchesQuery(deg, query);
+  };
+
+
 
   // Đồng bộ trạng thái mở/đóng lên component cha (page.tsx) làm fallback an toàn
   useEffect(() => {
@@ -353,22 +532,22 @@ export default function SpotlightBar({
   // 1. Đo đạc chiều cao độc lập của Lưới Launchpad (Grid view)
   useEffect(() => {
     if (!gridRef.current) return;
-    const initialH = Math.round(gridRef.current.getBoundingClientRect().height);
-    if (initialH >= 140) setGridHeight(initialH);
+    const measure = () => {
+      if (!gridRef.current) return;
+      const h = Math.round(
+        gridRef.current.scrollHeight ||
+        gridRef.current.getBoundingClientRect().height
+      );
+      if (h >= 140) setGridHeight(h);
+    };
+    measure();
 
-    const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const h = Math.round(
-          entry.borderBoxSize?.[0]?.blockSize ?? entry.target.getBoundingClientRect().height
-        );
-        if (h >= 140) {
-          setGridHeight(h);
-        }
-      }
+    const ro = new ResizeObserver(() => {
+      measure();
     });
     ro.observe(gridRef.current);
     return () => ro.disconnect();
-  }, [isWindowOpen, isFormExpanded, categoryFilter, query]);
+  }, [isWindowOpen, isFormExpanded, categoryFilter, query, displayMode]);
 
   // 2. Đo đạc chiều cao độc lập của Form tra cứu (Form view)
   useEffect(() => {
@@ -390,9 +569,7 @@ export default function SpotlightBar({
     return () => ro.disconnect();
   }, [isWindowOpen, isFormExpanded, activeTab, selectedDegree]);
 
-  const currentTargetHeight = isFormExpanded ? formHeight : gridHeight;
-
-  // Xử lý khi nhấn chọn 1 loại bằng từ Grid -> Chuyển cảnh mượt sang Form
+  // Xử lý khi nhấn chọn 1 loại bằng từ Grid -> Chuyển cảnh sang Form (Desktop) hoặc mở Bottom Sheet (Mobile)
   const handleSelectDegreeType = (deg: DegreeTypeConfig) => {
     setIsSwitchingView(true);
     setSlideDirection('forward');
@@ -406,7 +583,15 @@ export default function SpotlightBar({
     } else if (deg.category === 'cntt') {
       setSelectedCapDo('coban');
     }
-    updateOpenState(true, true);
+    if (isMobile) {
+      inputRef.current?.blur();
+      // Trên Mobile: GIỮ NGUYÊN trạng thái isFocused hiện tại của thanh tìm kiếm
+      // Tuyệt đối không thu thanh tìm kiếm lại khi mở Bottom Sheet
+      // để nền phía dưới đứng yên hoàn toàn, không gây giật cục / đẩy layout lên
+      updateOpenState(isFocused, true);
+    } else {
+      updateOpenState(true, true);
+    }
   };
 
   // Nút Tra cứu từ input
@@ -498,395 +683,475 @@ export default function SpotlightBar({
     }),
   };
 
+  // Khối nội dung Form: Dùng chung thống nhất giữa Desktop (Floodlight) và Mobile (Bottom Sheet)
+  const renderFormContent = () => (
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={activeTab}
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -6 }}
+        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+      >
+        {activeTab === 'vanbang' && (
+          <VanBangForm
+            onSuccess={(data) => {
+              if (isMobile) updateOpenState(false, false);
+              onSelectResult?.('vanbang', data);
+            }}
+            onNotFound={(data) => onNotFound?.('vanbang', data)}
+            initialSoHieuPhoi={query}
+            initialLoaiDaoTao={selectedLoaiDaoTao}
+            sampleData={sampleData?.vanbang}
+            sampleToApply={sampleToApply}
+          />
+        )}
+
+        {activeTab === 'cntt' && (
+          <CnttForm
+            onSuccess={(data) => {
+              if (isMobile) updateOpenState(false, false);
+              onSelectResult?.('cntt', data);
+            }}
+            onNotFound={(data) => onNotFound?.('cntt', data)}
+            initialSoHieuPhoi={query}
+            initialCapDo={selectedCapDo}
+            onCapDoChange={(newCapDo) => {
+              setSelectedCapDo(newCapDo);
+              const matched = DEGREE_TYPES.find(
+                (d) => d.id === (newCapDo === 'nangcao' ? 'cntt-nc' : 'cntt-cb')
+              );
+              if (matched) setSelectedDegree(matched);
+            }}
+            sampleData={sampleData?.cntt}
+            sampleToApply={sampleToApply}
+          />
+        )}
+
+        {activeTab === 'vstep' && (
+          <VstepForm
+            onSuccess={(data) => {
+              if (isMobile) updateOpenState(false, false);
+              onSelectResult?.('vstep', data);
+            }}
+            onNotFound={(data) => onNotFound?.('vstep', data)}
+            initialSoHieuPhoi={query}
+            sampleData={sampleData?.vstep}
+            sampleToApply={sampleToApply}
+          />
+        )}
+      </motion.div>
+    </AnimatePresence>
+  );
+
   return (
-    <div ref={containerRef} className="w-full flex flex-col items-center relative z-40">
+    <div ref={containerRef} className="w-full max-w-[880px] lg:max-w-[920px] mx-auto px-0 sm:px-1.5 relative z-30">
       {/* ========================================================================= */}
-      {/* 1. THANH APPLE SPOTLIGHT SEARCH CHUẨN MACOS: TO RỘNG, KÍNH MỜ             */}
+      {/* KHUNG UNIFIED FLOODLIGHT MACOS: THANH TÌM KIẾM DÍNH LIỀN BẢNG KẾT QUẢ/FORM */}
+      {/* MỞ RỘNG TRỰC TIẾP TRONG FLOW TỰ ĐỘNG ĐẨY 4 CAM KẾT PHÍA DƯỚI XUỐNG        */}
       {/* ========================================================================= */}
-      <div className="w-full max-w-[980px] px-2 flex flex-col sm:flex-row items-center gap-3 sm:gap-3.5 relative z-30">
-
-        {/* THANH TÌM KIẾM VIÊN THUỐC CHUẨN APPLE SPOTLIGHT */}
-        <div className="relative flex-1 w-full min-w-0">
-          <div
-            onClick={() => {
-              if (!isMobile) {
-                inputRef.current?.focus();
-              }
-              updateOpenState(true, false);
+      <div
+        id="floodlight-panel"
+        className={`w-full bg-white border border-slate-200/90 overflow-hidden transition-[box-shadow,border-color,border-radius] duration-500 ease-out ${
+          isWindowOpen
+            ? 'rounded-[26px] sm:rounded-[32px] shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12),0_4px_16px_rgba(0,0,0,0.04)]'
+            : 'rounded-[30px] sm:rounded-[38px] hover:border-slate-300 shadow-[0_4px_20px_rgba(0,0,0,0.05)]'
+        }`}
+      >
+        {/* HÀNG TRÊN CÙNG: INPUT TÌM KIẾM DÍNH LIỀN TRONG CÙNG KHUNG */}
+        <div
+          onClick={() => {
+            inputRef.current?.focus();
+            updateOpenState(true, isFormExpanded);
+          }}
+          className="w-full h-[60px] sm:h-[76px] flex items-center px-3.5 min-[380px]:px-4 sm:px-7 gap-2.5 sm:gap-4.5 cursor-text select-none sm:select-auto bg-white"
+        >
+          {/* Kính lúp icon: Tối giản, nhấn xanh thương hiệu chuẩn token apple-blue khi mở */}
+          <motion.div
+            animate={{
+              scale: isWindowOpen ? 1.12 : 1,
+              rotate: isWindowOpen ? -6 : 0,
             }}
-            className={`w-full h-[54px] sm:h-[66px] rounded-full backdrop-blur-3xl transition-[background-color,border-color,box-shadow,transform] duration-300 flex items-center px-3.5 sm:px-6 gap-2.5 sm:gap-3.5 outline-none focus:outline-none cursor-pointer sm:cursor-text select-none sm:select-auto ${isWindowOpen
-                ? 'bg-white scale-[1.012] border border-blue-500/50 shadow-[0_24px_65px_-10px_rgba(20,43,111,0.28),0_0_0_4px_rgba(37,99,235,0.18),inset_0_1.5px_2px_rgba(255,255,255,1)]'
-                : 'bg-white/95 hover:bg-white border border-white/80 shadow-[0_18px_45px_-10px_rgba(15,39,90,0.18),inset_0_1.5px_2px_rgba(255,255,255,0.9)]'
-              }`}
-            style={{
-              WebkitBackdropFilter: 'blur(30px) saturate(190%)',
-              backdropFilter: 'blur(30px) saturate(190%)',
-            }}
+            transition={{ type: 'spring', damping: 20, stiffness: 350 }}
+            className="flex-shrink-0 text-[#6E6E73] transition-colors duration-200"
           >
-            {/* Kính lúp icon: Hiệu ứng chuyển màu và zoom xoay nhẹ khi focus chuẩn Apple */}
-            <motion.div
-              animate={{
-                scale: isWindowOpen ? 1.12 : 1,
-                rotate: isWindowOpen ? -6 : 0,
-              }}
-              transition={{ type: 'spring', damping: 20, stiffness: 350 }}
-              className={`flex-shrink-0 transition-colors duration-200 ${isWindowOpen ? 'text-blue-600' : 'text-[#142B6F]'
-                }`}
-            >
-              <Search className="w-5 h-5 sm:w-[26px] sm:h-[26px] stroke-[2.3]" />
-            </motion.div>
+            <Search className="w-[24px] h-[24px] sm:w-[30px] sm:h-[30px] stroke-[2]" />
+          </motion.div>
 
-            {/* Input gõ tìm kiếm: Trên Mobile đóng vai trò trigger mở Bottom Sheet chống bật bàn phím ảo gây giật màn hình */}
-            <input
-              ref={inputRef}
-              type="text"
-              id="spotlight-search-input"
-              name="degree_search_term"
-              autoComplete="off"
-              autoCorrect="off"
-              autoCapitalize="off"
-              spellCheck={false}
-              data-lpignore="true"
-              data-form-type="other"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              readOnly={isMobile}
-              onClick={(e) => {
-                if (isMobile) {
-                  e.preventDefault();
-                  updateOpenState(true, false);
-                } else {
-                  updateOpenState(true, isFormExpanded);
-                }
-              }}
-              onFocus={(e) => {
-                if (isMobile) {
-                  e.target.blur(); // Chống giật bàn phím ảo trên mobile
+          {/* Input text tìm kiếm: Cỡ chữ 19.5px to rõ, gõ siêu êm */}
+          <input
+            ref={inputRef}
+            type="text"
+            id="spotlight-search-input"
+            name="degree_search_term"
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck={false}
+            data-lpignore="true"
+            data-form-type="other"
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              if (!isWindowOpen) updateOpenState(true, false);
+            }}
+            onClick={() => {
+              updateOpenState(true, isFormExpanded);
+            }}
+            onFocus={() => {
+              updateOpenState(true, isFormExpanded);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (!isWindowOpen) {
                   updateOpenState(true, false);
                   return;
                 }
-                updateOpenState(true, isFormExpanded);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
+                if (filteredDegrees.length > 0) {
+                  setSelectedIndex((prev) => (prev + 1) % filteredDegrees.length);
+                }
+              } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (filteredDegrees.length > 0) {
+                  setSelectedIndex((prev) => (prev - 1 + filteredDegrees.length) % filteredDegrees.length);
+                }
+              } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (isWindowOpen && !isFormExpanded && filteredDegrees[selectedIndex]) {
+                  handleSelectDegreeType(filteredDegrees[selectedIndex]);
+                } else {
                   handleDirectSearch();
                 }
-              }}
-              placeholder="Nhập họ tên, mã văn bằng hoặc chọn bên dưới..."
-              className="flex-1 h-full py-0 my-0 min-w-0 bg-transparent text-[14px] sm:text-[17px] text-slate-900 placeholder:text-slate-400 font-medium tracking-tight outline-none focus:outline-none focus:ring-0 border-0 caret-blue-600"
-              style={{
-                backgroundColor: 'transparent',
-                background: 'transparent',
-                boxShadow: 'none',
-                border: 'none',
-                outline: 'none',
-              }}
-            />
+              }
+            }}
+            placeholder="Tra cứu văn bằng, chứng chỉ..."
+            className="flex-1 h-full py-0 my-0 min-w-0 bg-transparent text-[16px] sm:text-[19.5px] font-medium tracking-tight outline-none focus:outline-none focus:ring-0 border-0 text-[#1D1D1F] placeholder:text-[#6E6E73] caret-apple-blue"
+            style={{
+              backgroundColor: 'transparent',
+              background: 'transparent',
+              boxShadow: 'none',
+              border: 'none',
+              outline: 'none',
+            }}
+          />
 
-            {/* Xóa nhanh */}
-            {query && (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setQuery('');
-                  inputRef.current?.focus();
-                }}
-                className="p-1 sm:p-1.5 rounded-full text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer outline-none focus:outline-none"
-                title="Xóa nội dung"
-              >
-                <X className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.4]" />
-              </button>
-            )}
-
-            {/* Nút Tra cứu nhanh: Phản hồi tương tác mượt mà chuẩn Apple */}
-            <motion.button
+          {/* Nút xóa nhanh */}
+          {query && (
+            <button
               type="button"
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.95 }}
               onClick={(e) => {
                 e.stopPropagation();
-                handleDirectSearch();
+                setQuery('');
+                inputRef.current?.focus();
               }}
-              data-ripple="rgba(255, 255, 255, 0.35)"
-              className={`relative overflow-hidden inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-full text-white text-[12.5px] sm:text-[14.5px] font-semibold transition-all duration-200 cursor-pointer shrink-0 select-none border-0 outline-none focus:outline-none focus-visible:outline-none ring-0 ${isWindowOpen || query.trim()
-                  ? 'bg-gradient-to-r from-[#142B6F] to-[#2563EB] shadow-[0_4px_16px_rgba(37,99,235,0.4)]'
-                  : 'bg-[#142B6F] hover:bg-[#0F1E4A] shadow-[0_4px_16px_rgba(20,43,111,0.3)]'
-                }`}
-              title="Tra cứu ngay"
+              className="p-1.5 sm:p-2 rounded-full text-[#6E6E73] hover:text-[#1D1D1F] hover:bg-[#F5F5F7] transition-colors cursor-pointer outline-none focus:outline-none"
+              title="Xóa nội dung"
             >
-              <span className="relative z-10">Tra cứu</span>
-              <CornerDownLeft className="w-3.5 h-3.5 text-blue-200 hidden min-[400px]:inline relative z-10" />
-            </motion.button>
+              <X className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.4]" />
+            </button>
+          )}
+
+          {/* Nút hành động phải: Chuyển đổi siêu mượt giữa "Tra cứu" (khi đóng) và "Nút X" (khi mở) */}
+          <div className="relative flex items-center justify-end shrink-0">
+            <AnimatePresence mode="wait" initial={false}>
+              {!isWindowOpen ? (
+                <motion.button
+                  key="action-search-btn"
+                  type="button"
+                  initial={{ opacity: 0, scale: 0.88, rotate: -8 }}
+                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                  exit={{ opacity: 0, scale: 0.88, rotate: 8 }}
+                  transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                  whileHover={{ scale: 1.03, y: -1 }}
+                  whileTap={{ scale: 0.96, y: 0 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDirectSearch();
+                  }}
+                  data-ripple="rgba(255, 255, 255, 0.35)"
+                  className="btn-primary-apple group inline-flex items-center gap-1.5 sm:gap-2 px-5 sm:px-7 h-[44px] sm:h-[48px] rounded-full text-[14px] sm:text-[16px] font-semibold shrink-0 select-none"
+                  title="Tra cứu ngay"
+                >
+                  <span>Tra cứu</span>
+                  <CornerDownLeft className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 hidden min-[400px]:inline text-white/90 transition-transform duration-200 group-hover:translate-x-0.5" />
+                </motion.button>
+              ) : (
+                <motion.button
+                  key="action-close-btn"
+                  type="button"
+                  initial={{ opacity: 0, scale: 0.88, rotate: -45 }}
+                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                  exit={{ opacity: 0, scale: 0.88, rotate: 45 }}
+                  transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                  whileHover={{ scale: 1.08 }}
+                  whileTap={{ scale: 0.92 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    updateOpenState(false, false);
+                  }}
+                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-transparent text-[#1D1D1F] hover:bg-[#F5F5F7] active:bg-[#E8E8ED] transition-colors duration-150 cursor-pointer shrink-0 select-none border-0 outline-none focus:outline-none"
+                  title="Đóng (Esc)"
+                  aria-label="Đóng bảng tra cứu"
+                >
+                  <X className="w-5 h-5 sm:w-[22px] sm:h-[22px]" strokeWidth={2.3} />
+                </motion.button>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 
-        {/* 3 NÚT TRÒN COMPANION: TỐI ƯU GỌN GÀNG VỪA TAY TRÊN MOBILE */}
-        <div className="flex items-center gap-3 sm:gap-3 shrink-0">
-
-          {/* Nút 1: Bằng Đại học (GraduationCap) */}
-          <motion.button
-            type="button"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.94 }}
-            onClick={() => handleCompanionFilterClick('dh')}
-            data-ripple="rgba(215, 33, 52, 0.28)"
-            className={`relative overflow-hidden w-[50px] h-[50px] sm:w-[66px] sm:h-[66px] rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer border-0 border-none outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none active:border-0 select-none ${categoryFilter === 'dh' && isFocused && !isFormExpanded
-                ? 'bg-[#142B6F] text-white shadow-[0_12px_28px_rgba(20,43,111,0.45)] scale-105'
-                : 'bg-white hover:bg-white text-[#142B6F] shadow-[0_8px_20px_-4px_rgba(15,39,90,0.14)]'
-              }`}
-            style={{ border: 'none', outline: 'none' }}
-            title="Lọc: Bằng tốt nghiệp Đại học / Cao đẳng"
-          >
-            <GraduationCap className="w-5 h-5 sm:w-7 sm:h-7 stroke-[2.2] relative z-10" />
-          </motion.button>
-
-          {/* Nút 2: Chứng chỉ CNTT (FolderCode - Chuẩn icon CNTT) */}
-          <motion.button
-            type="button"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.94 }}
-            onClick={() => handleCompanionFilterClick('cntt')}
-            data-ripple="rgba(215, 33, 52, 0.28)"
-            className={`relative overflow-hidden w-[50px] h-[50px] sm:w-[66px] sm:h-[66px] rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer border-0 border-none outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none active:border-0 select-none ${categoryFilter === 'cntt' && isFocused && !isFormExpanded
-                ? 'bg-[#142B6F] text-white shadow-[0_12px_28px_rgba(20,43,111,0.45)] scale-105'
-                : 'bg-white hover:bg-white text-[#142B6F] shadow-[0_8px_20px_-4px_rgba(15,39,90,0.14)]'
-              }`}
-            style={{ border: 'none', outline: 'none' }}
-            title="Lọc: Chứng chỉ Ứng dụng CNTT"
-          >
-            <Laptop className="w-5 h-5 sm:w-7 sm:h-7 stroke-[2.2] relative z-10" />
-          </motion.button>
-
-          {/* Nút 3: Chứng chỉ VSTEP (Languages - Chuẩn icon Ngoại ngữ VSTEP) */}
-          <motion.button
-            type="button"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.94 }}
-            onClick={() => handleCompanionFilterClick('vstep')}
-            data-ripple="rgba(215, 33, 52, 0.28)"
-            className={`relative overflow-hidden w-[50px] h-[50px] sm:w-[66px] sm:h-[66px] rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer border-0 border-none outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none active:border-0 select-none ${categoryFilter === 'vstep' && isFocused && !isFormExpanded
-                ? 'bg-[#142B6F] text-white shadow-[0_12px_28px_rgba(20,43,111,0.45)] scale-105'
-                : 'bg-white hover:bg-white text-[#142B6F] shadow-[0_8px_20px_-4px_rgba(15,39,90,0.14)]'
-              }`}
-            style={{ border: 'none', outline: 'none' }}
-            title="Lọc: Chứng chỉ Tiếng Anh VSTEP"
-          >
-            <Languages className="w-5 h-5 sm:w-7 sm:h-7 stroke-[2.2] relative z-10" />
-          </motion.button>
-        </div>
-      </div>
-
-      {/* LINK KHÁM PHÁ NHANH DANH MỤC: HIỆN KHI ĐÓNG; KHI MỞ THÌ CARD ĐÈ LÊN LUÔN.
-          Mặt nạ overflow-hidden có mép trên sát đáy thanh tìm kiếm => khi tải trang link trượt xuống mượt mà từ thanh. */}
-      <div
-        className={`mt-2.5 sm:mt-3.5 pb-1 overflow-hidden z-20 transition-opacity duration-150 ${isWindowOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
-          }`}
-      >
-        <motion.button
-          type="button"
-          initial={{ y: -35, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{
-            y: { duration: 0.65, delay: 0.22, ease: [0.22, 1, 0.36, 1] },
-            opacity: { duration: 0.35, delay: 0.22 },
-          }}
-          onClick={() => {
+        {/* PHẦN THÂN MỞ RỘNG (CHIPS + DANH SÁCH HOẶC FORM TRA CỨU) */}
+        <AnimatePresence
+          onExitComplete={() => {
             setCategoryFilter('all');
-            updateOpenState(true, false);
+            setSelectedIndex(0);
           }}
-          className="text-[13.5px] sm:text-[14.5px] text-white hover:text-white/90 underline underline-offset-4 decoration-white/70 hover:decoration-white font-medium transition-colors cursor-pointer select-none outline-none focus:outline-none"
         >
-          Khám phá danh mục tra cứu
-        </motion.button>
-      </div>
-
-      {/* ========================================================================= */}
-      {/* 2. CỬA SỔ SPOTLIGHT NỔI TUYỆT ĐỐI (ABSOLUTE OVERLAY): NỀN XANH CỐ ĐỊNH 100% */}
-      {/* NỀN XANH CỐ ĐỊNH KHÔNG BAO GIỜ BỊ ĐẨY XUỐNG DƯỚI, KHÔNG BAO GIỜ GIẬT KHUNG   */}
-      {/* ========================================================================= */}
-      <AnimatePresence initial={false}>
-        {isWindowOpen && (
-          <>
-            {/* Lớp nền mờ tối trên Mobile giúp nổi bật Modal ở trên và đóng khi chạm ra ngoài - Đồng bộ 100% với backdrop popup kết quả */}
+          {isWindowOpen && (
             <motion.div
-              key="spotlight-mobile-backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.28, ease: 'easeOut' }}
-              onClick={(e) => {
-                if (document.getElementById('security-captcha-overlay')) {
-                  return;
-                }
-                const target = e.target as HTMLElement | null;
-                if (target?.closest('#quick-sample-widget') || target?.closest('[data-quick-sample]')) {
-                  return;
-                }
-                updateOpenState(false, false);
-                setCategoryFilter('all');
+              key="floodlight-body-flow"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{
+                height: {
+                  duration: 0.48,
+                  ease: [0.22, 1, 0.36, 1], // Chuẩn Apple WWDC Fluid Ease: trượt mở êm ái, nhẹ nhàng, không bị giật nhanh
+                },
+                opacity: {
+                  duration: 0.38,
+                  ease: [0.22, 1, 0.36, 1],
+                },
               }}
-              className="fixed inset-0 bg-slate-950/25 backdrop-blur-[3.5px] z-[90] sm:hidden pointer-events-auto"
-            />
-
-            {/* Cửa sổ tra cứu: Trên Mobile mở dạng Bottom Sheet trượt từ đáy màn hình lên, Trên Desktop là dropdown neo sát dưới thanh search đè lên dòng link */}
-            <motion.div
-              key="spotlight-window-overlay"
-              style={{
-                transformOrigin: 'top center',
-              }}
-              initial={
-                isMobile
-                  ? { y: '100%' }
-                  : { opacity: 0, y: -12, scale: 0.985 }
-              }
-              animate={
-                isMobile
-                  ? { y: 0 }
-                  : { opacity: 1, y: 0, scale: 1 }
-              }
-              exit={
-                isMobile
-                  ? {
-                    y: '100%',
-                    transition: { duration: 0.30, ease: [0.32, 0, 0.67, 0] },
-                  }
-                  : {
-                    opacity: 0,
-                    y: -8,
-                    scale: 0.99,
-                    transition: { duration: 0.26, ease: [0.22, 1, 0.36, 1] },
-                  }
-              }
-              transition={
-                isMobile
-                  ? { duration: 0.40, ease: [0.22, 1, 0.36, 1] }
-                  : {
-                    duration: 0.40,
-                    ease: [0.22, 1, 0.36, 1],
-                  }
-              }
-              className="fixed inset-x-0 bottom-0 z-[100] sm:z-20 sm:absolute sm:top-[66px] sm:bottom-auto sm:inset-x-auto sm:left-0 sm:right-0 sm:pt-2 sm:px-2 flex justify-center pointer-events-auto"
+              className="w-full relative overflow-hidden border-t border-slate-100"
             >
-              <div className="w-full max-w-[980px] rounded-t-[36px] rounded-b-none sm:rounded-[38px] sm:rounded-b-[38px]">
-                {/* Hộp card Apple: Bo góc rounded-t-[36px] trên mobile, sm:rounded-[38px] trên desktop, đổ bóng đồng bộ popup kết quả */}
-                <motion.div
-                  id="spotlight-card-panel"
-                  className={`w-full rounded-t-[36px] rounded-b-none sm:rounded-[38px] sm:rounded-b-[38px] bg-white border-0 shadow-[0_24px_70px_-15px_rgba(15,23,42,0.28),0_10px_28px_-4px_rgba(15,23,42,0.12)] relative overflow-hidden no-scrollbar ${isFormExpanded
-                      ? 'max-h-[88vh] sm:max-h-[min(540px,calc(100vh-210px))] overflow-y-auto pb-[max(0.75rem,env(safe-area-inset-bottom,0px))] sm:pb-0'
-                      : 'max-h-[82vh] sm:max-h-none overflow-y-auto sm:overflow-hidden pb-[max(0.75rem,env(safe-area-inset-bottom,0px))] sm:pb-0'
-                    }`}
-                  style={{
-                    backgroundColor: '#ffffff',
-                    borderTopLeftRadius: isMobile ? '36px' : '38px',
-                    borderTopRightRadius: isMobile ? '36px' : '38px',
-                    borderBottomLeftRadius: isMobile ? '0px' : '38px',
-                    borderBottomRightRadius: isMobile ? '0px' : '38px',
-                    WebkitMaskImage: '-webkit-radial-gradient(white, black)',
-                    maskImage: 'radial-gradient(white, black)',
-                    transform: 'translateZ(0)',
-                    WebkitTransform: 'translateZ(0)',
-                    isolation: 'isolate',
-                    willChange: 'transform, height',
-                  }}
-                  animate={{
-                    height: currentTargetHeight,
-                  }}
-                  transition={{
-                    height: { duration: 0.42, ease: [0.22, 1, 0.36, 1] },
-                  }}
-                >
-                  {/* Vùng đo đạc ResizeObserver: container relative, phần tử thoát ra trở thành absolute nên không bao giờ lưu chiều cao thừa */}
-                  <div className="w-full relative rounded-t-[36px] sm:rounded-t-[38px]">
-                    {/* CHUYỂN CẢNH SIÊU MƯỢT MÀ CHUẨN APPLE: CROSSFADE MƯỢT KHÔNG BỊ GIẬT KHUNG VÀ KHÔNG CHỒNG ĐÈ CHIỀU CAO */}
-                    <AnimatePresence mode="popLayout" custom={slideDirection} initial={false}>
-                      {!isFormExpanded ? (
-                        /* ===================================================================== */
-                        /* CHẾ ĐỘ 1: LƯỚI BIỂU TƯỢNG CÁC LOẠI BẰNG CHUẨN MACOS LAUNCHPAD (7 ICONS) */
-                        /* ===================================================================== */
-                        <motion.div
-                          key="spotlight-grid-view"
-                          ref={gridRef}
-                          custom={slideDirection}
-                          variants={viewVariants}
-                          initial={isSwitchingView ? "enter" : false}
-                          animate="center"
-                          exit="exit"
-                          style={{ willChange: 'transform, opacity, filter' }}
-                          className="w-full px-5 min-[390px]:px-6 sm:px-9 lg:px-10 pt-5.5 min-[390px]:pt-6 pb-2.5 sm:pt-4.5 sm:pb-4 rounded-t-[36px] sm:rounded-t-[38px]"
-                        >
-                          {/* Header: Thanh lịch, chuẩn Apple macOS Utility (Cỡ chữ 18px, nền xám pill dày dặn cao ráo) */}
-                          <div className="flex items-center justify-between pb-3 sm:pb-4 mb-3.5 sm:mb-5 gap-3">
-                            <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
-                              {(() => {
-                                const HeaderIcon = headerConfig.icon;
-                                return <HeaderIcon className="w-5.5 h-5.5 sm:w-6 sm:h-6 text-slate-800 stroke-[2.2] shrink-0" />;
-                              })()}
-                              <span className="text-[20px] sm:text-[22px] font-medium text-slate-900 tracking-tight leading-none shrink-0">
-                                {headerConfig.main}
-                              </span>
-                              <span className="hidden sm:inline-flex items-center h-7 sm:h-[30px] px-2.5 sm:px-3 rounded-[8px] bg-slate-100 text-slate-500 text-[12px] sm:text-[13.5px] font-normal leading-none select-none shrink min-w-0 truncate">
-                                — {headerConfig.sub}
-                              </span>
+              <div ref={bodyContentRef} className="w-full">
+                <AnimatePresence mode="wait" custom={slideDirection} initial={false}>
+                {(!isFormExpanded || isMobile) ? (
+                  /* ===================================================================== */
+                  /* CHẾ ĐỘ 1: DANH SÁCH HÀNG & CHIPS CHUẨN FLOODLIGHT (IMAGE 2)           */
+                  /* ===================================================================== */
+                  <motion.div
+                    key="spotlight-list-view"
+                    ref={gridRef}
+                    custom={slideDirection}
+                    variants={viewVariants}
+                    initial={isSwitchingView ? "enter" : false}
+                    animate="center"
+                    exit="exit"
+                    style={{ willChange: 'transform, opacity, filter' }}
+                    className="w-full"
+                  >
+                          {/* THANH CHIPS LỌC DANH MỤC: PLATTER NỀN #E8E8ED CHUẨN APPLE */}
+                          <div className="flex items-center justify-between gap-2.5 sm:gap-3.5 px-3 sm:px-5 py-2.5 sm:py-3 border-b border-slate-100 bg-white">
+                            {/* Apple TabNav Platter: flex-1 chia đều 6 chips lấp đầy thanh, loại bỏ hoàn toàn khoảng trống thừa */}
+                            <div
+                              ref={platterRef}
+                              className="relative bg-[#E8E8ED] p-[4px] sm:p-[5px] rounded-full flex items-center gap-1 overflow-x-auto no-scrollbar flex-1 min-w-0 scroll-smooth"
+                            >
+                              {/* VIÊN PILL DUY NHẤT LƯỚT LIÊN TỤC CHUẨN APPLE MAC (TRƯỢT THUẦN TÚY LEFT & WIDTH 380MS) */}
+                              <div
+                                className="absolute top-[4px] sm:top-[5px] bottom-[4px] sm:bottom-[5px] bg-white rounded-full pointer-events-none shadow-[0_1.5px_4px_rgba(0,0,0,0.12),0_0.5px_1.5px_rgba(0,0,0,0.06)]"
+                                style={{
+                                  left: `${tabIndicator.left}px`,
+                                  width: `${tabIndicator.width}px`,
+                                  opacity: tabIndicator.ready ? 1 : 0,
+                                  zIndex: 1,
+                                  transition: 'left 380ms cubic-bezier(0.16, 1, 0.3, 1), width 380ms cubic-bezier(0.16, 1, 0.3, 1)',
+                                  willChange: 'left, width',
+                                }}
+                              />
+
+                              {FILTER_CHIPS.map((chip) => {
+                                const count = getChipCount(chip.id);
+                                const isCurrent = categoryFilter === chip.id;
+                                return (
+                                  <button
+                                    key={chip.id}
+                                    ref={(el) => {
+                                      chipRefs.current[chip.id] = el;
+                                    }}
+                                    type="button"
+                                    onClick={(e) => {
+                                      setCategoryFilter(chip.id);
+                                      setSelectedIndex(0);
+                                      // Chỉ cuộn nếu tab bị khuất mép ngoài vùng nhìn thấy của platter
+                                      const platter = platterRef.current;
+                                      if (platter) {
+                                        const btnRect = e.currentTarget.getBoundingClientRect();
+                                        const pRect = platter.getBoundingClientRect();
+                                        if (btnRect.left < pRect.left || btnRect.right > pRect.right) {
+                                          e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                                        }
+                                      }
+                                    }}
+                                    className={`relative z-10 inline-flex items-center justify-center gap-1.5 px-3 sm:px-2 py-1.5 rounded-full text-[14px] whitespace-nowrap shrink-0 sm:shrink sm:flex-1 transition-colors duration-250 cursor-pointer select-none outline-none focus:outline-none [-webkit-tap-highlight-color:transparent] ${
+                                      isCurrent
+                                        ? 'text-[#1D1D1F] font-semibold'
+                                        : 'text-[#1D1D1F] hover:text-black font-medium'
+                                    }`}
+                                  >
+                                    <span className="relative z-10 whitespace-nowrap">{chip.label}</span>
+                                    <span
+                                      className={`relative z-10 text-[11px] px-1.5 py-0.5 rounded-full font-semibold tabular-nums transition-colors duration-250 ${
+                                        isCurrent ? 'bg-black/[0.08] text-[#1D1D1F] font-semibold' : 'bg-black/[0.05] text-[#1D1D1F] font-medium'
+                                      }`}
+                                    >
+                                      {count}
+                                    </span>
+                                  </button>
+                                );
+                              })}
                             </div>
 
-                            {/* Nút đóng / thu gọn: Kích thước bự w-10 h-10 sm:w-11 sm:h-11 đồng bộ 100% với popup kết quả văn bằng & báo không có dữ liệu */}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                updateOpenState(false, false);
-                                setCategoryFilter('all');
-                              }}
-                              data-ripple="rgba(215, 33, 52, 0.28)"
-                              className="relative overflow-hidden w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200/80 active:bg-slate-200 text-slate-700 hover:text-slate-900 transition-all duration-150 cursor-pointer flex-shrink-0 active:scale-90 outline-none border-0 border-none select-none [-webkit-tap-highlight-color:transparent]"
-                              title="Thu gọn (Esc)"
-                            >
-                              <X className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-slate-700 pointer-events-none" strokeWidth={2.4} />
-                            </button>
+                            {/* Action: View switcher (List / Grid) */}
+                            <div className="flex items-center shrink-0 pl-2 sm:pl-3 border-l border-[#E8E8ED]">
+                              <button
+                                type="button"
+                                onClick={() => setDisplayMode(displayMode === 'list' ? 'grid' : 'list')}
+                                className="w-10 h-10 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-transparent hover:bg-[#F5F5F7] active:bg-[#E8E8ED] text-[#6E6E73] hover:text-[#1D1D1F] active:scale-95 transition-all cursor-pointer select-none outline-none focus:outline-none [-webkit-tap-highlight-color:transparent]"
+                                title={displayMode === 'list' ? 'Chuyển sang dạng Lưới icon' : 'Chuyển sang dạng Danh sách'}
+                                aria-label={displayMode === 'list' ? 'Chuyển sang dạng Lưới icon' : 'Chuyển sang dạng Danh sách'}
+                              >
+                                {displayMode === 'list' ? (
+                                  <LayoutGrid className="w-5 h-5 stroke-[2]" />
+                                ) : (
+                                  <List className="w-5 h-5 stroke-[2]" />
+                                )}
+                              </button>
+                            </div>
                           </div>
 
-                          {/* LƯỚI 7 BIỂU TƯỢNG LOẠI BẰNG: KHÔNG VIỀN HỘP, NỔI BẬT TỰ NHIÊN CHUẨN MACOS LAUNCHPAD */}
-                          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-2.5 sm:gap-4 lg:gap-5 py-1.5 sm:py-2">
-                            {DEGREE_TYPES.map((deg) => {
-                              const IconComponent = deg.icon;
-                              const isMatch = isDegreeMatch(deg);
+                          {/* NỘI DUNG VIEW: DANH SÁCH HÀNG (MẶC ĐỊNH CHUẨN FLOODLIGHT) HOẶC LƯỚI ICON */}
+                          {displayMode === 'list' ? (
+                            /* DANH SÁCH HÀNG CHUẨN FLOODLIGHT (IMAGE 2) - CUỘN MƯỢT MÀ TÀNG HÌNH (NO-SCROLLBAR), TRẦN TỐI ĐA MAX-H TỰ CO GIÃN THEO NỘI DUNG */
+                            <div className="p-2 sm:p-2.5 pb-3.5 sm:pb-3.5 max-h-[255px] min-[420px]:max-h-[270px] sm:max-h-[310px] overflow-y-auto overscroll-contain touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                              <div className="relative flex flex-col gap-1 sm:gap-1.5 w-full">
+                                <AnimatePresence mode="popLayout" initial={false}>
+                                  {filteredDegrees.length === 0 ? (
+                                    <motion.div
+                                      key="empty-state"
+                                      initial={{ opacity: 0, y: 6 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      exit={{ opacity: 0 }}
+                                      transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                                      className="py-8 text-center text-[#6E6E73] text-sm"
+                                    >
+                                      <p className="font-medium">Không tìm thấy loại văn bằng phù hợp với &quot;{query}&quot;</p>
+                                      <p className="text-xs text-[#86868B] mt-1">Vui lòng thử tìm từ khóa khác hoặc bấm chọn Tất cả</p>
+                                    </motion.div>
+                                  ) : (
+                                    filteredDegrees.map((deg, idx) => {
+                                      const IconComponent = deg.icon;
+                                      const isSelected = idx === selectedIndex;
+                                      return (
+                                        <motion.div
+                                          layout
+                                          key={deg.id}
+                                          initial={{ opacity: 0, scale: 0.96, y: 8 }}
+                                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                                          exit={{
+                                            opacity: 0,
+                                            scale: 0.96,
+                                            y: -6,
+                                            transition: { duration: 0.20, ease: [0.16, 1, 0.3, 1] },
+                                          }}
+                                          transition={{
+                                            layout: { duration: 0.38, ease: [0.16, 1, 0.3, 1] },
+                                            opacity: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
+                                            scale: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
+                                            y: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
+                                          }}
+                                          role="option"
+                                          aria-selected={isSelected}
+                                          onClick={() => handleSelectDegreeType(deg)}
+                                          onMouseEnter={() => setSelectedIndex(idx)}
+                                          className={`group w-full flex items-center gap-2.5 sm:gap-3.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl cursor-pointer transition-colors duration-150 text-left select-none will-change-[transform,opacity] ${
+                                            isSelected
+                                              ? 'bg-[#E8E8ED] text-[#1D1D1F] shadow-2xs'
+                                              : 'hover:bg-[#E8E8ED] text-[#1D1D1F]'
+                                          }`}
+                                        >
+                                          {/* Squircle Icon: Kích thước 38px chuẩn Apple, bo góc 12px không bị lẹm viền */}
+                                          <div
+                                            className={`w-[38px] h-[38px] sm:w-10 sm:h-10 rounded-[12px] sm:rounded-[13px] bg-gradient-to-br ${deg.gradient} text-white flex items-center justify-center shrink-0 shadow-sm ${deg.shadow} group-hover:scale-105 transition-transform duration-200`}
+                                          >
+                                            <IconComponent className="w-5 h-5 sm:w-5.5 sm:h-5.5 stroke-[2.2]" />
+                                          </div>
 
-                              return (
-                                <motion.button
-                                  key={deg.id}
-                                  type="button"
-                                  whileHover={{ scale: 1.05, y: -2 }}
-                                  whileTap={{ scale: 0.95 }}
-                                  onClick={() => handleSelectDegreeType(deg)}
-                                  className={`degree-launchpad-btn group relative flex flex-col items-center justify-start p-2 sm:p-3 rounded-2xl bg-transparent hover:bg-slate-50/80 transition-all duration-200 cursor-pointer text-center min-w-0 outline-none focus:outline-none focus:ring-0 ring-0 border-0 shadow-none select-none ${isMatch
-                                      ? 'opacity-100 scale-100'
-                                      : 'opacity-35 grayscale-[50%] hover:opacity-100 hover:grayscale-0'
-                                    }`}
-                                >
-                                  {/* Squircle Apple Icon - Nổi bật tự nhiên, đổ bóng nhẹ nhàng chuẩn macOS */}
-                                  <div
-                                    className={`degree-squircle-target w-[48px] h-[48px] min-[360px]:w-14 min-[360px]:h-14 sm:w-16 sm:h-16 rounded-[16px] sm:rounded-[22px] bg-gradient-to-br ${deg.gradient} text-white flex items-center justify-center shadow-[0_8px_20px_-4px_rgba(0,0,0,0.18)] ${deg.shadow} group-hover:scale-105 group-hover:shadow-[0_12px_26px_-4px_rgba(0,0,0,0.24)] transition-all duration-200 relative shrink-0 overflow-hidden`}
-                                  >
-                                    <div className="absolute inset-0 rounded-[16px] sm:rounded-[22px] bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
-                                    <IconComponent className="w-6 h-6 min-[360px]:w-7 min-[360px]:h-7 sm:w-8 sm:h-8 stroke-[2.2] drop-shadow-xs relative z-10" />
-                                  </div>
+                                          {/* Text: Title + Kind Badge + Subtitle */}
+                                          <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                              <span className="text-[15px] sm:text-[16px] font-semibold text-[#1D1D1F] tracking-tight leading-snug">
+                                                {deg.title}
+                                              </span>
+                                              <span className="text-[10px] sm:text-[10.5px] font-semibold px-2 py-0.5 rounded-[6px] bg-white text-[#1D1D1F] border border-[#E8E8ED] shrink-0">
+                                                {deg.kindLabel}
+                                              </span>
+                                            </div>
+                                            <p className="text-[12.5px] sm:text-[13px] text-[#1D1D1F] truncate mt-0.5">
+                                              {deg.subTitle}
+                                            </p>
+                                          </div>
 
-                                  {/* Tên loại bằng to rõ, duy nhất 1 nhãn chuẩn Apple Launchpad */}
-                                  <div className="mt-2.5 sm:mt-3 flex flex-col items-center w-full px-0.5">
-                                    <span className="text-[11.5px] min-[360px]:text-[12px] sm:text-[13px] font-bold text-slate-800 group-hover:text-[#142B6F] transition-colors text-center leading-snug whitespace-normal w-full line-clamp-2">
-                                      {deg.title}
-                                    </span>
-                                  </div>
-                                </motion.button>
-                              );
-                            })}
-                          </div>
-
+                                          {/* Enter key shortcut ↵: Đổi sang xanh thương hiệu chuẩn token apple-blue */}
+                                          <span
+                                            className={`w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-lg flex items-center justify-center text-xs font-mono transition-all duration-150 shrink-0 ${
+                                              isSelected
+                                                ? 'bg-apple-blue text-white shadow-xs'
+                                                : 'bg-white/80 text-[#6E6E73] group-hover:bg-white group-hover:text-[#1D1D1F]'
+                                            }`}
+                                          >
+                                            ↵
+                                          </span>
+                                        </motion.div>
+                                      );
+                                    })
+                                  )}
+                                </AnimatePresence>
+                              </div>
+                            </div>
+                          ) : (
+                            /* LƯỚI ICON LAUNCHPAD (7 BIỂU TƯỢNG) - CÙNG TRẦN TỐI ĐA MAX-H ĐỒNG NHẤT VỚI CHẾ ĐỘ DANH SÁCH (KHÔNG BAO GIỜ BỊ DÀI HƠN) */
+                            <div className="p-2 sm:p-2.5 pb-3.5 sm:pb-3.5 max-h-[255px] min-[420px]:max-h-[270px] sm:max-h-[310px] overflow-y-auto overscroll-contain touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                              <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-2 sm:gap-4 py-1">
+                                {DEGREE_TYPES.map((deg) => {
+                                  const IconComponent = deg.icon;
+                                  const isMatch = isDegreeMatch(deg);
+                                  return (
+                                    <motion.button
+                                      key={deg.id}
+                                      type="button"
+                                      whileHover={{ scale: 1.05, y: -2 }}
+                                      whileTap={{ scale: 0.95 }}
+                                      onClick={() => handleSelectDegreeType(deg)}
+                                      className={`degree-launchpad-btn group relative flex flex-col items-center justify-start p-1.5 sm:p-2.5 rounded-2xl bg-transparent hover:bg-[#F5F5F7] transition-all duration-200 cursor-pointer text-center min-w-0 outline-none focus:outline-none focus:ring-0 ring-0 border-0 shadow-none select-none ${
+                                        isMatch
+                                          ? 'opacity-100 scale-100'
+                                          : 'opacity-35 grayscale-[50%] hover:opacity-100 hover:grayscale-0'
+                                      }`}
+                                    >
+                                      <div
+                                        className={`w-[42px] h-[42px] sm:w-14 sm:h-14 rounded-[14px] sm:rounded-[20px] bg-gradient-to-br ${deg.gradient} text-white flex items-center justify-center shadow-md ${deg.shadow} group-hover:scale-105 transition-all duration-200 relative shrink-0`}
+                                      >
+                                        <IconComponent className="w-5.5 h-5.5 sm:w-7 sm:h-7 stroke-[2.2] relative z-10" />
+                                      </div>
+                                      <div className="mt-1.5 sm:mt-2 flex flex-col items-center w-full px-0.5">
+                                        <span className="text-[12px] sm:text-[13.5px] font-semibold text-[#1D1D1F] text-center leading-snug whitespace-normal w-full line-clamp-2">
+                                          {deg.title}
+                                        </span>
+                                      </div>
+                                    </motion.button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
                         </motion.div>
                       ) : (
                         /* ===================================================================== */
-                        /* CHẾ ĐỘ 2: Ô THÔNG TIN NHẬP CHỈNH CHU, KHỚP VỊ TRÍ, ĐẸP MẮT CHUẨN APPLE */
+                        /* CHẾ ĐỘ 2: Ô THÔNG TIN NHẬP CHỈNH CHU (TRÊN DESKTOP)                   */
                         /* ===================================================================== */
                         <motion.div
                           key="spotlight-form-view"
@@ -897,10 +1162,10 @@ export default function SpotlightBar({
                           animate="center"
                           exit="exit"
                           style={{ willChange: 'transform, opacity, filter' }}
-                          className="w-full px-5 min-[390px]:px-6 sm:px-9 lg:px-10 pt-5.5 min-[390px]:pt-6 pb-2.5 sm:pt-4.5 sm:pb-4 rounded-t-[36px] sm:rounded-t-[38px]"
+                          className="hidden sm:block w-full px-5 min-[390px]:px-6 sm:px-8 pt-4 sm:pt-4 pb-5 sm:pb-6 rounded-t-[32px] sm:rounded-t-[28px]"
                         >
-                          {/* Header Form: Hiển thị đúng biểu tượng Squircle của loại bằng đã chọn + Nút quay lại gọn gàng 1 dòng trên Mobile */}
-                          <div className="flex items-center justify-between pb-3 sm:pb-4 mb-4 sm:mb-5 gap-2.5">
+                          {/* Header Form: Hiển thị đúng biểu tượng Squircle của loại bằng đã chọn + Nút quay lại gọn gàng 1 dòng */}
+                          <div className="flex items-center justify-between mb-2.5 sm:mb-3 gap-2.5">
                             <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
                               {/* Icon Squircle chuẩn xác của loại bằng đang chọn */}
                               <div
@@ -913,13 +1178,16 @@ export default function SpotlightBar({
                               </div>
 
                               <div className="min-w-0">
-                                <h2 className="text-[18px] sm:text-[20px] font-medium text-slate-900 tracking-tight leading-none truncate">
+                                <h2 className="text-[15.5px] sm:text-[18px] font-semibold text-[#1D1D1F] tracking-tight leading-snug pt-0.5 truncate">
                                   Tra cứu {selectedDegree.title}
                                 </h2>
+                                <p className="text-[12px] text-[#1D1D1F] mt-0.5 truncate">
+                                  {selectedDegree.kindLabel} — {selectedDegree.subTitle}
+                                </p>
                               </div>
                             </div>
 
-                            {/* Nút Quay lại duy nhất trong Form View (Đã bỏ hoàn toàn nút X): Hiệu ứng trượt lùi đàn hồi đát đát (arrow nudge) khi hover/tap chuẩn Apple */}
+                            {/* Nút Quay lại duy nhất trong Form View trên Desktop */}
                             <div className="flex items-center shrink-0">
                               <motion.button
                                 type="button"
@@ -932,8 +1200,7 @@ export default function SpotlightBar({
                                   setSlideDirection('backward');
                                   updateOpenState(true, false);
                                 }}
-                                data-ripple="rgba(215, 33, 52, 0.28)"
-                                className="group relative overflow-hidden w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200/90 active:bg-slate-300 text-slate-700 hover:text-[#142B6F] transition-colors duration-150 cursor-pointer flex-shrink-0 outline-none border-0 border-none select-none [-webkit-tap-highlight-color:transparent]"
+                                className="group inline-flex items-center justify-center gap-2 h-10 sm:h-11 px-3.5 sm:px-4.5 rounded-full bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] text-[#1D1D1F] transition-all duration-150 cursor-pointer text-[13.5px] sm:text-[14.5px] font-semibold select-none border-0 outline-none focus:outline-none shrink-0 [-webkit-tap-highlight-color:transparent]"
                                 title="Đổi loại bằng (Quay lại)"
                                 aria-label="Đổi loại bằng (Quay lại)"
                               >
@@ -941,96 +1208,164 @@ export default function SpotlightBar({
                                   variants={{
                                     rest: { x: 0 },
                                     hover: {
-                                      x: [0, -4, -1, -3],
+                                      x: [0, -3.5, -1, -2.5],
                                       transition: {
                                         duration: 0.45,
                                         times: [0, 0.4, 0.7, 1],
                                         ease: 'easeOut',
                                       },
                                     },
-                                    tap: { x: -5, scale: 0.94 },
+                                    tap: { x: -4, scale: 0.94 },
                                   }}
-                                  className="flex items-center justify-center"
+                                  className="flex items-center justify-center shrink-0"
                                 >
                                   <ArrowLeft
-                                    className="w-5 h-5 sm:w-5.5 sm:h-5.5 text-slate-700 group-hover:text-[#142B6F] pointer-events-none transition-colors duration-150"
+                                    className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] text-[#1D1D1F] pointer-events-none transition-colors duration-150"
                                     strokeWidth={2.4}
                                   />
                                 </motion.div>
+                                <span className="inline leading-none translate-y-[0.5px]">Quay lại</span>
                               </motion.button>
                             </div>
                           </div>
 
-                          {/* Form Content: To rõ, chỉnh chu, tích hợp Google reCAPTCHA chuẩn */}
+                          {/* Form Content: Tái sử dụng đồng nhất */}
                           <div className="w-full">
-                            <AnimatePresence mode="wait" initial={false}>
-                              <motion.div
-                                key={activeTab}
-                                initial={{ opacity: 0, y: 6 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -6 }}
-                                transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                              >
-                                {activeTab === 'vanbang' && (
-                                  <VanBangForm
-                                    onSuccess={(data) => {
-                                      updateOpenState(false, false);
-                                      onSelectResult?.('vanbang', data);
-                                    }}
-                                    onNotFound={(data) => onNotFound?.('vanbang', data)}
-                                    initialSoHieuPhoi={query}
-                                    initialLoaiDaoTao={selectedLoaiDaoTao}
-                                    sampleData={sampleData?.vanbang}
-                                    sampleToApply={sampleToApply}
-                                  />
-                                )}
-
-                                {activeTab === 'cntt' && (
-                                  <CnttForm
-                                    onSuccess={(data) => {
-                                      updateOpenState(false, false);
-                                      onSelectResult?.('cntt', data);
-                                    }}
-                                    onNotFound={(data) => onNotFound?.('cntt', data)}
-                                    initialSoHieuPhoi={query}
-                                    initialCapDo={selectedCapDo}
-                                    onCapDoChange={(newCapDo) => {
-                                      setSelectedCapDo(newCapDo);
-                                      const matched = DEGREE_TYPES.find(
-                                        (d) => d.id === (newCapDo === 'nangcao' ? 'cntt-nc' : 'cntt-cb')
-                                      );
-                                      if (matched) setSelectedDegree(matched);
-                                    }}
-                                    sampleData={sampleData?.cntt}
-                                    sampleToApply={sampleToApply}
-                                  />
-                                )}
-
-                                {activeTab === 'vstep' && (
-                                  <VstepForm
-                                    onSuccess={(data) => {
-                                      updateOpenState(false, false);
-                                      onSelectResult?.('vstep', data);
-                                    }}
-                                    onNotFound={(data) => onNotFound?.('vstep', data)}
-                                    initialSoHieuPhoi={query}
-                                    sampleData={sampleData?.vstep}
-                                    sampleToApply={sampleToApply}
-                                  />
-                                )}
-                              </motion.div>
-                            </AnimatePresence>
+                            {renderFormContent()}
                           </div>
                         </motion.div>
                       )}
                     </AnimatePresence>
                   </div>
                 </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+            {/* HÀNG GỢI Ý NHANH CÁC MỤC ĐƯỢC CHỌN NHIỀU NHẤT (CHUẨN WIDGET GOOGLE - NỀN XÁM MỊN, BỎ HOÀN TOÀN VIỀN & BÓNG LEM) */}
+            <AnimatePresence>
+              {!isWindowOpen && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                  animate={{ opacity: 1, height: 'auto', marginTop: isMobile ? 14 : 24 }}
+                  exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                  transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                  className="grid grid-cols-3 gap-2 sm:gap-3.5 w-full"
+                >
+                  {POPULAR_SEARCH_SHORTCUTS.map((item) => {
+                    const IconComponent = item.icon;
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => {
+                          const targetDeg = DEGREE_TYPES.find((d) => d.id === item.degreeId);
+                          if (targetDeg) {
+                            handleSelectDegreeType(targetDeg);
+                          }
+                        }}
+                        className="h-[52px] sm:h-[78px] px-2.5 sm:px-5 py-2.5 sm:py-4 rounded-[16px] sm:rounded-[22px] bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] border-0 outline-none focus:outline-none focus:ring-0 transition-all duration-150 flex items-center justify-center sm:justify-start gap-2 sm:gap-4 text-center sm:text-left cursor-pointer active:scale-[0.98] select-none shadow-none overflow-hidden isolate [-webkit-tap-highlight-color:transparent] group min-w-0"
+                      >
+                        {/* Squircle Icon Apple: Gradient màu sắc đặc trưng từng loại bằng + icon trắng nổi bật, kích thước cân đối to rõ */}
+                        <div
+                          className={`w-[36px] h-[36px] sm:w-[48px] sm:h-[48px] rounded-[11px] sm:rounded-[15px] bg-gradient-to-br ${item.gradient} text-white flex items-center justify-center shrink-0 shadow-sm ${item.shadow} group-hover:scale-105 transition-transform duration-200`}
+                        >
+                          <IconComponent className="w-5 h-5 sm:w-[28px] sm:h-[28px] stroke-[2.2]" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[12.5px] min-[380px]:text-[13.5px] sm:text-[16px] font-semibold text-[#1D1D1F] tracking-tight leading-snug truncate">
+                            <span className="sm:hidden">{item.shortTitle}</span>
+                            <span className="hidden sm:inline">{item.title}</span>
+                          </p>
+                          <p className="hidden sm:block text-[12px] sm:text-[13px] text-[#1D1D1F] font-normal truncate mt-1 leading-snug">
+                            {item.desc}
+                          </p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+      {/* ========================================================================= */}
+      {/* ========================================================================= */}
+      {/* KHUNG BOTTOM SHEET TRÊN MOBILE CHUẨN HIỆU ỨNG HIỆN CÓ CỦA WEBSITE         */}
+      {/* (ĐỒNG BỘ 100% HIỆU ỨNG ĐẨY LÊN RA KẾT QUẢ / BÁO KHÔNG CÓ DỮ LIỆU)        */}
+      {/* ========================================================================= */}
+      {isMounted && typeof document !== 'undefined' && (isFormExpanded || isClosingMobileSheet) && isMobile && createPortal(
+        <div
+          id="mobile-form-bottom-sheet"
+          className={`fixed inset-0 z-[999] sm:hidden flex flex-col justify-end overflow-hidden ${
+            isClosingMobileSheet ? 'animate-omninotch-backdrop-exit' : 'animate-omninotch-backdrop-enter'
+          }`}
+        >
+          {/* Lớp Backdrop làm mờ toàn màn hình chuẩn khung kết quả */}
+          <div
+            className="absolute inset-0 bg-slate-950/50 backdrop-blur-[6px] cursor-pointer select-none no-print"
+            onClick={() => handleCloseMobileSheet(false)}
+            aria-label="Bấm ra ngoài để đóng bảng tra cứu"
+          />
+
+          {/* Khung Drawer chuẩn hiệu ứng hiện có (đẩy lên ra kết quả / báo không có dữ liệu) */}
+          <div
+            className={`w-full flex justify-center mt-auto relative z-10 pointer-events-auto ${
+              isClosingMobileSheet ? 'mobile-drawer-exit' : 'mobile-drawer-enter'
+            }`}
+          >
+            <div className="relative w-full bg-white rounded-t-[36px] shadow-[0_24px_70px_-15px_rgba(15,23,42,0.28),0_10px_28px_-4px_rgba(15,23,42,0.12)] max-h-[92dvh] flex flex-col overflow-hidden outline-none">
+              {/* Thanh gạt tay kéo vuốt (Drag Handle) */}
+              <div
+                onClick={() => handleCloseMobileSheet(false)}
+                className="pt-3 pb-2 flex justify-center shrink-0 cursor-pointer group select-none"
+                title="Chạm hoặc vuốt để thu lại"
+              >
+                <div className="w-10 h-1.2 rounded-full bg-slate-300 group-hover:bg-slate-400 group-active:bg-slate-500 transition-colors" />
               </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+
+              <div className="flex items-center justify-between px-4 min-[380px]:px-5 py-2.5 border-b border-slate-100 shrink-0 gap-3">
+                {/* Cụm Tiêu đề bên trái: squircle icon + Tên loại bằng to rõ */}
+                <div className="flex items-center gap-2.5 min-[380px]:gap-3 min-w-0 flex-1">
+                  <div
+                    className={`w-10 h-10 rounded-xl bg-gradient-to-br ${selectedDegree.gradient} text-white flex items-center justify-center shrink-0 shadow-md ${selectedDegree.shadow}`}
+                  >
+                    {(() => {
+                      const DegreeHeaderIcon = selectedDegree.icon || GraduationCap;
+                      return <DegreeHeaderIcon className="w-5.5 h-5.5 stroke-[2.2]" />;
+                    })()}
+                  </div>
+
+                  <div className="min-w-0 text-left flex-1">
+                    <h2 className="text-[15.5px] min-[380px]:text-[16.5px] font-bold text-[#1D1D1F] tracking-tight leading-snug truncate">
+                      Tra cứu {selectedDegree.title}
+                    </h2>
+                    <p className="text-[12px] text-[#6E6E73] truncate leading-tight mt-0.5">
+                      {selectedDegree.kindLabel} — {selectedDegree.subTitle}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Nút dấu mũi tên quay lại/đổi loại (bỏ chữ, dạng nút tròn ở góc phải) */}
+                <button
+                  type="button"
+                  onClick={() => handleCloseMobileSheet(true)}
+                  className="w-9 h-9 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] text-[#1D1D1F] transition-colors shrink-0 select-none border-0 outline-none cursor-pointer"
+                  title="Đổi loại bằng (Quay lại)"
+                  aria-label="Đổi loại bằng (Quay lại)"
+                >
+                  <ArrowLeft className="w-5 h-5" strokeWidth={2.4} />
+                </button>
+              </div>
+
+              {/* Thân Form cuộn mượt mà, bàn phím ảo bật lên tự co giãn không che nút */}
+              <div className="flex-1 overflow-y-auto overscroll-contain px-5 pt-4 pb-[calc(2.5rem+env(safe-area-inset-bottom,0px))] touch-pan-y">
+                {renderFormContent()}
+              </div>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 }

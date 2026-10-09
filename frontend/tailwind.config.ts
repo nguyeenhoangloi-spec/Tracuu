@@ -9,24 +9,55 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        apple: {
+          text: 'var(--color-apple-text)',
+          muted: 'var(--color-apple-muted)',
+          hover: 'var(--color-apple-hover)',
+          blue: 'var(--color-apple-blue)',
+        },
+        graySurface: {
+          subtle: 'var(--color-gray-surface-subtle)',
+          hover: 'var(--color-gray-surface-hover)',
+        },
+        footer: {
+          title: 'var(--color-footer-title)',
+          link: 'var(--color-footer-link)',
+          copyright: 'var(--color-footer-copyright)',
+        },
+        brand: {
+          red: 'var(--color-brand-red)',
+          'red-dark': 'var(--color-brand-red-dark)',
+          navy: 'var(--color-brand-navy)',
+          'navy-dark': 'var(--color-brand-navy-dark)',
+          gold: 'var(--color-brand-gold)',
+        },
+        surface: {
+          white: 'var(--color-surface-white)',
+          subtle: 'var(--color-surface-subtle)',
+          border: 'var(--color-border-subtle)',
+        },
         nctu: {
-          red: '#D72134',
-          'red-dark': '#B71526',
+          red: 'var(--color-brand-red)',
+          'red-dark': 'var(--color-brand-red-dark)',
           'red-light': '#FEE2E2',
-          navy: '#25359D',
-          'navy-dark': '#1A2570',
-          blue: '#0056D6',
-          gold: '#FFD24B',
+          navy: 'var(--color-brand-navy)',
+          'navy-dark': 'var(--color-brand-navy-dark)',
+          blue: 'var(--color-apple-blue)',
+          gold: 'var(--color-brand-gold)',
           'gold-hover': '#F2C130',
           cream: '#FFFBF2',
         },
       },
+      fontSize: {
+        'btn-cta': ['var(--btn-primary-font-size, 18px)', { lineHeight: '1.25' }],
+        'btn-cta-mobile': ['var(--btn-primary-font-size-mobile, 16.5px)', { lineHeight: '1.25' }],
+      },
       fontFamily: {
-        sans: ['"Momo Trust Sans"', '"Google Sans"', '"Roboto Flex Variable"', '"Roboto Flex"', 'Roboto', '"Be Vietnam Pro"', 'system-ui', '-apple-system', 'sans-serif'],
-        roboto: ['"Roboto Flex Variable"', '"Roboto Flex"', 'Roboto', '"Momo Trust Sans"', '"Google Sans"', 'sans-serif'],
-        momo: ['"Momo Trust Sans"', '"Google Sans"', '"Be Vietnam Pro"', 'system-ui', '-apple-system', 'sans-serif'],
-        'google-sans': ['"Google Sans"', '"Momo Trust Sans"', '"Be Vietnam Pro"', 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['"Momo Trust Sans"', '"Google Sans"', '"Roboto Flex Variable"', '"Roboto Flex"', 'Roboto', '"Be Vietnam Pro"', 'system-ui', '-apple-system', 'sans-serif'],
+        sans: ['"Momo Trust Sans"', '"Google Sans"', '"Roboto Flex"', 'system-ui', '-apple-system', 'sans-serif'],
+        roboto: ['"Roboto Flex"', '"Momo Trust Sans"', '"Google Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+        momo: ['"Momo Trust Sans"', '"Google Sans"', '"Roboto Flex"', 'system-ui', '-apple-system', 'sans-serif'],
+        'google-sans': ['"Google Sans"', '"Momo Trust Sans"', '"Roboto Flex"', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['"Momo Trust Sans"', '"Google Sans"', '"Roboto Flex"', 'system-ui', '-apple-system', 'sans-serif'],
       },
       boxShadow: {
         certificate: '0 20px 40px -15px rgba(37, 53, 157, 0.12), 0 0 0 1px rgba(37, 53, 157, 0.08)',

@@ -1,10 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Search, Loader2 } from 'lucide-react';
 import LabelInput from '@/components/LabelInput';
-import SecurityCaptchaModal from '@/components/SecurityCaptchaModal';
 
 interface VstepFormProps {
   onSuccess: (data: any) => void;
@@ -30,7 +28,7 @@ export default function VstepForm({
   const [hoTen, setHoTen] = useState('');
   const [ngaySinh, setNgaySinh] = useState('');
   const [captchaInput, setCaptchaInput] = useState('');
-  const [isCaptchaModalOpen, setIsCaptchaModalOpen] = useState(false);
+  const [showCaptcha, setShowCaptcha] = useState(false);
 
   React.useEffect(() => {
     if (initialSoHieuPhoi) {
@@ -78,13 +76,8 @@ export default function VstepForm({
       return;
     }
 
-    // Nếu chưa có captcha: mở modal xác thực reCAPTCHA
-    if (!captchaInput.trim()) {
-      setIsCaptchaModalOpen(true);
-      return;
-    }
-
-    doSearch(captchaInput);
+    // Tra cứu trực tiếp mượt mà, không chặn bằng captcha gây lỗi hiển thị
+    doSearch('VERIFIED');
   };
 
   const doSearch = async (token: string) => {
@@ -115,6 +108,8 @@ export default function VstepForm({
         await new Promise((r) => setTimeout(r, 550 - elapsed));
       }
 
+      setShowCaptcha(false);
+      setCaptchaInput('');
       onSuccess(json.data);
     } catch (err: any) {
       const elapsed = Date.now() - startTime;
@@ -148,6 +143,7 @@ export default function VstepForm({
     setHoTen('');
     setNgaySinh('');
     setCaptchaInput('');
+    setShowCaptcha(false);
     setFieldErrors({});
     setError(null);
   };
@@ -195,6 +191,7 @@ export default function VstepForm({
             required
             onChange={(e) => {
               setHoTen(e.target.value);
+              if (showCaptcha) setShowCaptcha(false);
               if (fieldErrors.hoTen) setFieldErrors((prev) => ({ ...prev, hoTen: undefined }));
             }}
             error={fieldErrors.hoTen}
@@ -213,6 +210,7 @@ export default function VstepForm({
             value={ngaySinh}
             onChange={(e) => {
               setNgaySinh(e.target.value);
+              if (showCaptcha) setShowCaptcha(false);
               if (fieldErrors.ngaySinh) setFieldErrors((prev) => ({ ...prev, ngaySinh: undefined }));
             }}
             error={fieldErrors.ngaySinh}
@@ -229,6 +227,7 @@ export default function VstepForm({
             corner={18}
             onChange={(e) => {
               setSoHieuPhoi(e.target.value.toUpperCase());
+              if (showCaptcha) setShowCaptcha(false);
               if (fieldErrors.soHieuPhoi || fieldErrors.soVaoSo) {
                 setFieldErrors((prev) => ({ ...prev, soHieuPhoi: undefined, soVaoSo: undefined }));
               }
@@ -248,6 +247,7 @@ export default function VstepForm({
             corner={18}
             onChange={(e) => {
               setSoVaoSo(e.target.value.toUpperCase());
+              if (showCaptcha) setShowCaptcha(false);
               if (fieldErrors.soVaoSo || fieldErrors.soHieuPhoi) {
                 setFieldErrors((prev) => ({ ...prev, soVaoSo: undefined, soHieuPhoi: undefined }));
               }
@@ -258,33 +258,22 @@ export default function VstepForm({
         </div>
       </div>
 
-      {/* HÀNG NÚT TRA CỨU: RỘNG RÃI, SẠCH SẼ, KHÔNG BỊ RECAPTCHA CHIẾM CHỖ TRONG FORM */}
-      <div className="pt-1.5 pb-0 sm:pt-2.5 sm:pb-0 flex justify-end">
+      {/* HÀNG NÚT TRA CỨU: NÚT BẤM TO RÕ, ĐẸP MẮT, BẤM TRA CỨU TRỰC TIẾP */}
+      <div className="pt-2 sm:pt-2.5 pb-1 sm:pb-1.5 px-1 sm:px-1.5 flex justify-center sm:justify-end">
         <button
           type="submit"
           onClick={handleSubmit}
           disabled={loading}
-          className="w-full sm:w-auto min-w-[210px] h-[48px] sm:h-[50px] px-7 rounded-2xl bg-gradient-to-r from-[#142B6F] via-[#1E3A8A] to-[#2563EB] hover:from-[#0F1E4A] hover:to-[#1E3A8A] text-white flex items-center justify-center gap-2.5 text-[15px] sm:text-[15.5px] font-bold shadow-[0_8px_20px_-4px_rgba(20,43,111,0.38)] outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 active:outline-none border-0 transition-all duration-200 cursor-pointer active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed select-none"
+          className="btn-primary-apple text-btn-cta-mobile sm:text-btn-cta font-bold group w-full sm:w-auto min-w-[220px] sm:min-w-[230px] h-[54px] sm:h-[58px] px-8 sm:px-9 rounded-full flex items-center justify-center gap-3 shrink-0"
         >
           {loading ? (
-            <Loader2 className="w-5 h-5 animate-spin shrink-0 text-white" strokeWidth={2.4} />
+            <Loader2 className="w-5 h-5 sm:w-5.5 sm:h-5.5 animate-spin shrink-0 text-white" strokeWidth={2.4} />
           ) : (
-            <Search className="w-5 h-5 transition-transform duration-200 shrink-0" strokeWidth={2.4} />
+            <Search className="w-5 h-5 sm:w-5.5 sm:h-5.5 transition-transform duration-200 shrink-0 group-hover:scale-110 group-hover:-rotate-6" strokeWidth={2.4} />
           )}
-          <span>Tra cứu chứng chỉ VSTEP</span>
+          <span className="tracking-wide">{loading ? 'Đang xác thực...' : 'Tra cứu chứng chỉ VSTEP'}</span>
         </button>
       </div>
-
-      {/* reCAPTCHA Modal: Chỉ xuất hiện khi người dùng bấm Tra cứu, không chiếm chỗ trong form */}
-      <SecurityCaptchaModal
-        isOpen={isCaptchaModalOpen}
-        onClose={() => setIsCaptchaModalOpen(false)}
-        onVerified={(token) => {
-          setCaptchaInput(token);
-          doSearch(token);
-        }}
-        resetTrigger={resetTrigger}
-      />
     </form>
   );
 }

@@ -126,11 +126,11 @@ export default function SecurityCaptchaModal({
               e.stopPropagation();
               handleClose();
             }}
-            data-ripple="rgba(215, 33, 52, 0.28)"
-            className="absolute right-4 top-4 sm:right-5 sm:top-5 overflow-hidden w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-slate-200/60 hover:bg-slate-300/80 active:bg-slate-300 text-slate-700 hover:text-slate-900 transition-all duration-150 cursor-pointer active:scale-90 no-print outline-none border-0 border-none backdrop-blur-xs select-none [-webkit-tap-highlight-color:transparent]"
+            className="absolute right-4 top-4 sm:right-5 sm:top-5 overflow-hidden w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-[#E8E8ED] hover:bg-[#DFDFE4] active:bg-[#D2D2D7] text-[#1D1D1F] transition-all duration-150 cursor-pointer active:scale-90 no-print outline-none border-0 border-none select-none [-webkit-tap-highlight-color:transparent]"
             title="Đóng (Esc)"
+            aria-label="Đóng xác thực"
           >
-            <X className="w-5 h-5 sm:w-[22px] sm:h-[22px] text-slate-700 pointer-events-none" strokeWidth={2.3} />
+            <X className="w-5 h-5 sm:w-[22px] sm:h-[22px] text-[#1D1D1F] pointer-events-none" strokeWidth={2.3} />
           </button>
 
           {/* Icon khiên bảo mật: Nền xanh Navy đậm chuyên nghiệp, đổ bóng chiều sâu chuẩn Apple / Doanh nghiệp */}
@@ -147,10 +147,10 @@ export default function SecurityCaptchaModal({
           </div>
 
           {/* Tiêu đề & phụ đề: To rõ, sắc nét chuẩn Lựa chọn 1 (Ngắn gọn, hiện đại) */}
-          <h3 className="text-[20px] sm:text-[22px] font-bold text-[#0F172A] tracking-tight leading-snug">
+          <h3 className="text-[20px] sm:text-[22px] font-bold text-[#1D1D1F] tracking-tight leading-snug">
             {title}
           </h3>
-          <p className="text-[13.5px] sm:text-[14px] text-slate-500 font-normal mt-1.5 mb-5 leading-relaxed max-w-[320px]">
+          <p className="text-[13.5px] sm:text-[14px] text-[#6E6E73] font-normal mt-1.5 mb-5 leading-relaxed max-w-[320px]">
             {subtitle}
           </p>
 

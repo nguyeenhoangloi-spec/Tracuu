@@ -295,15 +295,8 @@ export default function QuickSampleWidget({
     }, 400);
   };
 
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 640);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  const shouldHide = isResultOpen || (isSpotlightOpen && isMobile);
+  // Nút Hồ sơ mẫu test luôn luôn hiển thị thường trực ở góc màn hình để tiện thử nghiệm mọi lúc
+  const shouldHide = false;
 
   return (
     <aside
@@ -311,8 +304,8 @@ export default function QuickSampleWidget({
       data-quick-sample="true"
       aria-label="Khối dữ liệu mẫu thử nghiệm"
       ref={widgetRef}
-      className={`fixed bottom-20 right-3.5 sm:bottom-6 sm:right-6 z-[105] select-none no-print transition-all duration-300 ${
-        shouldHide ? 'opacity-0 pointer-events-none scale-90' : 'opacity-100 pointer-events-auto scale-100'
+      className={`fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-[105] select-none no-print transition-all duration-300 ${
+        shouldHide ? 'opacity-0 pointer-events-none scale-90 translate-y-3' : 'opacity-100 pointer-events-auto scale-100 translate-y-0'
       }`}
     >
       {/* PANEL DANH SÁCH MẪU (BUNG LÊN TỪ NÚT GÓC DƯỚI) */}
@@ -481,22 +474,22 @@ export default function QuickSampleWidget({
         type="button"
         id="btn-quick-sample-fab"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="px-4 py-2.5 rounded-full bg-white/95 hover:bg-white text-slate-800 font-semibold text-xs sm:text-[13px] border border-slate-200/90 hover:border-amber-300 shadow-[0_8px_25px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.16)] transition-all duration-200 flex items-center gap-2 cursor-pointer active:scale-95 group"
+        className="px-3 py-1.5 rounded-full bg-white/95 hover:bg-white text-slate-700 font-medium text-xs border border-slate-200/90 hover:border-amber-300 shadow-[0_4px_16px_rgba(0,0,0,0.08)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.12)] transition-all duration-200 flex items-center gap-1.5 cursor-pointer active:scale-95 group"
         title="Nhấn để mở danh sách hồ sơ mẫu thử nghiệm"
       >
-        <span className="w-5 h-5 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center group-hover:rotate-12 transition-transform duration-200">
-          <Sparkles className="w-3.5 h-3.5 fill-amber-500/30 text-amber-500" />
+        <span className="w-4 h-4 rounded-md bg-amber-500/10 text-amber-600 flex items-center justify-center group-hover:rotate-12 transition-transform duration-200">
+          <Sparkles className="w-3 h-3 fill-amber-500/30 text-amber-500" />
         </span>
-        <span className="font-semibold text-slate-700 group-hover:text-slate-900">
+        <span className="font-medium text-slate-700 group-hover:text-slate-900 text-[12px]">
           Hồ sơ mẫu test
         </span>
-        <span className="px-1.5 py-0.5 text-[10.5px] font-bold rounded-full bg-amber-500 text-white shadow-2xs">
+        <span className="px-1.5 py-0.2 text-[10px] font-bold rounded-full bg-amber-500 text-white">
           {currentSamples.length}
         </span>
         {isOpen ? (
-          <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 ml-0.5" />
+          <ChevronDown className="w-3 h-3 text-slate-400 group-hover:text-slate-600 ml-0.5" />
         ) : (
-          <ChevronUp className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 ml-0.5" />
+          <ChevronUp className="w-3 h-3 text-slate-400 group-hover:text-slate-600 ml-0.5" />
         )}
       </button>
     </aside>

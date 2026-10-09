@@ -443,7 +443,7 @@ export function LabelInput({
       }}
     >
       {subLabel && (
-        <span className="lbi-sublabel text-xs text-gray-400 font-medium absolute right-3.5 -top-2 z-10 bg-white px-1 select-none pointer-events-none">
+        <span className="lbi-sublabel text-[13px] text-[#6E6E73] font-medium absolute right-3.5 -top-2 z-10 bg-white px-1 select-none pointer-events-none">
           {subLabel}
         </span>
       )}
@@ -491,7 +491,7 @@ export function LabelInput({
               aria-haspopup="dialog"
               aria-expanded={datePickerOpen}
             >
-              <span className={`truncate text-[16.5px] ${displayDate ? "font-semibold text-slate-900" : "text-slate-400 font-medium"}`}>
+              <span className={`truncate text-[16px] ${displayDate ? "font-semibold text-[#1D1D1F]" : "text-[#6E6E73] font-medium"}`}>
                 {displayDate || (focus || datePickerOpen ? placeholder || "dd/mm/yyyy" : "")}
               </span>
             </button>
@@ -501,11 +501,10 @@ export function LabelInput({
               type="button"
               tabIndex={-1}
               aria-label="Mở lịch chọn ngày"
-              data-ripple="rgba(215, 33, 52, 0.22)"
               style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)' }}
               className={`calendar-icon-btn absolute right-3.5 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center cursor-pointer overflow-hidden z-10 hover:bg-red-50/60 active:scale-95 transition-all duration-[380ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${datePickerOpen
-                ? "text-[#D72134] scale-105 bg-red-50/40"
-                : "text-slate-400 group-hover:text-[#D72134] scale-100"
+                ? "text-[#EC1E24] scale-105 bg-red-50/40"
+                : "text-[#6E6E73] group-hover:text-[#EC1E24] scale-100"
                 }`}
               onClick={(e) => handleToggleDatePicker(e)}
             >
@@ -566,20 +565,20 @@ export function LabelInput({
                       <ChevronLeft size={18} strokeWidth={2.5} />
                     </button>
 
-                    <div className="flex items-center justify-center gap-1.5 flex-1">
-                      {/* Bấm Tháng X để mở chọn tháng, bấm lại chính nó để thu lại về ngày */}
+                    <div className="flex items-center justify-center gap-2 flex-1">
+                      {/* Bấm Tháng X để mở chọn tháng, bấm lại chính nó để thu lại về ngày (Cố định w-[98px] chống giật vị trí khi đổi số 1-12) */}
                       <button
                         type="button"
                         onClick={() => setViewMode((m) => (m === "months" ? "days" : "months"))}
-                        className={`h-8 px-2.5 rounded-lg text-sm font-bold transition-all duration-150 flex items-center justify-center gap-1 cursor-pointer active:scale-95 tabular-nums shrink-0 outline-none focus:outline-none ring-0 border-0 border-none select-none ${
+                        className={`h-8 w-[98px] rounded-lg text-sm font-bold transition-colors duration-150 flex items-center justify-center gap-1 cursor-pointer active:scale-95 tabular-nums shrink-0 outline-none focus:outline-none ring-0 border-0 border-none select-none ${
                           viewMode === "months"
-                            ? "bg-red-50 text-[#D72134] shadow-sm ring-1 ring-red-200"
+                            ? "bg-red-50 text-[#D72134]"
                             : "text-slate-900 hover:text-[#D72134] hover:bg-red-50"
                         }`}
                         style={{ outline: "none", border: "none" }}
                         title={viewMode === "months" ? "Nhấn lại để thu lại về ngày" : "Chọn tháng"}
                       >
-                        <span>Tháng {viewMonth + 1}</span>
+                        <span className="tabular-nums">Tháng {viewMonth + 1}</span>
                         <ChevronDown
                           size={14}
                           strokeWidth={2.5}
@@ -589,19 +588,19 @@ export function LabelInput({
                         />
                       </button>
 
-                      {/* Bấm Năm để mở chọn năm, bấm lại chính nó để thu lại về ngày */}
+                      {/* Bấm Năm để mở chọn năm, bấm lại chính nó để thu lại về ngày (Cố định w-[78px] chống giật vị trí) */}
                       <button
                         type="button"
                         onClick={() => setViewMode((m) => (m === "years" ? "days" : "years"))}
-                        className={`h-8 px-2.5 rounded-lg text-sm font-bold transition-all duration-150 flex items-center justify-center gap-1 cursor-pointer active:scale-95 tabular-nums shrink-0 outline-none focus:outline-none ring-0 border-0 border-none select-none ${
+                        className={`h-8 w-[78px] rounded-lg text-sm font-bold transition-colors duration-150 flex items-center justify-center gap-1 cursor-pointer active:scale-95 tabular-nums shrink-0 outline-none focus:outline-none ring-0 border-0 border-none select-none ${
                           viewMode === "years"
-                            ? "bg-red-50 text-[#D72134] shadow-sm ring-1 ring-red-200"
+                            ? "bg-red-50 text-[#D72134]"
                             : "text-slate-900 hover:text-[#D72134] hover:bg-red-50"
                         }`}
                         style={{ outline: "none", border: "none" }}
                         title={viewMode === "years" ? "Nhấn lại để thu lại về ngày" : "Chọn năm"}
                       >
-                        <span>{viewYear}</span>
+                        <span className="tabular-nums">{viewYear}</span>
                         <ChevronDown
                           size={14}
                           strokeWidth={2.5}
@@ -769,7 +768,6 @@ export function LabelInput({
                                   setDatePickerOpen(false);
                                   setFocus(false);
                                 }}
-                                data-ripple="rgba(215, 33, 52, 0.22)"
                                 className={`w-9 h-9 rounded-xl text-[13px] flex items-center justify-center transition-all duration-150 cursor-pointer relative overflow-hidden select-none outline-none focus:outline-none ring-0 border-0 border-none ${isSelected
                                   ? "bg-[#D72134] text-white font-bold shadow-md shadow-red-600/30 scale-105"
                                   : isToday
@@ -792,7 +790,6 @@ export function LabelInput({
                   <div className="flex items-center justify-between pt-2.5 mt-2 border-t border-slate-100">
                     <button
                       type="button"
-                      data-ripple="rgba(215, 33, 52, 0.12)"
                       onClick={() => {
                         setDatePickerOpen(false);
                         setFocus(false);
@@ -805,7 +802,6 @@ export function LabelInput({
                     <div className="flex items-center gap-1.5">
                       <button
                         type="button"
-                        data-ripple="rgba(215, 33, 52, 0.15)"
                         onClick={() => {
                           const today = new Date();
                           const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
@@ -867,7 +863,7 @@ export function LabelInput({
               aria-expanded={dropdownOpen}
             >
               <div className="flex items-center min-w-0 w-full pr-1">
-                <span className={`truncate text-[16px] ${selectedOption ? "font-semibold text-slate-800" : "text-slate-400 font-normal"}`}>
+                <span className={`truncate text-[16px] ${selectedOption ? "font-semibold text-[#1D1D1F]" : "text-[#6E6E73] font-normal"}`}>
                   {up ? selectedOption?.label || placeholder || "" : ""}
                 </span>
               </div>
@@ -876,8 +872,8 @@ export function LabelInput({
             {/* Sleek Chevron Arrow (No background box) */}
             <div
               className={`absolute right-5 top-1/2 -translate-y-1/2 transition-[transform,color] duration-[380ms] ease-[cubic-bezier(0.32,0.72,0,1)] pointer-events-none ${dropdownOpen
-                ? "text-[#D72134] rotate-180 scale-110"
-                : "text-slate-400 group-hover:text-slate-600 rotate-0 scale-100"
+                ? "text-[#EC1E24] rotate-180 scale-110"
+                : "text-[#6E6E73] group-hover:text-[#1D1D1F] rotate-0 scale-100"
                 }`}
             >
               <ChevronDown size={20} strokeWidth={2.4} />
@@ -917,7 +913,6 @@ export function LabelInput({
                       <div
                         key={opt.value}
                         role="option"
-                        data-ripple="rgba(215, 33, 52, 0.16)"
                         aria-selected={isSelected}
                         onClick={() => {
                           if (!isControlled) setUncontrolledValue(opt.value);

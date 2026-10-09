@@ -98,14 +98,14 @@ export default function CertificateCard({
   const certificateTitle = formatCertificateTitle(type, data);
   const fullLegalTitle = data.ten_van_bang || data.ten_chung_chi || certificateTitle;
 
-  const labelClass = 'text-[14px] min-[390px]:text-[15.5px] sm:text-[17px] md:text-[18px] lg:text-[20px] font-semibold text-[#475569] shrink-0 font-google-sans leading-normal whitespace-nowrap sm:w-[160px] sm:min-w-[160px] md:w-[150px] md:min-w-[150px] lg:w-[185px] lg:min-w-[185px]';
-  const valueClass = 'text-[14px] min-[390px]:text-[15.5px] sm:text-[17px] md:text-[18px] lg:text-[20px] font-semibold text-[#0F172A] font-google-sans leading-normal break-words min-w-0 flex-1';
-  const boldValueClass = 'text-[14px] min-[390px]:text-[15.5px] sm:text-[17px] md:text-[18px] lg:text-[20px] font-bold text-[#0F172A] font-google-sans leading-normal break-words min-w-0 flex-1';
-  const itemRowClass = 'flex items-start gap-2 sm:gap-2.5 lg:gap-3 py-2 sm:py-0';
+  const labelClass = 'text-[14px] min-[390px]:text-[15.5px] sm:text-[17px] md:text-[18px] lg:text-[20px] font-semibold text-apple-muted shrink-0 font-sans leading-normal whitespace-nowrap text-left sm:w-[155px] md:w-[175px] lg:w-[195px]';
+  const valueClass = 'text-[14px] min-[390px]:text-[15.5px] sm:text-[17px] md:text-[18px] lg:text-[20px] font-semibold text-apple-text font-sans leading-normal break-words min-w-0 flex-1 text-right sm:text-left';
+  const boldValueClass = 'text-[14px] min-[390px]:text-[15.5px] sm:text-[17px] md:text-[18px] lg:text-[20px] font-bold text-apple-text font-sans leading-normal break-words min-w-0 flex-1 text-right sm:text-left';
+  const itemRowClass = 'flex items-start justify-between sm:justify-start gap-3 sm:gap-3.5 py-2 sm:py-0 w-full';
   const gridRowClass = 'grid grid-cols-1 md:grid-cols-2 gap-x-6 lg:gap-x-12 sm:py-3 lg:py-3.5';
 
   return (
-    <div className="font-google-sans text-[#0F172A] w-full flex flex-col justify-end sm:justify-center my-auto print:my-0 print:w-full">
+    <div className="font-sans text-apple-text w-full flex flex-col justify-end sm:justify-center my-auto print:my-0 print:w-full">
       {/* THẺ KẾT QUẢ TRA CỨU: DRAWER THOÁNG ĐÃNG TRÊN MOBILE (~76VH), TRONG ĐÓ CUỘN NỘI DUNG, POPUP OMNINOTCH TRÊN DESKTOP */}
       <div
         className={`bg-white rounded-t-[36px] rounded-b-none sm:rounded-[38px] sm:rounded-b-[38px] border-0 transition-shadow duration-300 ${isExpanded
@@ -116,7 +116,7 @@ export default function CertificateCard({
         {/* TIÊU ĐỀ KẾT QUẢ VĂN BẰNG / CHỨNG CHỈ (NỀN XÁM NHẸ TRÊN MÀN HÌNH, NỀN TRẮNG KHI IN) */}
         <div className="bg-slate-50/95 print:bg-white backdrop-blur-xs relative px-5 min-[390px]:px-6 sm:px-10 lg:px-12 pt-6 sm:pt-6 pb-3.5 sm:pb-6 print:pb-2 print:pt-0 print:px-0 shrink-0 border-0 border-none z-10">
           {/* Header Quốc hiệu / Tên trường chuẩn hóa (Chỉ xuất hiện khi In) */}
-          <div className="hidden print:flex items-center justify-between pb-3 mb-3 border-b-2 border-[#142B6F]">
+          <div className="hidden print:flex items-center justify-between pb-3 mb-3 border-b-2 border-brand-navy">
             <div className="flex items-center gap-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -125,24 +125,24 @@ export default function CertificateCard({
                 className="h-11 w-auto object-contain"
               />
               <div>
-                <h1 className="text-[13.5px] font-bold text-[#142B6F] uppercase tracking-wider leading-tight">
+                <h1 className="text-[13.5px] font-bold text-brand-navy uppercase tracking-wider leading-tight">
                   TRƯỜNG ĐẠI HỌC NAM CẦN THƠ
                 </h1>
-                <p className="text-[11px] font-semibold text-slate-600 uppercase tracking-wide leading-tight">
+                <p className="text-[11px] font-semibold text-apple-muted uppercase tracking-wide leading-tight">
                   CỔNG TRA CỨU & XÁC THỰC VĂN BẰNG - CHỨNG CHỈ ĐIỆN TỬ
                 </p>
               </div>
             </div>
-            <div className="text-right text-[11px] text-slate-500 leading-tight">
+            <div className="text-right text-[11px] text-apple-muted leading-tight">
               <div>Hệ thống xác thực:</div>
-              <div className="font-semibold text-slate-800">tracuu.nctu.edu.vn</div>
+              <div className="font-semibold text-apple-text">tracuu.nctu.edu.vn</div>
             </div>
           </div>
 
           <div className="flex items-center justify-between gap-2.5 sm:gap-3">
             <div className="min-w-0 flex-1">
               <h2
-                className="text-[18.5px] min-[360px]:text-[19.5px] min-[390px]:text-[21px] sm:text-[28px] font-bold text-[#0F172A] leading-tight tracking-tight print:text-[22px] print:text-[#142B6F]"
+                className="text-[23px] min-[360px]:text-[25px] min-[390px]:text-[27px] sm:text-[32px] font-semibold text-apple-text leading-tight tracking-tight print:text-[22px] print:text-brand-navy"
                 title={fullLegalTitle}
               >
                 {certificateTitle}
@@ -169,11 +169,11 @@ export default function CertificateCard({
                 <button
                   type="button"
                   onClick={onClose}
-                  data-ripple="rgba(215, 33, 52, 0.28)"
-                  className="relative overflow-hidden w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-slate-200/60 hover:bg-slate-300/80 active:bg-slate-300 text-slate-700 hover:text-slate-900 transition-all duration-150 cursor-pointer flex-shrink-0 active:scale-90 outline-none border-0 border-none backdrop-blur-xs select-none [-webkit-tap-highlight-color:transparent]"
-                  title="Thu gọn (Esc)"
+                  className="relative overflow-hidden w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-[#E8E8ED] hover:bg-[#DFDFE4] active:bg-[#D2D2D7] text-[#1D1D1F] transition-all duration-150 cursor-pointer flex-shrink-0 active:scale-90 outline-none border-0 border-none select-none [-webkit-tap-highlight-color:transparent]"
+                  title="Đóng (Esc)"
+                  aria-label="Đóng kết quả"
                 >
-                  <X className="w-5 h-5 sm:w-[22px] sm:h-[22px] text-slate-700 pointer-events-none" strokeWidth={2.3} />
+                  <X className="w-5 h-5 sm:w-[22px] sm:h-[22px] text-[#1D1D1F] pointer-events-none" strokeWidth={2.3} />
                 </button>
               )}
             </div>
@@ -183,10 +183,10 @@ export default function CertificateCard({
         {/* BẢNG THÔNG TIN TOÀN DIỆN - NỀN TRẮNG TINH KHÔI, CUỘN TRONG PHẠM VI DRAWER TRÊN MOBILE, CHUẨN 20PX TRÊN DESKTOP */}
         <div className="bg-white px-4 min-[390px]:px-5 sm:px-10 lg:px-12 pt-3 pb-[calc(2.5rem+env(safe-area-inset-bottom,0px))] sm:py-8 overflow-y-auto overscroll-contain flex-1 touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden print:px-0 print:py-2 print:overflow-visible">
           <div>
-            {/* 1. HỌ TÊN */}
-            <div className="flex items-start gap-2.5 sm:gap-3 py-2 sm:py-3.5">
+            {/* 1. HỌ TÊN: XANH NAVY THƯƠNG HIỆU CHUẨN NCTU (#25359D) */}
+            <div className="flex items-start justify-between sm:justify-start gap-3 sm:gap-3.5 py-2 sm:py-3.5 w-full">
               <span className={labelClass}>Họ tên:</span>
-              <span className="text-[18px] min-[390px]:text-[20px] sm:text-[24px] md:text-[26px] lg:text-[28px] font-bold text-[#142B6F] uppercase tracking-wide break-words min-w-0 flex-1 leading-tight sm:leading-snug">
+              <span className="text-[18px] min-[390px]:text-[20px] sm:text-[24px] md:text-[26px] lg:text-[28px] font-bold text-brand-navy uppercase tracking-wide break-words min-w-0 flex-1 text-right sm:text-left leading-tight sm:leading-snug">
                 {data.ho_ten}
               </span>
             </div>
@@ -202,8 +202,8 @@ export default function CertificateCard({
                 <span className={valueClass}>
                   {data.gioi_tinh || '--'}
                   {data.noi_sinh && (
-                    <span className="ml-2 font-normal text-[#475569] text-[14.5px] sm:text-[20px] font-google-sans">
-                      (Nơi sinh: <strong className="font-semibold text-[#0F172A]">{data.noi_sinh}</strong>)
+                    <span className="ml-2 font-normal text-apple-muted text-[14.5px] sm:text-[20px] font-sans">
+                      (Nơi sinh: <strong className="font-semibold text-apple-text">{data.noi_sinh}</strong>)
                     </span>
                   )}
                 </span>
@@ -250,7 +250,7 @@ export default function CertificateCard({
                       </div>
                       <div className={itemRowClass}>
                         <span className={labelClass}>Trạng thái:</span>
-                        <span className="inline-flex items-center gap-1.5 font-bold text-emerald-600 font-google-sans text-[14px] min-[390px]:text-[15.5px] sm:text-[17px] md:text-[18px] lg:text-[20px] leading-normal break-words min-w-0 flex-1">
+                        <span className="inline-flex items-center justify-end sm:justify-start gap-1.5 font-bold text-emerald-600 font-google-sans text-[14px] min-[390px]:text-[15.5px] sm:text-[17px] md:text-[18px] lg:text-[20px] leading-normal break-words min-w-0 flex-1 text-right sm:text-left">
                           <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600 shrink-0" strokeWidth={2.5} />
                           <span>{data.trang_thai || 'Hợp lệ'}</span>
                         </span>
@@ -312,14 +312,14 @@ export default function CertificateCard({
                     <span className={labelClass}>Điểm lý thuyết:</span>
                     <span className={boldValueClass}>
                       {data.diem_trac_nghiem ?? data.diem_ly_thuyet ?? '--'}
-                      <span className="font-normal text-[#64748B] ml-1.5 text-[14.5px] sm:text-[20px] font-google-sans">/ 10</span>
+                      <span className="font-normal text-apple-muted ml-1.5 text-[14.5px] sm:text-[20px] font-sans">/ 10</span>
                     </span>
                   </div>
                   <div className={itemRowClass}>
                     <span className={labelClass}>Điểm thực hành:</span>
                     <span className={boldValueClass}>
                       {data.diem_thuc_hanh ?? '--'}
-                      <span className="font-normal text-[#64748B] ml-1.5 text-[14.5px] sm:text-[20px] font-google-sans">/ 10</span>
+                      <span className="font-normal text-apple-muted ml-1.5 text-[14.5px] sm:text-[20px] font-sans">/ 10</span>
                     </span>
                   </div>
                 </div>
@@ -341,38 +341,38 @@ export default function CertificateCard({
                     <span className={labelClass}>Điểm quy đổi:</span>
                     <span className={boldValueClass}>
                       {data.diem_tong ?? data.diem_tong_ket ?? '--'}
-                      <span className="font-normal text-[#64748B] ml-1.5 text-[14.5px] sm:text-[20px] font-google-sans">/ 10</span>
+                      <span className="font-normal text-apple-muted ml-1.5 text-[14.5px] sm:text-[20px] font-sans">/ 10</span>
                     </span>
                   </div>
                 </div>
 
                 {/* 4. HÀNG ĐIỂM 4 KỸ NĂNG: TRÊN MOBILE XUỐNG DÒNG (ĐẢM BẢO KHÔNG BỊ TRÀN), TRÊN DESKTOP CÙNG DÒNG 20PX CHUẨN MÀU */}
-                <div className="flex flex-col sm:flex-row sm:items-center items-start gap-2 sm:gap-2.5 lg:gap-3 py-2 sm:py-3.5">
+                <div className="flex flex-col sm:flex-row sm:items-center items-start justify-between sm:justify-start gap-2 sm:gap-3.5 py-2 sm:py-3.5 w-full">
                   <span className={labelClass}>
                     Điểm 4 kỹ năng:
                   </span>
-                  <div className="grid grid-cols-4 gap-1.5 min-[390px]:gap-2 w-full sm:w-auto sm:flex sm:items-center sm:gap-3 lg:gap-3.5 flex-nowrap shrink-0 text-[13px] min-[360px]:text-[14px] min-[390px]:text-[15px] sm:text-[17px] md:text-[18px] lg:text-[20px] font-google-sans leading-normal">
-                    <div className="inline-flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 min-[360px]:px-2 sm:px-3 lg:px-3.5 py-1.5 sm:py-1 rounded-xl bg-slate-50 border border-slate-200/90 shadow-2xs">
-                      <span className="font-normal text-[#475569]">Nghe</span>
-                      <strong className="font-bold text-[#0F172A]">{data.diem_nghe ?? '--'}</strong>
+                  <div className="grid grid-cols-4 gap-1.5 min-[390px]:gap-2 w-full sm:w-auto sm:flex sm:items-center sm:gap-4 lg:gap-5 text-[13px] min-[360px]:text-[14px] min-[390px]:text-[15px] sm:text-[17px] md:text-[18px] lg:text-[20px] font-sans leading-normal">
+                    <div className="inline-flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 min-[360px]:px-2 sm:px-3.5 lg:px-4 py-1.5 sm:py-1 rounded-xl bg-slate-50 border border-slate-200/90 shadow-2xs w-full sm:w-auto shrink-0">
+                      <span className="font-normal text-apple-muted">Nghe</span>
+                      <strong className="font-bold text-apple-text">{data.diem_nghe ?? '--'}</strong>
                     </div>
-                    <div className="inline-flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 min-[360px]:px-2 sm:px-3 lg:px-3.5 py-1.5 sm:py-1 rounded-xl bg-slate-50 border border-slate-200/90 shadow-2xs">
-                      <span className="font-normal text-[#475569]">Đọc</span>
-                      <strong className="font-bold text-[#0F172A]">{data.diem_doc ?? '--'}</strong>
+                    <div className="inline-flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 min-[360px]:px-2 sm:px-3.5 lg:px-4 py-1.5 sm:py-1 rounded-xl bg-slate-50 border border-slate-200/90 shadow-2xs w-full sm:w-auto shrink-0">
+                      <span className="font-normal text-apple-muted">Đọc</span>
+                      <strong className="font-bold text-apple-text">{data.diem_doc ?? '--'}</strong>
                     </div>
-                    <div className="inline-flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 min-[360px]:px-2 sm:px-3 lg:px-3.5 py-1.5 sm:py-1 rounded-xl bg-slate-50 border border-slate-200/90 shadow-2xs">
-                      <span className="font-normal text-[#475569]">Viết</span>
-                      <strong className="font-bold text-[#0F172A]">{data.diem_viet ?? '--'}</strong>
+                    <div className="inline-flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 min-[360px]:px-2 sm:px-3.5 lg:px-4 py-1.5 sm:py-1 rounded-xl bg-slate-50 border border-slate-200/90 shadow-2xs w-full sm:w-auto shrink-0">
+                      <span className="font-normal text-apple-muted">Viết</span>
+                      <strong className="font-bold text-apple-text">{data.diem_viet ?? '--'}</strong>
                     </div>
-                    <div className="inline-flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 min-[360px]:px-2 sm:px-3 lg:px-3.5 py-1.5 sm:py-1 rounded-xl bg-slate-50 border border-slate-200/90 shadow-2xs">
-                      <span className="font-normal text-[#475569]">Nói</span>
-                      <strong className="font-bold text-[#0F172A]">{data.diem_noi ?? '--'}</strong>
+                    <div className="inline-flex items-center justify-center gap-1 sm:gap-1.5 px-1.5 min-[360px]:px-2 sm:px-3.5 lg:px-4 py-1.5 sm:py-1 rounded-xl bg-slate-50 border border-slate-200/90 shadow-2xs w-full sm:w-auto shrink-0">
+                      <span className="font-normal text-apple-muted">Nói</span>
+                      <strong className="font-bold text-apple-text">{data.diem_noi ?? '--'}</strong>
                     </div>
                   </div>
                 </div>
 
                 {/* 5. HÀNG HỘI ĐỒNG THI (Dàn ngang rộng rãi, không bao giờ bị rớt dòng Đợt 4/2024) */}
-                <div className="flex items-start sm:items-center gap-2 sm:gap-2.5 lg:gap-3 py-2 sm:py-3.5">
+                <div className="flex items-start sm:items-center justify-between sm:justify-start gap-2 sm:gap-3.5 py-2 sm:py-3.5 w-full">
                   <span className={labelClass}>Hội đồng thi:</span>
                   <span className={`${valueClass} leading-normal`}>
                     {cleanHoiDongThi(data.hoi_dong_thi)}
@@ -396,7 +396,7 @@ export default function CertificateCard({
                     <span className={labelClass}>Ngày cấp:</span>
                     <span className={valueClass}>
                       <span>{formatDate(data.ngay_cap)}</span>
-                      <span className="font-normal text-[#64748B] ml-2 text-[13.5px] sm:text-[16px] lg:text-[18px]">
+                      <span className="font-normal text-apple-muted ml-2 text-[13.5px] sm:text-[16px] lg:text-[18px]">
                         (Hiệu lực: 02 năm)
                       </span>
                     </span>
@@ -463,10 +463,10 @@ export default function CertificateCard({
                 <QRCodeSVG value={verificationUrl || 'https://tracuu.nctu.edu.vn'} size={44} />
               </div>
               <div className="flex flex-col">
-                <span className="text-[14px] font-semibold text-[#0F172A] leading-tight">
+                <span className="text-[14px] font-semibold text-apple-text leading-tight">
                   Mã QR đối chiếu dữ liệu gốc
                 </span>
-                <span className="text-[12px] text-slate-500 font-normal mt-0.5 leading-tight">
+                <span className="text-[12px] text-apple-muted font-normal mt-0.5 leading-tight">
                   Quét để tra cứu & xác thực hồ sơ gốc trực tuyến
                 </span>
               </div>
@@ -481,10 +481,10 @@ export default function CertificateCard({
               <QRCodeSVG value={verificationUrl || 'https://tracuu.nctu.edu.vn'} size={46} />
             </div>
             <div className="flex flex-col">
-              <span className="text-[15px] lg:text-[16px] text-[#0F172A] font-semibold leading-tight">
+              <span className="text-[15px] lg:text-[16px] text-apple-text font-semibold leading-tight">
                 Mã QR đối chiếu dữ liệu gốc
               </span>
-              <span className="text-[12px] text-[#64748B] font-normal leading-tight mt-0.5">
+              <span className="text-[12px] text-apple-muted font-normal leading-tight mt-0.5">
                 Quét để thẩm tra tính xác thực trực tuyến tại tracuu.nctu.edu.vn
               </span>
             </div>
@@ -494,18 +494,18 @@ export default function CertificateCard({
             <button
               type="button"
               onClick={handlePrint}
-              className="flex-1 sm:flex-initial px-5 sm:px-6 py-2.5 sm:py-3 text-[14px] sm:text-[16px] rounded-xl bg-[#142B6F] hover:bg-[#0E2055] text-white font-semibold transition-all duration-150 cursor-pointer flex items-center justify-center gap-2 shadow-sm hover:shadow active:scale-95 select-none"
+              className="btn-primary-apple group flex-1 sm:flex-initial h-[48px] sm:h-[52px] px-6 sm:px-7 text-[15px] sm:text-[16px] rounded-full font-semibold flex items-center justify-center gap-2.5 select-none"
             >
-              <Printer className="w-4 h-4 stroke-[2.2] shrink-0" />
+              <Printer className="w-4.5 h-4.5 stroke-[2.2] shrink-0 transition-transform duration-200 group-hover:scale-110" />
               <span className="whitespace-nowrap">In bản kết quả</span>
             </button>
 
             <button
               type="button"
               onClick={onReset}
-              className="flex-1 sm:flex-initial px-4 sm:px-5 py-2.5 sm:py-3 text-[14px] sm:text-[16px] rounded-xl border border-slate-300/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 font-semibold transition-all duration-150 cursor-pointer flex items-center justify-center gap-2 active:scale-95 shadow-2xs hover:border-slate-400 select-none"
+              className="flex-1 sm:flex-initial h-[48px] sm:h-[52px] px-5 sm:px-6 text-[15px] sm:text-[16px] rounded-full border border-slate-300/80 hover:border-slate-400 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 font-semibold transition-all duration-150 cursor-pointer flex items-center justify-center gap-2.5 active:scale-95 shadow-sm select-none"
             >
-              <RotateCcw className="w-4 h-4 text-slate-500 stroke-[2.2] shrink-0" />
+              <RotateCcw className="w-4.5 h-4.5 text-slate-500 stroke-[2.2] shrink-0" />
               <span className="whitespace-nowrap">Tra cứu hồ sơ khác</span>
             </button>
           </div>

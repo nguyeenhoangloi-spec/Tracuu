@@ -1,0 +1,603 @@
+/* Degree Lookup System — Tra cứu văn bằng & chứng chỉ.
+   Phiên bản NỀN SÁNG chuẩn thiết kế Apple.
+   Mọi class đều sử dụng design tokens để dễ dàng tùy chỉnh màu sắc toàn hệ thống. */
+
+:root,
+.degree-lookup-root {
+  /* ══ DESIGN TOKENS HỆ THỐNG MÀU SẮC ══ */
+  --degree-lookup-font: var(--font-ui, 'Momo Trust Sans', 'Google Sans', 'Roboto Flex', system-ui, -apple-system, sans-serif);
+  --degree-lookup-black: var(--color-apple-text, #1D1D1F);
+  --degree-lookup-light: #f8fafc;
+  --degree-lookup-white: var(--color-surface-white, #ffffff);
+  --degree-lookup-bg: var(--color-surface-white, #ffffff);
+  --degree-lookup-bg-subtle: var(--color-surface-subtle, #f9fafb);
+  --degree-lookup-text: var(--color-apple-text, #1D1D1F);
+  --degree-lookup-text-muted: var(--color-apple-text, #1D1D1F);
+  --degree-lookup-hover: var(--color-apple-hover, #E8E8ED);
+  --degree-lookup-gray-subtle: var(--color-gray-surface-subtle, #F5F5F7);
+  --degree-lookup-gray-hover: var(--color-gray-surface-hover, #E8E8ED);
+  --degree-lookup-border: var(--color-border-subtle, rgba(0, 0, 0, 0.08));
+  --degree-lookup-accent: var(--color-apple-text, #1D1D1F);
+  --degree-lookup-accent-soft: #38383a;
+  --degree-lookup-red-dnc: var(--color-brand-red, #EC1E24);
+  --degree-lookup-blue: var(--color-apple-blue, #0066CC);
+  --degree-lookup-focus: var(--color-focus-ring, #111827);
+
+  /* Tokens chân trang */
+  --degree-lookup-footer-title: var(--color-footer-title, #000000E0);
+  --degree-lookup-footer-link: var(--color-footer-link, #000000B8);
+  --degree-lookup-footer-copyright: var(--color-footer-copyright, #0000008F);
+
+  /* Tokens hiệu ứng Ripple */
+  --degree-lookup-ripple-brand: var(--color-ripple-brand, rgba(236, 30, 36, 0.20));
+  --degree-lookup-ripple-light: var(--color-ripple-light, rgba(255, 255, 255, 0.35));
+
+  /* Kích thước & bố cục */
+  --degree-lookup-r-pill: 980px;
+  --degree-lookup-container-wide: 77.5rem;
+  --degree-lookup-gutter: clamp(1.25rem, 4vw, 2.5rem);
+  --degree-lookup-t-hero: 64px;
+  --degree-lookup-t-lede: clamp(1.0625rem, 2vw, 1.25rem);
+  --degree-lookup-t-fine: 0.8125rem;
+  --degree-lookup-ease: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.degree-lookup-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--degree-lookup-bg);
+  color: var(--degree-lookup-text);
+  font-family: var(--degree-lookup-font);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.degree-lookup-root ::selection {
+  background: var(--degree-lookup-hover);
+  color: var(--degree-lookup-text);
+}
+
+.degree-lookup-root :focus-visible {
+  outline: 2px solid var(--degree-lookup-focus);
+  outline-offset: 3px;
+}
+
+.degree-lookup-wrap {
+  width: 100%;
+  max-width: var(--degree-lookup-container-wide);
+  margin-inline: auto;
+  padding-inline: var(--degree-lookup-gutter);
+}
+
+/* Navigation ------------------------------------------------------------- */
+
+.degree-lookup-nav {
+  position: sticky;
+  z-index: 50;
+  top: 0;
+  border-bottom: 1px solid var(--degree-lookup-border);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+
+.degree-lookup-nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  height: 3.75rem;
+  max-width: var(--degree-lookup-container-wide);
+  margin-inline: auto;
+  padding-inline: var(--degree-lookup-gutter);
+}
+
+.degree-lookup-nav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--degree-lookup-text);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  text-decoration: none;
+}
+
+.degree-lookup-nav__mark {
+  height: 2.25rem;
+  width: auto;
+  object-fit: contain;
+}
+
+.degree-lookup-nav__links {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.degree-lookup-nav__links a,
+.degree-lookup-nav__links button {
+  padding: 0.35rem 0.65rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: none;
+  color: var(--degree-lookup-text-muted);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 150ms var(--degree-lookup-ease);
+}
+
+.degree-lookup-nav__links a:hover,
+.degree-lookup-nav__links button:hover,
+.degree-lookup-nav__links [aria-current='page'] {
+  color: var(--degree-lookup-text);
+  background: var(--degree-lookup-hover);
+}
+
+.degree-lookup-nav__links [aria-current='page'] {
+  font-weight: 700;
+  color: var(--degree-lookup-focus);
+}
+
+.degree-lookup-nav__links .degree-lookup-nav__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--degree-lookup-r-pill);
+  background: var(--degree-lookup-focus);
+  color: var(--degree-lookup-white) !important;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.degree-lookup-nav__links .degree-lookup-nav__cta:hover {
+  background: #000000;
+  color: var(--degree-lookup-white) !important;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 46rem) {
+  .degree-lookup-nav__links {
+    gap: 0.75rem;
+  }
+
+  .degree-lookup-nav__links li:not(.degree-lookup-nav__keep) {
+    display: none;
+  }
+}
+
+/* Hero ------------------------------------------------------------------- */
+
+.degree-lookup-hero {
+  position: relative;
+  overflow: visible;
+  padding-block: clamp(2rem, 5vh, 4rem) 0;
+  isolation: isolate;
+}
+
+.degree-lookup-hero__copy {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: clamp(0.6rem, 1.5vh, 1.1rem);
+  text-align: center;
+}
+
+.degree-lookup-hero__copy > * {
+  opacity: 0;
+  translate: 0 0.75rem;
+  animation: degree-lookup-rise 900ms var(--degree-lookup-ease) forwards;
+}
+
+.degree-lookup-hero__copy > :nth-child(1) { animation-delay: 60ms; }
+.degree-lookup-hero__copy > :nth-child(2) { animation-delay: 150ms; }
+.degree-lookup-hero__copy > :nth-child(3) { animation-delay: 260ms; }
+.degree-lookup-hero__copy > :nth-child(4) { animation-delay: 370ms; }
+
+@keyframes degree-lookup-rise {
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+/* Logo trường DNC đỏ */
+.degree-lookup-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+}
+
+.degree-lookup-logo__img {
+  height: 3.75rem;
+  width: auto;
+  object-fit: contain;
+}
+
+@media (min-width: 40rem) {
+  .degree-lookup-logo__img {
+    height: 4.5rem;
+  }
+}
+
+.degree-lookup-logo__url {
+  color: var(--degree-lookup-text-muted);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: color 150ms var(--degree-lookup-ease);
+}
+
+.degree-lookup-logo:hover .degree-lookup-logo__url {
+  color: var(--degree-lookup-text);
+  text-decoration: underline;
+}
+
+.degree-lookup-h1 {
+  margin: 0;
+  color: var(--degree-lookup-text);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+@media (min-width: 768px) {
+  .degree-lookup-h1 {
+    font-size: 64px;
+  }
+}
+
+.degree-lookup-lede {
+  max-width: 56rem;
+  margin: 0;
+  color: var(--degree-lookup-text-muted);
+  font-size: var(--degree-lookup-t-lede);
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+}
+
+/* Sân khấu: thanh tra cứu ------------------------------------------------- */
+
+.degree-lookup-hero__stage {
+  display: grid;
+  gap: clamp(1.8rem, 4vh, 2.75rem);
+  justify-items: center;
+  padding-inline: var(--degree-lookup-gutter);
+  padding-block: clamp(1.2rem, 3vh, 2rem) clamp(2rem, 5vh, 4rem);
+  opacity: 0;
+  translate: 0 2rem;
+  animation: degree-lookup-rise 1100ms var(--degree-lookup-ease) 520ms forwards;
+}
+
+@media (max-width: 48rem) {
+  .degree-lookup-hero__stage {
+    padding-inline: 1.125rem;
+  }
+}
+
+.degree-lookup-stage {
+  position: relative;
+  z-index: 30;
+  width: min(58rem, 100%);
+  min-width: 0;
+}
+
+/* Bỏ hoàn toàn hiệu ứng bóng đen / chùm sáng dưới nền theo yêu cầu người dùng */
+.degree-lookup-stage__light,
+.degree-lookup-stage__beam,
+.degree-lookup-stage__flare {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Bốn cam kết dưới thanh tra cứu (Khay trong suốt, 4 card màu trắng không viền) -------- */
+
+.degree-lookup-claims {
+  display: grid;
+  position: relative;
+  z-index: 1;
+  width: min(58rem, 100%);
+  gap: 0.75rem;
+  grid-template-columns: 1fr;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
+  border: none;
+  list-style: none;
+  text-align: left;
+}
+
+.degree-lookup-claims li {
+  display: grid;
+  grid-template-columns: 2.375rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+  padding: 1rem 1.15rem;
+  border: none;
+  border-radius: 1.2rem;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 14px rgba(0, 0, 0, 0.03);
+  color: var(--degree-lookup-text);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  line-height: 1.35;
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.degree-lookup-claims li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05), 0 8px 20px rgba(0, 0, 0, 0.04);
+}
+
+.degree-lookup-claims__icon {
+  display: grid;
+  width: 2.375rem;
+  height: 2.375rem;
+  border: none;
+  border-radius: 0.75rem;
+  background: #f8fafc;
+  box-shadow: none;
+  color: var(--degree-lookup-focus);
+  place-items: center;
+}
+
+.degree-lookup-claims__icon svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  stroke: var(--degree-lookup-focus);
+}
+
+.degree-lookup-claims__copy {
+  display: grid;
+  min-width: 0;
+  gap: 0.15rem;
+}
+
+/* Cỡ chữ to rõ, chuẩn Apple: Tiêu đề 16px, mô tả 14.5px */
+.degree-lookup-claims__lead {
+  display: block;
+  color: var(--degree-lookup-text);
+  font-weight: 600;
+  font-size: 15.5px;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.degree-lookup-claims__sub {
+  font-size: 14px;
+  color: #6E6E73;
+  line-height: 1.4;
+}
+
+@media (min-width: 24rem) and (max-width: 41.999rem) {
+  .degree-lookup-claims {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    padding: 0;
+  }
+
+  .degree-lookup-claims li {
+    grid-template-columns: 1fr;
+    align-content: start;
+    align-items: start;
+    gap: 0.65rem;
+    padding: 1.1rem 1rem;
+    border: none;
+    border-radius: 1.2rem;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 14px rgba(0, 0, 0, 0.03);
+  }
+}
+
+@media (min-width: 42rem) {
+  .degree-lookup-claims {
+    width: min(58rem, 100%);
+    gap: 0.85rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 0;
+  }
+
+  .degree-lookup-claims li {
+    grid-template-columns: 2.375rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.85rem;
+    padding: 1.1rem 1.25rem;
+    border: none;
+    border-radius: 1.25rem;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 14px rgba(0, 0, 0, 0.03);
+  }
+
+  .degree-lookup-claims__icon {
+    width: 2.375rem;
+    height: 2.375rem;
+    border: none;
+    border-radius: 0.75rem;
+    background: #f8fafc;
+    box-shadow: none;
+  }
+
+  .degree-lookup-claims__lead {
+    font-size: 16px;
+  }
+
+  .degree-lookup-claims__sub {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 52rem) {
+  .degree-lookup-claims {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.85rem;
+    padding: 0;
+  }
+
+  .degree-lookup-claims li {
+    grid-template-columns: 1fr;
+    align-content: start;
+    align-items: start;
+    gap: 0.75rem;
+    padding: 1.25rem 1.15rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 14px rgba(0, 0, 0, 0.03);
+  }
+}
+
+/* Footer ----------------------------------------------------------------- */
+
+.degree-lookup-foot {
+  margin-top: auto;
+  padding-block: 3.5rem 2rem;
+  border-top: 1px solid var(--degree-lookup-border);
+  background: var(--degree-lookup-bg-subtle);
+  color: var(--degree-lookup-text-muted);
+  font-size: var(--degree-lookup-t-fine);
+}
+
+.degree-lookup-foot__cols {
+  display: grid;
+  gap: 2.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  padding-bottom: 2.5rem;
+}
+
+.degree-lookup-foot__dept {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.degree-lookup-foot__dept-title {
+  color: var(--degree-lookup-footer-title);
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.degree-lookup-foot__info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.degree-lookup-foot__info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--degree-lookup-footer-link);
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.degree-lookup-foot__info-item svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  color: var(--degree-lookup-footer-link);
+  flex-shrink: 0;
+}
+
+.degree-lookup-foot__info-item a {
+  color: var(--degree-lookup-footer-link);
+  text-decoration: none;
+  transition: color 150ms var(--degree-lookup-ease);
+}
+
+.degree-lookup-foot__info-item a:hover {
+  color: var(--degree-lookup-blue);
+  text-decoration: underline;
+}
+
+.degree-lookup-foot__info-item:hover svg {
+  color: var(--degree-lookup-blue);
+}
+
+.degree-lookup-foot__address {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding-block: 1.25rem;
+  text-align: center;
+  color: var(--degree-lookup-footer-link);
+  font-size: 0.9375rem;
+}
+
+.degree-lookup-foot__address svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  color: var(--degree-lookup-footer-link);
+  flex-shrink: 0;
+}
+
+.degree-lookup-foot__legal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--degree-lookup-border);
+  color: var(--degree-lookup-footer-copyright);
+  font-size: 0.875rem;
+}
+
+.degree-lookup-foot__classic-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--degree-lookup-r-pill);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: var(--degree-lookup-white);
+  color: var(--degree-lookup-text) !important;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 150ms var(--degree-lookup-ease);
+}
+
+.degree-lookup-foot__classic-btn:hover {
+  background: var(--degree-lookup-focus);
+  color: var(--degree-lookup-white) !important;
+  border-color: var(--degree-lookup-focus);
+}
+
+/* Motion preferences ----------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .degree-lookup-hero__copy > *,
+  .degree-lookup-hero__stage,
+  .degree-lookup-stage__light {
+    animation-duration: 1ms;
+    animation-delay: 0ms;
+  }
+
+  .degree-lookup-stage__beam,
+  .degree-lookup-stage__flare {
+    transition: none;
+  }
+}

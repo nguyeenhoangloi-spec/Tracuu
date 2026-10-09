@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { RotateCcw, ArrowDown, X } from 'lucide-react';
+import { RotateCcw, ArrowDown, X, Shield, Zap, Globe, Lock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -12,7 +12,7 @@ import VstepForm from '@/components/VstepForm';
 import CertificateCard from '@/components/CertificateCard';
 import NotFoundResultCard from '@/components/NotFoundResultCard';
 import QuickSampleWidget from '@/components/QuickSampleWidget';
-import './degree-lookup.css';
+import '../degree-lookup.css';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'vanbang' | 'cntt' | 'vstep'>('vanbang');
@@ -40,10 +40,15 @@ export default function Home() {
   const [resetKey, setResetKey] = useState(0);
   const [isResetting, setIsResetting] = useState(false);
   const [isCardExpanded, setIsCardExpanded] = useState(false);
-  const [spotlightCollapseTrigger, setSpotlightCollapseTrigger] = useState(0);
-  const [spotlightState, setSpotlightState] = useState({ isOpen: false, isFormExpanded: false });
 
-  // Kiểm tra thiết bị Mobile
+  // Trạng thái mở của thanh tra cứu Spotlight (đóng/mở & chế độ lưới/form)
+  const [spotlightState, setSpotlightState] = useState<{
+    isOpen: boolean;
+    isFormExpanded: boolean;
+    panelHeight?: number;
+  }>({ isOpen: false, isFormExpanded: false, panelHeight: 0 });
+
+  // Kiểm tra thiết bị Mobile để tối ưu hóa biên độ lướt mượt mà chuẩn Apple
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 640);
@@ -52,7 +57,20 @@ export default function Home() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Hồ sơ mẫu được áp dụng từ Floating Widget
+  // Tọa độ lướt mượt mà chuẩn Apple:
+  // - Khi đóng: nằm chính giữa tự nhiên (0)
+  // - Khi mở danh mục tra cứu (Grid): lướt nhẹ -55px
+  // - Khi mở Form chuẩn: lướt vừa vặn -130px (không chừa sẵn quá cao làm dồn lên trên)
+  // - Khi có báo lỗi khiến form dài thêm: tự động lướt đẩy lên thêm tương ứng để không bị đụng viền
+  const baseFormGlideY = -130;
+  const extraErrorGlideY = spotlightState.isFormExpanded && spotlightState.panelHeight
+    ? Math.max(0, spotlightState.panelHeight - 355)
+    : 0;
+  const heroGlideY = !spotlightState.isOpen
+    ? 0
+    : isMobile
+    ? 0
+    : (spotlightState.isFormExpanded ? (baseFormGlideY - extraErrorGlideY) : -55);
 
   // Hồ sơ mẫu được áp dụng từ Floating Widget
   const [sampleToApply, setSampleToApply] = useState<{
@@ -70,12 +88,29 @@ export default function Home() {
   const switchTimerRef = useRef<NodeJS.Timeout | null>(null);
   const cardSectionRef = useRef<HTMLElement | null>(null);
 
+  // Hiệu ứng Card trung tâm luôn hiển thị sẵn sàng, sắc nét trên màn hình
   const [isCardRevealed, setIsCardRevealed] = useState(true);
 
   useEffect(() => {
     setIsCardRevealed(true);
   }, []);
 
+  // Cuộn xuống Card trung tâm khi nhấn nút
+  const handleScrollToCard = () => {
+    const cardEl = document.getElementById('khung-tra-cuu-card');
+    if (cardEl) {
+      cardEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Trì hoãn nhẹ 140ms để mắt người dùng bắt kịp nhịp camera lướt xuống,
+      // thấy rõ card trồi lên, mở rộng và phát sáng crystal sắc nét
+      setTimeout(() => {
+        setIsCardRevealed(true);
+      }, 140);
+    } else {
+      setIsCardRevealed(true);
+    }
+  };
+
+  // Cuộn mượt mà về đỉnh trang
   const handleScrollToHero = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -95,20 +130,23 @@ export default function Home() {
     }
   };
 
+  // Thời điểm mở modal gần nhất để chống ghost-click trên mobile khi vừa chạm mở
   const overlayOpenedAtRef = useRef<number>(0);
 
+  // Đóng hoàn toàn và reset kết quả tra cứu
   const handleResetResult = () => {
     setIsClosingResult(true);
-    // Giữ nguyên form nhập liệu, không tự động thu lại khi đóng kết quả
     setTimeout(() => {
       setResult(null);
       setIsResultVisible(false);
       setIsClosingResult(false);
       setIsCardExpanded(false);
-    }, 280);
+    }, 320);
   };
 
+  // Xử lý bấm ra ngoài nền (Backdrop click) với chốt chống ghost-click an toàn 100% trên mobile
   const handleBackdropClick = (e: React.MouseEvent) => {
+    // Nếu vừa mới mở modal/drawer trong vòng 500ms, bỏ qua synthetic click từ cử chỉ chạm ban đầu
     if (Date.now() - overlayOpenedAtRef.current < 500) {
       e.preventDefault();
       e.stopPropagation();
@@ -132,6 +170,7 @@ export default function Home() {
     vstep: [],
   });
 
+  // Fetch sample data from NestJS Backend on mount
   useEffect(() => {
     fetch('/api/tracuu/sample-data')
       .then((res) => res.json())
@@ -141,6 +180,7 @@ export default function Home() {
       .catch((err) => console.log('Backend sample fetch:', err));
   }, []);
 
+  // Tự động mở kết quả xác thực khi truy cập qua liên kết xác minh trực tiếp (?verify=...)
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
@@ -150,6 +190,7 @@ export default function Home() {
     const raw = decodeURIComponent(verifyCode).trim();
     const clean = raw.toLowerCase();
 
+    // 1. Tìm trong sampleData
     const vb = sampleData.vanbang?.find(
       (item: any) =>
         item.so_hieu_phoi?.toLowerCase() === clean ||
@@ -180,6 +221,7 @@ export default function Home() {
       return;
     }
 
+    // 2. Hồ sơ chuẩn của Dương Thị Anh Thư
     if (clean.includes('006026') || clean.includes('dnc/cn')) {
       handleLookupSuccess('vanbang', {
         id: 'VB-2026-DNC006026',
@@ -203,6 +245,7 @@ export default function Home() {
     }
   }, [sampleData]);
 
+  // Lắng nghe phím ESC để đóng OmniNotch
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isResultVisible) {
@@ -213,6 +256,7 @@ export default function Home() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isResultVisible]);
 
+  // Khóa cuộn trang nền khi OmniNotch đang mở để tạo cảm giác app native
   useEffect(() => {
     if (result && isResultVisible) {
       document.body.style.overflow = 'hidden';
@@ -244,6 +288,24 @@ export default function Home() {
     vanbang: 0,
     cntt: 1,
     vstep: 2,
+  };
+
+  const HERO_CONFIG: Record<
+    'vanbang' | 'cntt' | 'vstep',
+    { title: string; subtitle: string }
+  > = {
+    vanbang: {
+      title: 'Tra cứu văn bằng tốt nghiệp',
+      subtitle: 'Tra cứu thông tin và xác thực giá trị pháp lý văn bằng tốt nghiệp trực tuyến.',
+    },
+    cntt: {
+      title: 'Tra cứu chứng chỉ CNTT',
+      subtitle: 'Tra cứu thông tin và xác thực giá trị pháp lý chứng chỉ ứng dụng công nghệ thông tin.',
+    },
+    vstep: {
+      title: 'Tra cứu chứng chỉ VSTEP',
+      subtitle: 'Tra cứu thông tin và xác thực giá trị pháp lý chứng chỉ VSTEP trực tuyến.',
+    },
   };
 
   const handleTabChange = (tab: 'vanbang' | 'cntt' | 'vstep') => {
@@ -287,10 +349,10 @@ export default function Home() {
   return (
     <div className="degree-lookup-root min-h-screen print:min-h-0 print:h-auto flex flex-col bg-white print:bg-white text-gray-900 relative">
 
-      {/* 1. NAVBAR CHÍNH THỨC CỦA TRƯỜNG ĐẠI HỌC NAM CẦN THƠ */}
+      {/* 1. NAVBAR */}
       <Navbar activeTab={activeTab} onTabChange={handleTabChange} />
 
-      {/* 2. HERO — SÂN KHẤU TRA CỨU NỀN SÁNG + CHÙM SÁNG HỔ PHÁCH TINH TẾ */}
+      {/* 2. HERO — SÂN KHẤU TRA CỨU NỀN SÁNG + CHÙM SÁNG HỔ PHÁCH + 4 CAM KẾT */}
       <section className="degree-lookup-hero no-print">
         <div className="degree-lookup-hero__copy degree-lookup-wrap">
 
@@ -325,11 +387,42 @@ export default function Home() {
               onReset={handleGlobalReset}
               sampleData={sampleData}
               sampleToApply={sampleToApply}
-              collapseTrigger={spotlightCollapseTrigger}
               onOpenStateChange={setSpotlightState}
               variant="light"
             />
           </div>
+
+          {/* Bốn cam kết hệ thống (chữ đen, không dùng màu xanh) */}
+          <ul className="degree-lookup-claims">
+            <li>
+              <span className="degree-lookup-claims__icon"><Shield size={18} /></span>
+              <span className="degree-lookup-claims__copy">
+                <span className="degree-lookup-claims__lead">Xác thực chính xác</span>
+                <span className="degree-lookup-claims__sub">Dữ liệu từ hệ thống chính thức của trường</span>
+              </span>
+            </li>
+            <li>
+              <span className="degree-lookup-claims__icon"><Zap size={18} /></span>
+              <span className="degree-lookup-claims__copy">
+                <span className="degree-lookup-claims__lead">Tra cứu tức thì</span>
+                <span className="degree-lookup-claims__sub">Kết quả trả về ngay trong tích tắc</span>
+              </span>
+            </li>
+            <li>
+              <span className="degree-lookup-claims__icon"><Globe size={18} /></span>
+              <span className="degree-lookup-claims__copy">
+                <span className="degree-lookup-claims__lead">Truy cập mọi lúc</span>
+                <span className="degree-lookup-claims__sub">Hoạt động 24/7 trên mọi thiết bị</span>
+              </span>
+            </li>
+            <li>
+              <span className="degree-lookup-claims__icon"><Lock size={18} /></span>
+              <span className="degree-lookup-claims__copy">
+                <span className="degree-lookup-claims__lead">Bảo mật cao</span>
+                <span className="degree-lookup-claims__sub">Mã hóa đầu cuối, an toàn tuyệt đối</span>
+              </span>
+            </li>
+          </ul>
         </div>
       </section>
 
@@ -337,35 +430,37 @@ export default function Home() {
       <main
         id="khung-tra-cuu"
         ref={cardSectionRef}
-        className="flex-1 min-h-0 no-print"
+        className="flex-1 bg-white min-h-0 no-print border-0 border-none"
       />
 
-      {/* 4. KẾT QUẢ TRA CỨU: DRAWER TRÊN MOBILE, POPUP OMNINOTCH TRÊN DESKTOP */}
+      {/* 4. KẾT QUẢ TRA CỨU: TRÊN MOBILE LÀ CỬA SỔ DRAWER VUỐT TỪ DƯỚI LÊN, TRÊN PC LÀ POPUP OMNINOTCH */}
       {result && isResultVisible && (
         <div
           id="omninotch-overlay"
-          className={`fixed inset-0 z-[60] flex flex-col justify-end sm:justify-center items-center p-0 sm:p-5 md:p-6 overflow-hidden sm:overflow-y-auto no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-colors duration-300 ${
-            isCardExpanded ? 'bg-slate-950/60 backdrop-blur-[6px]' : 'bg-slate-950/50 backdrop-blur-[6px]'
-          } ${isClosingResult ? 'animate-omninotch-backdrop-exit' : 'animate-omninotch-backdrop-enter'}`}
+          className={`fixed inset-0 z-[60] flex flex-col justify-end sm:justify-center items-center p-0 sm:p-5 md:p-6 overflow-hidden sm:overflow-y-auto no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-colors duration-300 ${isCardExpanded ? 'bg-slate-950/60 backdrop-blur-[6px]' : 'bg-slate-950/50 backdrop-blur-[6px]'
+            } ${isClosingResult ? 'animate-omninotch-backdrop-exit' : 'animate-omninotch-backdrop-enter'
+            }`}
           onClick={(e) => {
             if (e.target === e.currentTarget) {
               handleBackdropClick(e);
             }
           }}
         >
-          {/* Lớp Backdrop bấm ra ngoài để đóng */}
+          {/* LỚP BACKDROP BẤM RA NGOÀI ĐỂ ĐÓNG (BẢO ĐẢM 100% HOẠT ĐỘNG CẢ MOBILE VÀ DESKTOP, CÓ CHỐNG GHOST-CLICK) */}
           <div
             className="absolute inset-0 z-0 cursor-pointer select-none no-print"
             onClick={handleBackdropClick}
             aria-label="Bấm ra ngoài để đóng"
           />
 
+          {/* KHUNG THẺ DRAWER / OMNINOTCH: MOBILE TRƯỢT TỪ ĐÁY LÊN, DESKTOP BUNG MỞ TỪ NEO */}
           <div
             className={`w-full flex justify-center mt-auto sm:my-auto relative z-10 pointer-events-none ${isClosingResult
               ? 'mobile-drawer-exit sm:animate-omninotch-exit'
               : 'mobile-drawer-enter sm:animate-omninotch-enter'
               }`}
           >
+            {/* SHELL PHÓNG TO / THU NHỎ ĐỘC LẬP SIÊU MƯỢT (RỘNG RÃI THOÁNG ĐÃNG CHỨA ĐỦ CỠ CHỮ 20PX) */}
             <div
               className={`w-full relative certificate-expand-shell pointer-events-auto ${result?.notFound
                 ? 'max-w-[540px]'
@@ -402,10 +497,11 @@ export default function Home() {
         activeTab={activeTab}
         sampleData={sampleData}
         onApplySample={handleApplySample}
+        isSpotlightOpen={spotlightState.isOpen}
         isResultOpen={Boolean(result && isResultVisible)}
       />
 
-      {/* 5. FOOTER: THÔNG TIN LIÊN HỆ ĐẦY ĐỦ CỦA TRƯỜNG ĐẠI HỌC NAM CẦN THƠ */}
+      {/* 5. FOOTER */}
       <Footer />
     </div>
   );

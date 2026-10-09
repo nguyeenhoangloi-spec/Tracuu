@@ -146,7 +146,7 @@ export default function SecurityCaptcha({
       {/* Khung chứa Google reCAPTCHA v2 chính thức */}
       {!scriptFailed ? (
         <div
-          className={`w-[304px] h-[78px] overflow-hidden rounded bg-[#FAFAFA] border border-[#D3D3D3]/70 relative ${
+          className={`w-[304px] h-[78px] overflow-hidden rounded relative border-0 ${
             isTestKey ? 'recaptcha-clean-box' : ''
           }`}
         >
@@ -156,7 +156,7 @@ export default function SecurityCaptcha({
             className="w-[304px] h-[78px]"
           >
             {!isScriptReady && (
-              <div className="flex items-center justify-center gap-2 text-xs text-slate-500 h-[78px] bg-[#f9f9f9] border border-[#d3d3d3] rounded">
+              <div className="flex items-center justify-center gap-2 text-xs text-slate-500 h-[78px] bg-transparent border-0 rounded">
                 <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
                 <span>Đang kết nối reCAPTCHA...</span>
               </div>
@@ -167,10 +167,10 @@ export default function SecurityCaptcha({
         /* Dự phòng tương tác chuẩn Apple - Không bao giờ để lại khoảng trống hay lỗi */
         <div
           onClick={handleFallbackClick}
-          className="w-[304px] h-[78px] px-3.5 bg-[#F9F9F9] hover:bg-[#F3F4F6] transition-colors rounded border border-[#D3D3D3] flex items-center justify-between cursor-pointer shadow-xs select-none"
+          className="w-[304px] h-[78px] px-3.5 bg-[#F9F9F9] hover:bg-[#F3F4F6] transition-colors rounded-xl border-0 flex items-center justify-between cursor-pointer shadow-[0_2px_10px_rgba(0,0,0,0.06)] select-none"
         >
           <div className="flex items-center gap-3">
-            <div className="w-7 h-7 rounded border-2 border-slate-400 bg-white flex items-center justify-center transition-all duration-150">
+            <div className="w-7 h-7 rounded border-2 border-[#C1C1C1] bg-white flex items-center justify-center transition-all duration-150">
               {isVerifyingFallback ? (
                 <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
               ) : captchaInput ? (

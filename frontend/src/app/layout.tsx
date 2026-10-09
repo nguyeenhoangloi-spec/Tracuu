@@ -1,17 +1,18 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import './degree-lookup.css';
 import GlobalRipple from '@/components/GlobalRipple';
 
 export const metadata: Metadata = {
-  title: 'HỆ THỐNG TRA CỨU VĂN BẰNG & CHỨNG CHỈ | ĐẠI HỌC NAM CẦN THƠ',
+  title: 'XÁC THỰC VĂN BẰNG & CHỨNG CHỈ | ĐẠI HỌC NAM CẦN THƠ',
   description:
-    'Cổng thông tin xác thực điện tử văn bằng tốt nghiệp, chứng chỉ ứng dụng CNTT và chứng chỉ tiếng Anh VSTEP chính thức của Trường Đại học Nam Cần Thơ (DNC).',
+    'Cổng tra cứu văn bằng điện tử chính thức – Trường Đại học Nam Cần Thơ (DNC).',
   icons: {
     icon: 'https://nctu.edu.vn/images/webp/favicon.webp',
   },
   openGraph: {
-    title: 'Hệ Thống Tra Cứu Văn Bằng & Chứng Chỉ | Trường Đại học Nam Cần Thơ',
-    description: 'Xác thực điện tử văn bằng tốt nghiệp, chứng chỉ CNTT và VSTEP của Đại học Nam Cần Thơ',
+    title: 'Xác Thực Văn Bằng & Chứng Chỉ | Trường Đại học Nam Cần Thơ',
+    description: 'Cổng tra cứu văn bằng điện tử chính thức – Trường Đại học Nam Cần Thơ',
     images: ['https://nctu.edu.vn/videos/thumbnail_khuth_4.jpg'],
   },
 };

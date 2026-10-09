@@ -55,10 +55,18 @@ export default function GlobalRipple() {
         const isRedOrDark =
           !isTargetLight &&
           (target.classList.contains('bg-[#D72134]') ||
+          target.classList.contains('bg-[#EC1E24]') ||
+          target.classList.contains('bg-[#25359D]') ||
+          target.classList.contains('bg-apple-blue') ||
+          target.classList.contains('bg-brand-red') ||
+          target.classList.contains('bg-brand-navy') ||
           target.classList.contains('bg-slate-900') ||
           target.classList.contains('btn-submit') ||
-          target.closest('#hero-stage') !== null ||
+          bg.includes('37, 99, 235') ||
+          bg.includes('236, 30, 36') ||
           bg.includes('215, 33, 52') ||
+          bg.includes('37, 53, 157') ||
+          bg.includes('20, 43, 111') ||
           bg.includes('185, 28, 28') ||
           bg.includes('15, 23, 42') ||
           bg.includes('30, 41, 59') ||
@@ -67,9 +75,9 @@ export default function GlobalRipple() {
           bg.includes('0, 0, 0'));
 
         if (isRedOrDark) {
-          ripple.style.backgroundColor = 'rgba(255, 255, 255, 0.32)';
+          ripple.style.backgroundColor = 'var(--color-ripple-light, rgba(255, 255, 255, 0.35))';
         } else {
-          ripple.style.backgroundColor = 'rgba(215, 33, 52, 0.22)';
+          ripple.style.backgroundColor = 'var(--color-ripple-brand, rgba(236, 30, 36, 0.20))';
         }
       }
 
@@ -122,7 +130,7 @@ export default function GlobalRipple() {
       const calendarBtn = targetEl.closest<HTMLElement>('.calendar-icon-btn');
       if (calendarBtn) {
         const rect = calendarBtn.getBoundingClientRect();
-        triggerRipple(calendarBtn, e.clientX - rect.left, e.clientY - rect.top, 'rgba(215, 33, 52, 0.22)');
+        triggerRipple(calendarBtn, e.clientX - rect.left, e.clientY - rect.top);
         return;
       }
 
@@ -130,7 +138,7 @@ export default function GlobalRipple() {
       if (dateField) {
         const calBtn = dateField.parentElement?.querySelector<HTMLElement>('.calendar-icon-btn');
         if (calBtn) {
-          triggerRipple(calBtn, calBtn.clientWidth / 2, calBtn.clientHeight / 2, 'rgba(215, 33, 52, 0.22)');
+          triggerRipple(calBtn, calBtn.clientWidth / 2, calBtn.clientHeight / 2);
           return;
         }
       }
@@ -140,7 +148,7 @@ export default function GlobalRipple() {
       if (checkboxLabel) {
         const checkboxIcon = checkboxLabel.querySelector<HTMLElement>('.checkbox-ripple-target');
         if (checkboxIcon) {
-          triggerRipple(checkboxIcon, checkboxIcon.clientWidth / 2, checkboxIcon.clientHeight / 2, 'rgba(215, 33, 52, 0.24)');
+          triggerRipple(checkboxIcon, checkboxIcon.clientWidth / 2, checkboxIcon.clientHeight / 2);
           return;
         }
       }
@@ -159,7 +167,7 @@ export default function GlobalRipple() {
             e.clientY >= rect.top && e.clientY <= rect.bottom
               ? e.clientY - rect.top
               : squircle.clientHeight / 2;
-          triggerRipple(squircle, posX, posY, 'rgba(255, 255, 255, 0.38)');
+          triggerRipple(squircle, posX, posY, 'var(--color-ripple-light, rgba(255, 255, 255, 0.35))');
           return;
         }
       }
