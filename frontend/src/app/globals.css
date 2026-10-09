@@ -143,14 +143,29 @@
   --btn-primary-glow-active: rgba(37, 99, 235, 0.28);
   --btn-primary-font-size-mobile: 16.5px;
   --btn-primary-font-size: 18px;
+
+  /* 7. Nhóm Design Tokens cho Form Input, DatePicker & Select Dropdown */
+  --color-input-border: #D2D2D7;          /* Viền mặc định ô nhập liệu 1px */
+  --color-input-border-hover: #86868B;    /* Viền khi rê chuột vào ô nhập liệu */
+  --color-input-focus-border: #2563EB;    /* Viền khi focus/active ô nhập liệu (Apple Blue 2px) */
+  --color-input-focus-ring: rgba(37, 99, 235, 0.12); /* Ánh bóng hào quang khi focus ô nhập liệu */
+  --color-input-focus-label: #2563EB;     /* Màu chữ nhãn nổi khi ô đang được focus */
+
+  --color-datepicker-surface: #ffffff;    /* Nền popover lịch & dropdown */
+  --color-datepicker-radius: 22px;        /* Bo góc khung popover chuẩn Apple (22px) */
+  --color-datepicker-text: #1D1D1F;       /* Màu chữ tiêu đề ngày, tháng, năm, nút Hủy */
+  --color-datepicker-item-hover-bg: rgba(37, 99, 235, 0.08); /* Nền xanh nhẹ khi rê chuột vào ô ngày/tháng/năm (blue-50) */
+  --color-datepicker-item-hover-text: #2563EB; /* Màu chữ xanh khi rê chuột vào ô ngày/tháng/năm */
+  --color-datepicker-selected-bg: #2563EB; /* Nền xanh nút ngày/tháng/năm đang được chọn */
+  --color-datepicker-selected-text: #ffffff; /* Chữ trắng nút đang được chọn */
+  --color-datepicker-today-bg: rgba(37, 99, 235, 0.10); /* Nền xanh nhạt đánh dấu ngày hôm nay */
+  --color-datepicker-today-text: #2563EB; /* Chữ xanh đánh dấu ngày hôm nay */
+  --color-datepicker-muted: #94A3B8;      /* Chữ mờ cho ngày ngoài tháng (slate-400) */
 }
 
-/* ══ PRIMARY BUTTON TOKEN: APPLE HOVER LIFT & TACTILE SPRING PRESS ══ */
 .btn-primary-apple {
   background-color: var(--btn-primary-bg);
   color: #ffffff;
-  font-size: var(--btn-primary-font-size-mobile, 16.5px);
-  font-weight: 700;
   line-height: 1;
   border: 0 !important;
   outline: none !important;
@@ -160,12 +175,6 @@
               background-color 200ms cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
   user-select: none;
-}
-
-@media (min-width: 640px) {
-  .btn-primary-apple {
-    font-size: var(--btn-primary-font-size, 18px);
-  }
 }
 
 .btn-primary-apple:hover {
@@ -768,8 +777,8 @@ input:focus, input:focus-visible, input:active {
   position: relative;
   width: 100%;
   border-radius: 18px;
-  border: 1px solid #D2D2D7;
-  background-color: #ffffff;
+  border: 1px solid var(--color-input-border, #D2D2D7);
+  background-color: var(--color-surface-white, #ffffff);
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
   transition: border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
     background-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
@@ -778,8 +787,8 @@ input:focus, input:focus-visible, input:active {
 }
 
 .lbi-box:hover {
-  border-color: #86868B;
-  background-color: #ffffff;
+  border-color: var(--color-input-border-hover, #86868B);
+  background-color: var(--color-surface-white, #ffffff);
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.06);
 }
 
@@ -792,7 +801,7 @@ input:focus, input:focus-visible, input:active {
   z-index: 60;
 }
 
-/* Khi người dùng nhấn vào ô nhập (Focus / Active): Viền 2px sắc nét đỏ thương hiệu DNC */
+/* Khi người dùng nhấn vào ô nhập (Focus / Active): Viền 2px sắc nét xanh Apple Blue chuẩn Token */
 .lbi[data-focus="true"] .lbi-box,
 .lbi[data-focus="true"] .lbi-box:hover,
 .lbi:focus-within .lbi-box,
@@ -800,26 +809,26 @@ input:focus, input:focus-visible, input:active {
 .lbi-box:focus-within,
 .lbi-box:focus-within:hover {
   background-color: #ffffff !important;
-  border: 2px solid #EC1E24 !important;
-  border-color: #EC1E24 !important;
-  box-shadow: 0 0 0 1px rgba(236, 30, 36, 0.08), 0 3px 12px 0 rgba(236, 30, 36, 0.10) !important;
+  border: 2px solid var(--color-input-focus-border, #2563EB) !important;
+  border-color: var(--color-input-focus-border, #2563EB) !important;
+  box-shadow: 0 0 0 1px var(--color-input-focus-ring, rgba(37, 99, 235, 0.12)), 0 3px 12px 0 var(--color-input-focus-ring, rgba(37, 99, 235, 0.12)) !important;
   outline: none !important;
 }
 
 .lbi[data-focus="true"] .lbi-label,
 .lbi:focus-within .lbi-label {
-  color: #EC1E24 !important;
+  color: var(--color-input-focus-label, #2563EB) !important;
   font-weight: 600;
 }
 
 .lbi[data-filled="true"]:not([data-focus="true"]):not(:focus-within):not([data-error="true"]) .lbi-box {
-  background-color: #ffffff;
-  border: 1px solid #D2D2D7;
+  background-color: var(--color-surface-white, #ffffff);
+  border: 1px solid var(--color-input-border, #D2D2D7);
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
 }
 
 .lbi[data-filled="true"]:not([data-focus="true"]):not(:focus-within):not([data-error="true"]) .lbi-box:hover {
-  border-color: #86868B;
+  border-color: var(--color-input-border-hover, #86868B);
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.06);
 }
 
@@ -1065,7 +1074,7 @@ input:focus, input:focus-visible, input:active {
 
 .lbi[data-focus="true"] .lbi-label,
 .lbi:focus-within .lbi-label {
-  color: #EC1E24 !important;
+  color: #2563EB !important;
   font-weight: 600;
 }
 

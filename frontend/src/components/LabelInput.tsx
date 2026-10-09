@@ -502,9 +502,9 @@ export function LabelInput({
               tabIndex={-1}
               aria-label="Mở lịch chọn ngày"
               style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)' }}
-              className={`calendar-icon-btn absolute right-3.5 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center cursor-pointer overflow-hidden z-10 hover:bg-red-50/60 active:scale-95 transition-all duration-[380ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${datePickerOpen
-                ? "text-[#EC1E24] scale-105 bg-red-50/40"
-                : "text-[#6E6E73] group-hover:text-[#EC1E24] scale-100"
+              className={`calendar-icon-btn absolute right-3.5 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center cursor-pointer overflow-hidden z-10 hover:bg-[#F5F5F7] active:scale-95 transition-all duration-[380ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${datePickerOpen
+                ? "text-[#2563EB] scale-105 bg-blue-50/60"
+                : "text-[#6E6E73] group-hover:text-[#1D1D1F] scale-100"
                 }`}
               onClick={(e) => handleToggleDatePicker(e)}
             >
@@ -532,7 +532,7 @@ export function LabelInput({
                   transition: contentHeight ? "height 320ms cubic-bezier(0.16, 1, 0.3, 1)" : undefined,
                   willChange: "height, transform, opacity",
                 }}
-                className={`bg-white rounded-2xl border-0 border-none shadow-[0_24px_65px_-12px_rgba(15,23,42,0.25),0_10px_24px_-4px_rgba(15,23,42,0.10)] overflow-hidden select-none lbi-popover-shell ${datePickerOpen
+                className={`bg-white rounded-[22px] border-0 border-none shadow-[0_24px_65px_-12px_rgba(15,23,42,0.25),0_10px_24px_-4px_rgba(15,23,42,0.10)] overflow-hidden select-none lbi-popover-shell ${datePickerOpen
                   ? "lbi-popover-open"
                   : "lbi-popover-closed"
                   }`}
@@ -542,6 +542,16 @@ export function LabelInput({
                 onClick={(e) => e.stopPropagation()}
               >
                 <div ref={datePickerContentRef} className="p-4 bg-white">
+                  {/* ══════════════════════════════════════════════════════════════════════════════════
+                      DESIGN TOKENS CHO DATE PICKER (CHUẨN APPLE MINIMALIST SYSTEM)
+                      - Khung ngoài: bg-white rounded-[22px] shadow-2xl (--color-datepicker-radius)
+                      - Chữ chính (Header, Thứ, Ngày thường, Hủy): text-[#1D1D1F] (--color-datepicker-text)
+                      - Rê chuột vào (Hover ngày/tháng/năm): hover:bg-blue-50/80 hover:text-[#2563EB]
+                      - Mục được chọn (Selected): bg-[#2563EB] text-white shadow-blue-500/25
+                      - Mục hôm nay (Today): bg-blue-50/70 text-[#2563EB] font-bold
+                      - Nút Xác nhận (CTA): bg-[#2563EB] hover:bg-[#1D4ED8] text-white
+                      - Nút Hủy: text-[#1D1D1F] hover:bg-[#F5F5F7] font-semibold
+                      ══════════════════════════════════════════════════════════════════════════════════ */}
                   {/* Universal Header: Cố định vị trí, bấm Tháng/Năm để mở và bấm lại chính nó ("nhấn lại tại đây") để thu lại về ngày */}
                   <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
                     <button
@@ -558,7 +568,7 @@ export function LabelInput({
                           }
                         }
                       }}
-                      className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer active:scale-95 text-slate-600 hover:text-[#D72134] hover:bg-red-50 outline-none focus:outline-none ring-0 border-0 border-none select-none"
+                      className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer active:scale-95 text-[#1D1D1F] hover:bg-[#F5F5F7] outline-none focus:outline-none ring-0 border-0 border-none select-none"
                       style={{ outline: "none", border: "none" }}
                       title={viewMode === "years" || viewMode === "months" ? "Năm trước" : "Tháng trước"}
                     >
@@ -570,10 +580,10 @@ export function LabelInput({
                       <button
                         type="button"
                         onClick={() => setViewMode((m) => (m === "months" ? "days" : "months"))}
-                        className={`h-8 w-[98px] rounded-lg text-sm font-bold transition-colors duration-150 flex items-center justify-center gap-1 cursor-pointer active:scale-95 tabular-nums shrink-0 outline-none focus:outline-none ring-0 border-0 border-none select-none ${
+                        className={`h-8 w-[98px] rounded-lg text-sm font-bold transition-colors duration-150 flex items-center justify-center gap-1 cursor-pointer active:scale-95 tabular-nums shrink-0 outline-none focus:outline-none ring-0 border-0 border-none select-none text-[#1D1D1F] ${
                           viewMode === "months"
-                            ? "bg-red-50 text-[#D72134]"
-                            : "text-slate-900 hover:text-[#D72134] hover:bg-red-50"
+                            ? "bg-[#E8E8ED]"
+                            : "hover:bg-[#F5F5F7]"
                         }`}
                         style={{ outline: "none", border: "none" }}
                         title={viewMode === "months" ? "Nhấn lại để thu lại về ngày" : "Chọn tháng"}
@@ -582,8 +592,8 @@ export function LabelInput({
                         <ChevronDown
                           size={14}
                           strokeWidth={2.5}
-                          className={`shrink-0 transition-transform duration-200 ${
-                            viewMode === "months" ? "rotate-180 text-[#D72134]" : "text-slate-500"
+                          className={`shrink-0 transition-transform duration-200 text-[#1D1D1F] ${
+                            viewMode === "months" ? "rotate-180" : "opacity-60"
                           }`}
                         />
                       </button>
@@ -592,10 +602,10 @@ export function LabelInput({
                       <button
                         type="button"
                         onClick={() => setViewMode((m) => (m === "years" ? "days" : "years"))}
-                        className={`h-8 w-[78px] rounded-lg text-sm font-bold transition-colors duration-150 flex items-center justify-center gap-1 cursor-pointer active:scale-95 tabular-nums shrink-0 outline-none focus:outline-none ring-0 border-0 border-none select-none ${
+                        className={`h-8 w-[78px] rounded-lg text-sm font-bold transition-colors duration-150 flex items-center justify-center gap-1 cursor-pointer active:scale-95 tabular-nums shrink-0 outline-none focus:outline-none ring-0 border-0 border-none select-none text-[#1D1D1F] ${
                           viewMode === "years"
-                            ? "bg-red-50 text-[#D72134]"
-                            : "text-slate-900 hover:text-[#D72134] hover:bg-red-50"
+                            ? "bg-[#E8E8ED]"
+                            : "hover:bg-[#F5F5F7]"
                         }`}
                         style={{ outline: "none", border: "none" }}
                         title={viewMode === "years" ? "Nhấn lại để thu lại về ngày" : "Chọn năm"}
@@ -604,8 +614,8 @@ export function LabelInput({
                         <ChevronDown
                           size={14}
                           strokeWidth={2.5}
-                          className={`shrink-0 transition-transform duration-200 ${
-                            viewMode === "years" ? "rotate-180 text-[#D72134]" : "text-slate-500"
+                          className={`shrink-0 transition-transform duration-200 text-[#1D1D1F] ${
+                            viewMode === "years" ? "rotate-180" : "opacity-60"
                           }`}
                         />
                       </button>
@@ -625,7 +635,7 @@ export function LabelInput({
                           }
                         }
                       }}
-                      className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer active:scale-95 text-slate-600 hover:text-[#D72134] hover:bg-red-50 outline-none focus:outline-none ring-0 border-0 border-none select-none"
+                      className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors cursor-pointer active:scale-95 text-[#1D1D1F] hover:bg-[#F5F5F7] outline-none focus:outline-none ring-0 border-0 border-none select-none"
                       style={{ outline: "none", border: "none" }}
                       title={viewMode === "years" || viewMode === "months" ? "Năm sau" : "Tháng sau"}
                     >
@@ -650,10 +660,10 @@ export function LabelInput({
                                 setViewMode("days");
                               }}
                               className={`h-full flex items-center justify-center rounded-xl text-[14px] font-bold transition-all duration-150 cursor-pointer outline-none focus:outline-none ring-0 border-0 border-none select-none ${isCurrentMonth
-                                ? "bg-[#D72134] text-white shadow-md shadow-red-600/30 scale-102"
+                                ? "bg-[#2563EB] text-white shadow-md shadow-blue-500/25 scale-102"
                                 : isRealCurrentMonth
-                                  ? "text-[#D72134] font-bold bg-red-50/70 hover:bg-red-100/70 active:scale-95"
-                                  : "text-slate-800 hover:text-[#D72134] hover:bg-red-50 active:scale-95"
+                                  ? "text-[#2563EB] font-bold bg-blue-50/70 hover:bg-blue-100/70 active:scale-95"
+                                  : "text-[#1D1D1F] hover:bg-blue-50/80 hover:text-[#2563EB] active:scale-95"
                                 }`}
                               style={{ outline: "none", border: "none" }}
                             >
@@ -680,10 +690,10 @@ export function LabelInput({
                                 setViewMode("days");
                               }}
                               className={`py-2.5 rounded-xl text-[13px] font-bold transition-all duration-150 cursor-pointer outline-none focus:outline-none ring-0 border-0 border-none select-none ${isCurrentYear
-                                ? "bg-[#D72134] text-white shadow-md shadow-red-600/30 scale-102"
+                                ? "bg-[#2563EB] text-white shadow-md shadow-blue-500/25 scale-102"
                                 : isRealCurrentYear
-                                  ? "text-[#D72134] font-bold bg-red-50/70 hover:bg-red-100/70 active:scale-95"
-                                  : "text-slate-800 hover:text-[#D72134] hover:bg-red-50 active:scale-95"
+                                  ? "text-[#2563EB] font-bold bg-blue-50/70 hover:bg-blue-100/70 active:scale-95"
+                                  : "text-[#1D1D1F] hover:bg-blue-50/80 hover:text-[#2563EB] active:scale-95"
                                 }`}
                               style={{ outline: "none", border: "none" }}
                             >
@@ -698,10 +708,10 @@ export function LabelInput({
 
                       {/* Days of week header */}
                       <div className="grid grid-cols-7 gap-1 text-center mb-1.5 pb-1 border-b border-slate-100">
-                        {["T2", "T3", "T4", "T5", "T6", "T7", "CN"].map((dayName, idx) => (
+                        {["T2", "T3", "T4", "T5", "T6", "T7", "CN"].map((dayName) => (
                           <div
                             key={dayName}
-                            className={`text-[11.5px] font-bold py-0.5 ${idx >= 5 ? "text-red-500" : "text-slate-500"}`}
+                            className="text-[11.5px] font-bold py-0.5 text-[#1D1D1F]"
                           >
                             {dayName}
                           </div>
@@ -769,12 +779,12 @@ export function LabelInput({
                                   setFocus(false);
                                 }}
                                 className={`w-9 h-9 rounded-xl text-[13px] flex items-center justify-center transition-all duration-150 cursor-pointer relative overflow-hidden select-none outline-none focus:outline-none ring-0 border-0 border-none ${isSelected
-                                  ? "bg-[#D72134] text-white font-bold shadow-md shadow-red-600/30 scale-105"
+                                  ? "bg-[#2563EB] text-white font-bold shadow-md shadow-blue-500/25 scale-105"
                                   : isToday
-                                    ? "text-[#D72134] font-bold bg-red-50/50 hover:bg-red-100/70 hover:scale-105 active:scale-95"
+                                    ? "text-[#2563EB] font-bold bg-blue-50/70 hover:bg-blue-100/70 hover:scale-105 active:scale-95"
                                     : cell.isCurrent
-                                      ? "text-slate-800 hover:bg-red-50 hover:text-[#D72134] font-semibold active:scale-95 hover:scale-105"
-                                      : "text-slate-400 font-medium hover:bg-red-50 hover:text-[#D72134] hover:font-bold hover:scale-105 active:scale-95"
+                                      ? "text-[#1D1D1F] hover:bg-blue-50/80 hover:text-[#2563EB] font-semibold active:scale-95 hover:scale-105"
+                                      : "text-slate-400 font-medium hover:bg-blue-50/60 hover:text-[#2563EB] hover:font-bold hover:scale-105 active:scale-95"
                                   }`}
                               >
                                 {cell.day}
@@ -794,7 +804,7 @@ export function LabelInput({
                         setDatePickerOpen(false);
                         setFocus(false);
                       }}
-                      className="relative overflow-hidden px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-500 hover:text-[#D72134] hover:bg-red-50/70 transition-all duration-150 cursor-pointer active:scale-95 border-0 border-none outline-none select-none"
+                      className="relative overflow-hidden px-3 py-1.5 rounded-lg text-xs font-semibold text-[#1D1D1F] hover:bg-[#F5F5F7] transition-all duration-150 cursor-pointer active:scale-95 border-0 border-none outline-none select-none"
                     >
                       Hủy
                     </button>
@@ -815,7 +825,7 @@ export function LabelInput({
                           setViewMonth(today.getMonth());
                           setYearScrollTrigger((c) => c + 1);
                         }}
-                        className="relative overflow-hidden px-3 py-1.5 rounded-lg text-xs font-semibold text-[#D72134] hover:text-[#b71526] hover:bg-red-50/80 transition-all duration-150 cursor-pointer active:scale-95 border-0 border-none outline-none select-none"
+                        className="relative overflow-hidden px-3 py-1.5 rounded-lg text-xs font-semibold text-[#2563EB] hover:text-[#1D4ED8] hover:bg-blue-50/70 transition-all duration-150 cursor-pointer active:scale-95 border-0 border-none outline-none select-none"
                       >
                         Hôm nay
                       </button>
@@ -835,7 +845,7 @@ export function LabelInput({
                           setDatePickerOpen(false);
                           setFocus(false);
                         }}
-                        className="relative overflow-hidden px-4 py-1.5 rounded-xl text-xs font-bold text-white bg-[#D72134] hover:bg-[#b81728] shadow-sm shadow-red-600/30 transition-all duration-150 cursor-pointer active:scale-95 border-0 border-none outline-none select-none"
+                        className="relative overflow-hidden px-4 py-1.5 rounded-xl text-xs font-bold text-white bg-[#2563EB] hover:bg-[#1D4ED8] shadow-sm shadow-blue-500/25 transition-all duration-150 cursor-pointer active:scale-95 border-0 border-none outline-none select-none"
                       >
                         Xác nhận
                       </button>
@@ -872,7 +882,7 @@ export function LabelInput({
             {/* Sleek Chevron Arrow (No background box) */}
             <div
               className={`absolute right-5 top-1/2 -translate-y-1/2 transition-[transform,color] duration-[380ms] ease-[cubic-bezier(0.32,0.72,0,1)] pointer-events-none ${dropdownOpen
-                ? "text-[#EC1E24] rotate-180 scale-110"
+                ? "text-[#2563EB] rotate-180 scale-110"
                 : "text-[#6E6E73] group-hover:text-[#1D1D1F] rotate-0 scale-100"
                 }`}
             >
@@ -897,7 +907,7 @@ export function LabelInput({
                   zIndex: 99999,
                   backgroundColor: "#ffffff",
                 }}
-                className={`bg-white rounded-2xl border-0 border-none shadow-[0_24px_65px_-12px_rgba(15,23,42,0.25),0_10px_24px_-4px_rgba(15,23,42,0.10)] overflow-hidden p-2 select-none lbi-popover-shell ${dropdownOpen
+                className={`bg-white rounded-[22px] border-0 border-none shadow-[0_24px_65px_-12px_rgba(15,23,42,0.25),0_10px_24px_-4px_rgba(15,23,42,0.10)] overflow-hidden p-2 select-none lbi-popover-shell ${dropdownOpen
                   ? "lbi-popover-open"
                   : "lbi-popover-closed"
                   }`}
@@ -906,6 +916,13 @@ export function LabelInput({
                 onTouchStart={(e) => e.stopPropagation()}
                 onClick={(e) => e.stopPropagation()}
               >
+                {/* ══════════════════════════════════════════════════════════════════════════════════
+                    DESIGN TOKENS CHO SELECT DROPDOWN (CHUẨN APPLE MINIMALIST SYSTEM)
+                    - Khung ngoài: bg-white rounded-[22px] p-2
+                    - Mục thường: text-[#1D1D1F] hover:bg-[#F5F5F7] font-medium
+                    - Mục được chọn: bg-blue-50 text-[#2563EB] font-semibold + Check xanh #2563EB
+                    - Mũi tên Chevron: hover #1D1D1F, khi mở text-[#2563EB] xoay 180deg
+                    ══════════════════════════════════════════════════════════════════════════════════ */}
                 <div className="space-y-1 max-h-72 overflow-y-auto pr-1 custom-scrollbar">
                   {options!.map((opt) => {
                     const isSelected = String(opt.value) === String(value);
@@ -925,19 +942,19 @@ export function LabelInput({
                           setFocus(false);
                         }}
                         className={`group/item relative overflow-hidden flex items-center justify-between px-3.5 py-2.5 rounded-xl cursor-pointer transition-all duration-150 select-none border-0 border-none outline-none ${isSelected
-                          ? "bg-red-50 text-[#D72134] font-semibold"
-                          : "text-slate-800 hover:bg-red-50 hover:text-[#D72134] font-medium active:scale-[0.99]"
+                          ? "bg-blue-50 text-[#2563EB] font-semibold"
+                          : "text-[#1D1D1F] hover:bg-[#F5F5F7] font-medium active:scale-[0.99]"
                           }`}
                       >
                         <span
-                          className={`text-[15px] truncate transition-colors ${isSelected ? "text-[#D72134] font-semibold" : "text-slate-800 group-hover/item:text-[#D72134]"
+                          className={`text-[15px] truncate transition-colors ${isSelected ? "text-[#2563EB] font-semibold" : "text-[#1D1D1F]"
                             }`}
                         >
                           {opt.label}
                         </span>
 
                         {isSelected && (
-                          <Check className="w-4 h-4 text-[#D72134] stroke-[2.5] shrink-0 ml-2.5" />
+                          <Check className="w-4 h-4 text-[#2563EB] stroke-[2.5] shrink-0 ml-2.5" />
                         )}
                       </div>
                     );

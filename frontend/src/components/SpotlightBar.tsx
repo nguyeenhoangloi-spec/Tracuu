@@ -330,13 +330,22 @@ export default function SpotlightBar({
   const [formHeight, setFormHeight] = useState<number>(390);
   const bodyContentRef = useRef<HTMLDivElement | null>(null);
 
+  const isFocusedRef = useRef(isFocused);
+  const isFormExpandedRef = useRef(isFormExpanded);
+  isFocusedRef.current = isFocused;
+  isFormExpandedRef.current = isFormExpanded;
+
   // Hàm cập nhật trạng thái mở/đóng đồng bộ tức thì 0ms sang component cha (page.tsx)
   const updateOpenState = (newFocused: boolean, newFormExpanded: boolean) => {
     // Chống kích hoạt dồn dập nhiều lần (focus + click + bubble): chỉ cập nhật khi trạng thái thực sự thay đổi
-    if (newFocused === isFocused && newFormExpanded === isFormExpanded) {
+    if (newFocused === isFocusedRef.current && newFormExpanded === isFormExpandedRef.current) {
       return;
     }
-    if (newFormExpanded !== isFormExpanded) {
+    const prevFormExpanded = isFormExpandedRef.current;
+    isFocusedRef.current = newFocused;
+    isFormExpandedRef.current = newFormExpanded;
+
+    if (newFormExpanded !== prevFormExpanded) {
       // Chỉ kích hoạt hiệu ứng trượt đổi view trên Desktop (nơi Form thay thế Lưới trong cùng khung)
       // Trên Mobile, Form hiển thị ở Bottom Sheet độc lập nên khung bự ở nền sau đứng yên 100%, không bị giật nảy y: 12px
       if (!isMobile) {
@@ -348,6 +357,7 @@ export default function SpotlightBar({
     setIsFormExpanded(newFormExpanded);
     if (!newFocused && !newFormExpanded) {
       setIsSwitchingView(false);
+      inputRef.current?.blur();
     }
     const currentH = (newFocused || newFormExpanded)
       ? (newFormExpanded ? formHeight : gridHeight)
@@ -406,7 +416,9 @@ export default function SpotlightBar({
 
   // Đóng cửa sổ khi click ra ngoài container (Bảo vệ không đóng khi click chọn ngày DatePicker, reCAPTCHA hoặc thẻ kết quả tra cứu)
   useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
+    if (!isWindowOpen) return;
+
+    const handleClickOutside = (e: Event) => {
       const target = e.target as HTMLElement | null;
       if (!target) return;
 
@@ -450,9 +462,13 @@ export default function SpotlightBar({
         updateOpenState(false, false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    document.addEventListener('pointerdown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside, { passive: true });
+    return () => {
+      document.removeEventListener('pointerdown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [isWindowOpen]);
 
   // Lắng nghe khi người dùng bấm chọn 1 hồ sơ mẫu từ QuickSampleWidget
   useEffect(() => {
@@ -553,7 +569,7 @@ export default function SpotlightBar({
         gridRef.current.offsetHeight ||
         gridRef.current.getBoundingClientRect().height
       );
-      if (h >= 140) setGridHeight(h);
+      if (h >= 75) setGridHeight(h);
     };
     measure();
 
@@ -562,7 +578,7 @@ export default function SpotlightBar({
         const h = Math.round(
           entry.borderBoxSize?.[0]?.blockSize ?? entry.target.getBoundingClientRect().height
         );
-        if (h >= 140) setGridHeight(h);
+        if (h >= 75) setGridHeight(h);
       }
     });
     ro.observe(gridRef.current);
@@ -573,14 +589,14 @@ export default function SpotlightBar({
   useEffect(() => {
     if (!formRef.current) return;
     const initialH = Math.round(formRef.current.getBoundingClientRect().height);
-    if (initialH >= 140) setFormHeight(initialH);
+    if (initialH >= 75) setFormHeight(initialH);
 
     const ro = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const h = Math.round(
           entry.borderBoxSize?.[0]?.blockSize ?? entry.target.getBoundingClientRect().height
         );
-        if (h >= 140) {
+        if (h >= 75) {
           setFormHeight(h);
         }
       }
@@ -787,11 +803,10 @@ export default function SpotlightBar({
       {/* ========================================================================= */}
       <div
         id="floodlight-panel"
-        className={`w-full bg-white border border-slate-200/90 overflow-hidden transition-[box-shadow,border-color,border-radius] duration-500 ease-out ${
-          isWindowOpen
-            ? 'rounded-[26px] sm:rounded-[32px] shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12),0_4px_16px_rgba(0,0,0,0.04)]'
-            : 'rounded-[30px] sm:rounded-[38px] hover:border-slate-300 shadow-[0_4px_20px_rgba(0,0,0,0.05)]'
-        }`}
+        className={`w-full bg-white border border-[#D2D2D7] overflow-hidden transition-[box-shadow,border-color,border-radius] duration-500 ease-out ${isWindowOpen
+            ? 'rounded-[26px] sm:rounded-[32px] border-[#D2D2D7] shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12),0_4px_16px_rgba(0,0,0,0.04)]'
+            : 'rounded-[30px] sm:rounded-[38px] shadow-[0_4px_20px_rgba(0,0,0,0.05)]'
+          }`}
       >
         {/* HÀNG TRÊN CÙNG: INPUT TÌM KIẾM DÍNH LIỀN TRONG CÙNG KHUNG */}
         <div
@@ -905,11 +920,11 @@ export default function SpotlightBar({
                     handleDirectSearch();
                   }}
                   data-ripple="rgba(255, 255, 255, 0.35)"
-                  className="btn-primary-apple group inline-flex items-center gap-1.5 sm:gap-2 px-5 sm:px-7 h-[44px] sm:h-[48px] rounded-full text-[14px] sm:text-[16px] font-semibold shrink-0 select-none"
+                  className="btn-primary-apple group inline-flex items-center gap-1 sm:gap-2 px-3.5 min-[380px]:px-4.5 sm:px-6 h-[38px] sm:h-[48px] rounded-full text-[14px] sm:text-[16px] font-semibold shrink-0 select-none shadow-sm"
                   title="Tra cứu ngay"
                 >
                   <span>Tra cứu</span>
-                  <CornerDownLeft className="w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 hidden min-[400px]:inline text-white/90 transition-transform duration-200 group-hover:translate-x-0.5" />
+                  <CornerDownLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 hidden min-[420px]:inline text-white/90 transition-transform duration-200 group-hover:translate-x-0.5" />
                 </motion.button>
               ) : (
                 <motion.button
@@ -979,423 +994,419 @@ export default function SpotlightBar({
             >
               <div ref={bodyContentRef} className="w-full">
                 <AnimatePresence mode="wait" custom={slideDirection} initial={false}>
-                {(!isFormExpanded || isMobile) ? (
-                  /* ===================================================================== */
-                  /* CHẾ ĐỘ 1: DANH SÁCH HÀNG & CHIPS CHUẨN FLOODLIGHT (IMAGE 2)           */
-                  /* ===================================================================== */
-                  <motion.div
-                    key="spotlight-list-view"
-                    ref={gridRef}
-                    custom={slideDirection}
-                    variants={viewVariants}
-                    initial={isSwitchingView && !isMobile ? "enter" : false}
-                    animate="center"
-                    exit="exit"
-                    style={{ willChange: 'transform, opacity' }}
-                    className="w-full"
-                  >
-                          {/* THANH CHIPS LỌC DANH MỤC: PLATTER NỀN #E8E8ED CHUẨN APPLE (MOBILE 44PX, DESKTOP 56PX) */}
-                          <div className="flex items-center justify-between gap-2.5 sm:gap-4 px-3 sm:px-5 py-2 sm:py-3.5 border-b border-slate-100 bg-white">
-                            {/* Apple TabNav Platter: Chuẩn Apple 44px trên Mobile (p-4px), 56px trên Desktop (p-6px) */}
-                            <div
-                              ref={platterRef}
-                              className="relative h-[44px] sm:h-[56px] bg-[#E8E8ED] p-[4px] sm:p-[6px] rounded-full flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar flex-1 min-w-0 scroll-smooth"
-                            >
-                              {/* VIÊN PILL DUY NHẤT LƯỚT LIÊN TỤC CHUẨN APPLE MAC (TRƯỢT THUẦN TÚY LEFT & WIDTH 380MS) */}
-                              <div
-                                className="absolute top-[4px] sm:top-[6px] bottom-[4px] sm:bottom-[6px] bg-white rounded-full pointer-events-none shadow-[0_1.5px_4px_rgba(0,0,0,0.12),0_0.5px_1.5px_rgba(0,0,0,0.06)]"
-                                style={{
-                                  left: `${tabIndicator.left}px`,
-                                  width: `${tabIndicator.width}px`,
-                                  opacity: tabIndicator.ready ? 1 : 0,
-                                  zIndex: 1,
-                                  transition: 'left 380ms cubic-bezier(0.16, 1, 0.3, 1), width 380ms cubic-bezier(0.16, 1, 0.3, 1)',
-                                  willChange: 'left, width',
-                                }}
-                              />
+                  {(!isFormExpanded || isMobile) ? (
+                    /* ===================================================================== */
+                    /* CHẾ ĐỘ 1: DANH SÁCH HÀNG & CHIPS CHUẨN FLOODLIGHT (IMAGE 2)           */
+                    /* ===================================================================== */
+                    <motion.div
+                      key="spotlight-list-view"
+                      ref={gridRef}
+                      custom={slideDirection}
+                      variants={viewVariants}
+                      initial={isSwitchingView && !isMobile ? "enter" : false}
+                      animate="center"
+                      exit="exit"
+                      style={{ willChange: 'transform, opacity' }}
+                      className="w-full"
+                    >
+                      {/* THANH CHIPS LỌC DANH MỤC: PLATTER NỀN #E8E8ED CHUẨN APPLE (MOBILE 44PX, DESKTOP 56PX) */}
+                      <div className="flex items-center justify-between gap-2.5 sm:gap-4 px-3 sm:px-5 py-2 sm:py-3.5 border-b border-slate-100 bg-white">
+                        {/* Apple TabNav Platter: Chuẩn Apple 44px trên Mobile (p-4px), 56px trên Desktop (p-6px) */}
+                        <div
+                          ref={platterRef}
+                          className="relative h-[44px] sm:h-[56px] bg-[#E8E8ED] p-[4px] sm:p-[6px] rounded-full flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar flex-1 min-w-0 scroll-smooth"
+                        >
+                          {/* VIÊN PILL DUY NHẤT LƯỚT LIÊN TỤC CHUẨN APPLE MAC (TRƯỢT THUẦN TÚY LEFT & WIDTH 380MS) */}
+                          <div
+                            className="absolute top-[4px] sm:top-[6px] bottom-[4px] sm:bottom-[6px] bg-white rounded-full pointer-events-none shadow-[0_1.5px_4px_rgba(0,0,0,0.12),0_0.5px_1.5px_rgba(0,0,0,0.06)]"
+                            style={{
+                              left: `${tabIndicator.left}px`,
+                              width: `${tabIndicator.width}px`,
+                              opacity: tabIndicator.ready ? 1 : 0,
+                              zIndex: 1,
+                              transition: 'left 380ms cubic-bezier(0.16, 1, 0.3, 1), width 380ms cubic-bezier(0.16, 1, 0.3, 1)',
+                              willChange: 'left, width',
+                            }}
+                          />
 
-                              {FILTER_CHIPS.map((chip) => {
-                                const isCurrent = categoryFilter === chip.id;
-                                return (
-                                  <button
-                                    key={chip.id}
-                                    ref={(el) => {
-                                      chipRefs.current[chip.id] = el;
-                                    }}
-                                    type="button"
-                                    onClick={(e) => {
-                                      setCategoryFilter(chip.id);
-                                      setSelectedIndex(0);
-                                      // Chỉ cuộn trên màn hình nhỏ di động nếu tab bị khuất mép ngoài vùng nhìn thấy
-                                      if (isMobile) {
-                                        const platter = platterRef.current;
-                                        if (platter) {
-                                          if (chip.id === 'all') {
-                                            platter.scrollTo({ left: 0, behavior: 'smooth' });
-                                          } else {
-                                            const btnRect = e.currentTarget.getBoundingClientRect();
-                                            const pRect = platter.getBoundingClientRect();
-                                            if (btnRect.left < pRect.left || btnRect.right > pRect.right) {
-                                              e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
-                                            }
-                                          }
+                          {FILTER_CHIPS.map((chip) => {
+                            const isCurrent = categoryFilter === chip.id;
+                            return (
+                              <button
+                                key={chip.id}
+                                ref={(el) => {
+                                  chipRefs.current[chip.id] = el;
+                                }}
+                                type="button"
+                                onClick={(e) => {
+                                  setCategoryFilter(chip.id);
+                                  setSelectedIndex(0);
+                                  // Chỉ cuộn trên màn hình nhỏ di động nếu tab bị khuất mép ngoài vùng nhìn thấy
+                                  if (isMobile) {
+                                    const platter = platterRef.current;
+                                    if (platter) {
+                                      if (chip.id === 'all') {
+                                        platter.scrollTo({ left: 0, behavior: 'smooth' });
+                                      } else {
+                                        const btnRect = e.currentTarget.getBoundingClientRect();
+                                        const pRect = platter.getBoundingClientRect();
+                                        if (btnRect.left < pRect.left || btnRect.right > pRect.right) {
+                                          e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
                                         }
                                       }
-                                    }}
-                                    className={`relative z-10 h-full inline-flex items-center justify-center px-3 sm:px-2.5 md:px-3 rounded-full text-[14px] sm:text-[17px] whitespace-nowrap shrink-0 sm:flex-1 transition-colors duration-250 cursor-pointer select-none outline-none focus:outline-none [-webkit-tap-highlight-color:transparent] ${
-                                      isCurrent
-                                        ? 'text-[#1D1D1F] font-semibold'
-                                        : 'text-[#1D1D1F] hover:text-black font-medium'
-                                    }`}
+                                    }
+                                  }
+                                }}
+                                className={`relative z-10 h-full inline-flex items-center justify-center px-3 sm:px-2.5 md:px-3 rounded-full text-[14px] sm:text-[17px] whitespace-nowrap shrink-0 sm:flex-1 transition-colors duration-250 cursor-pointer select-none outline-none focus:outline-none [-webkit-tap-highlight-color:transparent] ${isCurrent
+                                    ? 'text-[#000000] font-semibold'
+                                    : 'text-[#1D1D1F] hover:text-black font-medium'
+                                  }`}
+                              >
+                                <span className="relative z-10 whitespace-nowrap">{chip.label}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Action: View switcher (List / Grid) */}
+                        <div className="flex items-center shrink-0 pl-2 sm:pl-3.5 border-l border-[#E8E8ED]">
+                          <button
+                            type="button"
+                            onClick={() => setDisplayMode(displayMode === 'list' ? 'grid' : 'list')}
+                            className="w-[44px] h-[44px] sm:w-11 sm:h-11 rounded-xl flex items-center justify-center bg-transparent hover:bg-[#F5F5F7] active:bg-[#E8E8ED] text-[#6E6E73] hover:text-[#1D1D1F] active:scale-95 transition-colors duration-150 cursor-pointer select-none outline-none focus:outline-none [-webkit-tap-highlight-color:transparent] relative overflow-hidden"
+                            title={displayMode === 'list' ? 'Chuyển sang dạng Lưới icon' : 'Chuyển sang dạng Danh sách'}
+                            aria-label={displayMode === 'list' ? 'Chuyển sang dạng Lưới icon' : 'Chuyển sang dạng Danh sách'}
+                          >
+                            <AnimatePresence mode="wait" initial={false}>
+                              {displayMode === 'list' ? (
+                                <motion.div
+                                  key="switcher-to-grid"
+                                  initial={{ opacity: 0, rotate: -25, scale: 0.8 }}
+                                  animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                                  exit={{ opacity: 0, rotate: 25, scale: 0.8 }}
+                                  transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                                  className="flex items-center justify-center"
+                                >
+                                  <LayoutGrid className="w-5 h-5 stroke-[2]" />
+                                </motion.div>
+                              ) : (
+                                <motion.div
+                                  key="switcher-to-list"
+                                  initial={{ opacity: 0, rotate: 25, scale: 0.8 }}
+                                  animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                                  exit={{ opacity: 0, rotate: -25, scale: 0.8 }}
+                                  transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                                  className="flex items-center justify-center"
+                                >
+                                  <List className="w-5 h-5 stroke-[2]" />
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* NỘI DUNG VIEW: CHUYỂN ĐỔI SIÊU MƯỢT GIỮA DANH SÁCH HÀNG VÀ LƯỚI ICON */}
+                      <AnimatePresence mode="wait" initial={false}>
+                        {displayMode === 'list' ? (
+                          /* DANH SÁCH HÀNG CHUẨN FLOODLIGHT - CUỘN MƯỢT MÀ TÀNG HÌNH (NO-SCROLLBAR), TRẦN TỐI ĐA MAX-H TỰ CO GIÃN THEO NỘI DUNG */
+                          <motion.div
+                            key="view-mode-list"
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -6 }}
+                            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                            className="p-2 sm:p-2.5 pb-3.5 sm:pb-3.5 max-h-[255px] min-[420px]:max-h-[270px] sm:max-h-[310px] overflow-y-auto overscroll-contain touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                          >
+                            <div className="relative flex flex-col gap-1 sm:gap-1.5 w-full">
+                              <AnimatePresence mode="popLayout" initial={false}>
+                                {filteredDegrees.length === 0 ? (
+                                  <motion.div
+                                    key="empty-state"
+                                    initial={{ opacity: 0, y: 6 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                                    className="py-8 text-center text-[#6E6E73] text-sm"
                                   >
-                                    <span className="relative z-10 whitespace-nowrap">{chip.label}</span>
-                                  </button>
+                                    <p className="font-medium">Không tìm thấy loại văn bằng phù hợp với &quot;{query}&quot;</p>
+                                    <p className="text-xs text-[#86868B] mt-1">Vui lòng thử tìm từ khóa khác hoặc bấm chọn Tất cả</p>
+                                  </motion.div>
+                                ) : (
+                                  filteredDegrees.map((deg, idx) => {
+                                    const IconComponent = deg.icon;
+                                    const isSelected = idx === selectedIndex;
+                                    return (
+                                      <motion.div
+                                        layout
+                                        key={deg.id}
+                                        initial={{ opacity: 0, scale: 0.96, y: 8 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{
+                                          opacity: 0,
+                                          scale: 0.96,
+                                          y: -6,
+                                          transition: { duration: 0.20, ease: [0.16, 1, 0.3, 1] },
+                                        }}
+                                        transition={{
+                                          layout: { duration: 0.38, ease: [0.16, 1, 0.3, 1] },
+                                          opacity: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
+                                          scale: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
+                                          y: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
+                                        }}
+                                        role="option"
+                                        aria-selected={isSelected}
+                                        onClick={() => handleSelectDegreeType(deg)}
+                                        onMouseEnter={() => setSelectedIndex(idx)}
+                                        className={`group w-full flex items-center gap-2.5 sm:gap-3.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl cursor-pointer transition-colors duration-150 text-left select-none will-change-[transform,opacity] ${isSelected
+                                            ? 'bg-[#E8E8ED] text-[#1D1D1F] shadow-2xs'
+                                            : 'hover:bg-[#E8E8ED] text-[#1D1D1F]'
+                                          }`}
+                                      >
+                                        {/* Squircle Icon: Kích thước 38px chuẩn Apple, bo góc 12px không bị lẹm viền */}
+                                        <div
+                                          className={`w-[38px] h-[38px] sm:w-10 sm:h-10 rounded-[12px] sm:rounded-[13px] bg-gradient-to-br ${deg.gradient} text-white flex items-center justify-center shrink-0 shadow-sm ${deg.shadow} group-hover:scale-105 transition-transform duration-200`}
+                                        >
+                                          <IconComponent className="w-5 h-5 sm:w-5.5 sm:h-5.5 stroke-[2.2]" />
+                                        </div>
+
+                                        {/* Text: Title + Kind Badge + Subtitle */}
+                                        <div className="flex-1 min-w-0">
+                                          <div className="flex items-center gap-2 flex-wrap">
+                                            <span className="text-[15px] sm:text-[16px] font-semibold text-[#1D1D1F] tracking-tight leading-snug">
+                                              {deg.title}
+                                            </span>
+                                            <span className="text-[10px] sm:text-[10.5px] font-semibold px-2 py-0.5 rounded-[6px] bg-white text-[#1D1D1F] border border-[#E8E8ED] shrink-0">
+                                              {deg.kindLabel}
+                                            </span>
+                                          </div>
+                                          <p className="text-[12.5px] sm:text-[13px] text-[#1D1D1F] truncate mt-0.5">
+                                            {deg.subTitle}
+                                          </p>
+                                        </div>
+
+                                        {/* Enter key shortcut ↵: Đổi sang xanh thương hiệu chuẩn token apple-blue */}
+                                        <span
+                                          className={`w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-lg flex items-center justify-center text-xs font-mono transition-all duration-150 shrink-0 ${isSelected
+                                              ? 'bg-apple-blue text-white shadow-xs'
+                                              : 'bg-white/80 text-[#6E6E73] group-hover:bg-white group-hover:text-[#1D1D1F]'
+                                            }`}
+                                        >
+                                          ↵
+                                        </span>
+                                      </motion.div>
+                                    );
+                                  })
+                                )}
+                              </AnimatePresence>
+                            </div>
+                          </motion.div>
+                        ) : (
+                          /* LƯỚI ICON LAUNCHPAD (7 BIỂU TƯỢNG) - CÙNG TRẦN TỐI ĐA MAX-H ĐỒNG NHẤT VỚI CHẾ ĐỘ DANH SÁCH (KHÔNG BAO GIỜ BỊ DÀI HƠN) */
+                          <motion.div
+                            key="view-mode-grid"
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -6 }}
+                            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                            className="p-2 sm:p-2.5 pb-3.5 sm:pb-3.5 max-h-[255px] min-[420px]:max-h-[270px] sm:max-h-[310px] overflow-y-auto overscroll-contain touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                          >
+                            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-2 sm:gap-4 py-1">
+                              {DEGREE_TYPES.map((deg, idx) => {
+                                const IconComponent = deg.icon;
+                                const isMatch = isDegreeMatch(deg);
+                                return (
+                                  <motion.button
+                                    key={deg.id}
+                                    type="button"
+                                    initial={{ opacity: 0, scale: 0.92, y: 6 }}
+                                    animate={{
+                                      opacity: isMatch ? 1 : 0.35,
+                                      scale: 1,
+                                      y: 0,
+                                    }}
+                                    transition={{
+                                      duration: 0.2,
+                                      delay: idx * 0.02,
+                                      ease: [0.16, 1, 0.3, 1],
+                                    }}
+                                    whileHover={{ scale: 1.05, y: -2 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => handleSelectDegreeType(deg)}
+                                    className={`degree-launchpad-btn group relative flex flex-col items-center justify-start p-1.5 sm:p-2.5 rounded-2xl bg-transparent hover:bg-[#F5F5F7] transition-all duration-200 cursor-pointer text-center min-w-0 outline-none focus:outline-none focus:ring-0 ring-0 border-0 shadow-none select-none ${isMatch
+                                        ? 'grayscale-0'
+                                        : 'grayscale-[50%] hover:opacity-100 hover:grayscale-0'
+                                      }`}
+                                  >
+                                    <div
+                                      className={`w-[42px] h-[42px] sm:w-14 sm:h-14 rounded-[14px] sm:rounded-[20px] bg-gradient-to-br ${deg.gradient} text-white flex items-center justify-center shadow-md ${deg.shadow} group-hover:scale-105 transition-all duration-200 relative shrink-0`}
+                                    >
+                                      <IconComponent className="w-5.5 h-5.5 sm:w-7 sm:h-7 stroke-[2.2] relative z-10" />
+                                    </div>
+                                    <div className="mt-1.5 sm:mt-2 flex flex-col items-center w-full px-0.5">
+                                      <span className="text-[13.5px] sm:text-[15px] font-semibold text-[#1D1D1F] text-center leading-snug whitespace-normal w-full line-clamp-2">
+                                        {deg.title}
+                                      </span>
+                                    </div>
+                                  </motion.button>
                                 );
                               })}
                             </div>
-
-                            {/* Action: View switcher (List / Grid) */}
-                            <div className="flex items-center shrink-0 pl-2 sm:pl-3.5 border-l border-[#E8E8ED]">
-                              <button
-                                type="button"
-                                onClick={() => setDisplayMode(displayMode === 'list' ? 'grid' : 'list')}
-                                className="w-[44px] h-[44px] sm:w-11 sm:h-11 rounded-xl flex items-center justify-center bg-transparent hover:bg-[#F5F5F7] active:bg-[#E8E8ED] text-[#6E6E73] hover:text-[#1D1D1F] active:scale-95 transition-colors duration-150 cursor-pointer select-none outline-none focus:outline-none [-webkit-tap-highlight-color:transparent] relative overflow-hidden"
-                                title={displayMode === 'list' ? 'Chuyển sang dạng Lưới icon' : 'Chuyển sang dạng Danh sách'}
-                                aria-label={displayMode === 'list' ? 'Chuyển sang dạng Lưới icon' : 'Chuyển sang dạng Danh sách'}
-                              >
-                                <AnimatePresence mode="wait" initial={false}>
-                                  {displayMode === 'list' ? (
-                                    <motion.div
-                                      key="switcher-to-grid"
-                                      initial={{ opacity: 0, rotate: -25, scale: 0.8 }}
-                                      animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                                      exit={{ opacity: 0, rotate: 25, scale: 0.8 }}
-                                      transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                                      className="flex items-center justify-center"
-                                    >
-                                      <LayoutGrid className="w-5 h-5 stroke-[2]" />
-                                    </motion.div>
-                                  ) : (
-                                    <motion.div
-                                      key="switcher-to-list"
-                                      initial={{ opacity: 0, rotate: 25, scale: 0.8 }}
-                                      animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                                      exit={{ opacity: 0, rotate: -25, scale: 0.8 }}
-                                      transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                                      className="flex items-center justify-center"
-                                    >
-                                      <List className="w-5 h-5 stroke-[2]" />
-                                    </motion.div>
-                                  )}
-                                </AnimatePresence>
-                              </button>
-                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  ) : (
+                    /* ===================================================================== */
+                    /* CHẾ ĐỘ 2: Ô THÔNG TIN NHẬP CHỈNH CHU (TRÊN DESKTOP)                   */
+                    /* ===================================================================== */
+                    <motion.div
+                      key="spotlight-form-view"
+                      ref={formRef}
+                      custom={slideDirection}
+                      variants={viewVariants}
+                      initial={isSwitchingView ? "enter" : false}
+                      animate="center"
+                      exit="exit"
+                      style={{ willChange: 'transform, opacity' }}
+                      className="hidden sm:block w-full px-5 min-[390px]:px-6 sm:px-8 pt-4 pb-6 sm:pb-7"
+                    >
+                      {/* Header Form: Hiển thị đúng biểu tượng Squircle của loại bằng đã chọn + Nút quay lại gọn gàng 1 dòng */}
+                      <div className="flex items-center justify-between mb-2.5 sm:mb-3 gap-2.5">
+                        <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
+                          {/* Icon Squircle chuẩn xác của loại bằng đang chọn */}
+                          <div
+                            className={`w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-br ${selectedDegree.gradient} text-white flex items-center justify-center shrink-0 shadow-md ${selectedDegree.shadow}`}
+                          >
+                            {(() => {
+                              const DegreeHeaderIcon = selectedDegree.icon || GraduationCap;
+                              return <DegreeHeaderIcon className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />;
+                            })()}
                           </div>
 
-                          {/* NỘI DUNG VIEW: CHUYỂN ĐỔI SIÊU MƯỢT GIỮA DANH SÁCH HÀNG VÀ LƯỚI ICON */}
-                          <AnimatePresence mode="wait" initial={false}>
-                            {displayMode === 'list' ? (
-                              /* DANH SÁCH HÀNG CHUẨN FLOODLIGHT - CUỘN MƯỢT MÀ TÀNG HÌNH (NO-SCROLLBAR), TRẦN TỐI ĐA MAX-H TỰ CO GIÃN THEO NỘI DUNG */
-                              <motion.div
-                                key="view-mode-list"
-                                initial={{ opacity: 0, y: 8 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -6 }}
-                                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                                className="p-2 sm:p-2.5 pb-3.5 sm:pb-3.5 max-h-[255px] min-[420px]:max-h-[270px] sm:max-h-[310px] overflow-y-auto overscroll-contain touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-                              >
-                                <div className="relative flex flex-col gap-1 sm:gap-1.5 w-full">
-                                  <AnimatePresence mode="popLayout" initial={false}>
-                                    {filteredDegrees.length === 0 ? (
-                                      <motion.div
-                                        key="empty-state"
-                                        initial={{ opacity: 0, y: 6 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0 }}
-                                        transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-                                        className="py-8 text-center text-[#6E6E73] text-sm"
-                                      >
-                                        <p className="font-medium">Không tìm thấy loại văn bằng phù hợp với &quot;{query}&quot;</p>
-                                        <p className="text-xs text-[#86868B] mt-1">Vui lòng thử tìm từ khóa khác hoặc bấm chọn Tất cả</p>
-                                      </motion.div>
-                                    ) : (
-                                      filteredDegrees.map((deg, idx) => {
-                                        const IconComponent = deg.icon;
-                                        const isSelected = idx === selectedIndex;
-                                        return (
-                                          <motion.div
-                                            layout
-                                            key={deg.id}
-                                            initial={{ opacity: 0, scale: 0.96, y: 8 }}
-                                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                                            exit={{
-                                              opacity: 0,
-                                              scale: 0.96,
-                                              y: -6,
-                                              transition: { duration: 0.20, ease: [0.16, 1, 0.3, 1] },
-                                            }}
-                                            transition={{
-                                              layout: { duration: 0.38, ease: [0.16, 1, 0.3, 1] },
-                                              opacity: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
-                                              scale: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
-                                              y: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
-                                            }}
-                                            role="option"
-                                            aria-selected={isSelected}
-                                            onClick={() => handleSelectDegreeType(deg)}
-                                            onMouseEnter={() => setSelectedIndex(idx)}
-                                            className={`group w-full flex items-center gap-2.5 sm:gap-3.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl cursor-pointer transition-colors duration-150 text-left select-none will-change-[transform,opacity] ${
-                                              isSelected
-                                                ? 'bg-[#E8E8ED] text-[#1D1D1F] shadow-2xs'
-                                                : 'hover:bg-[#E8E8ED] text-[#1D1D1F]'
-                                            }`}
-                                          >
-                                            {/* Squircle Icon: Kích thước 38px chuẩn Apple, bo góc 12px không bị lẹm viền */}
-                                            <div
-                                              className={`w-[38px] h-[38px] sm:w-10 sm:h-10 rounded-[12px] sm:rounded-[13px] bg-gradient-to-br ${deg.gradient} text-white flex items-center justify-center shrink-0 shadow-sm ${deg.shadow} group-hover:scale-105 transition-transform duration-200`}
-                                            >
-                                              <IconComponent className="w-5 h-5 sm:w-5.5 sm:h-5.5 stroke-[2.2]" />
-                                            </div>
-
-                                            {/* Text: Title + Kind Badge + Subtitle */}
-                                            <div className="flex-1 min-w-0">
-                                              <div className="flex items-center gap-2 flex-wrap">
-                                                <span className="text-[15px] sm:text-[16px] font-semibold text-[#1D1D1F] tracking-tight leading-snug">
-                                                  {deg.title}
-                                                </span>
-                                                <span className="text-[10px] sm:text-[10.5px] font-semibold px-2 py-0.5 rounded-[6px] bg-white text-[#1D1D1F] border border-[#D2D2D7] shrink-0">
-                                                  {deg.kindLabel}
-                                                </span>
-                                              </div>
-                                              <p className="text-[12.5px] sm:text-[13px] text-[#1D1D1F] truncate mt-0.5">
-                                                {deg.subTitle}
-                                              </p>
-                                            </div>
-
-                                            {/* Enter key shortcut ↵: Đổi sang xanh thương hiệu chuẩn token apple-blue */}
-                                            <span
-                                              className={`w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-lg flex items-center justify-center text-xs font-mono transition-all duration-150 shrink-0 ${
-                                                isSelected
-                                                  ? 'bg-apple-blue text-white shadow-xs'
-                                                  : 'bg-white/80 text-[#6E6E73] group-hover:bg-white group-hover:text-[#1D1D1F]'
-                                              }`}
-                                            >
-                                              ↵
-                                            </span>
-                                          </motion.div>
-                                        );
-                                      })
-                                    )}
-                                  </AnimatePresence>
-                                </div>
-                              </motion.div>
-                            ) : (
-                              /* LƯỚI ICON LAUNCHPAD (7 BIỂU TƯỢNG) - CÙNG TRẦN TỐI ĐA MAX-H ĐỒNG NHẤT VỚI CHẾ ĐỘ DANH SÁCH (KHÔNG BAO GIỜ BỊ DÀI HƠN) */
-                              <motion.div
-                                key="view-mode-grid"
-                                initial={{ opacity: 0, y: 8 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: -6 }}
-                                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                                className="p-2 sm:p-2.5 pb-3.5 sm:pb-3.5 max-h-[255px] min-[420px]:max-h-[270px] sm:max-h-[310px] overflow-y-auto overscroll-contain touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-                              >
-                                <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-2 sm:gap-4 py-1">
-                                  {DEGREE_TYPES.map((deg, idx) => {
-                                    const IconComponent = deg.icon;
-                                    const isMatch = isDegreeMatch(deg);
-                                    return (
-                                      <motion.button
-                                        key={deg.id}
-                                        type="button"
-                                        initial={{ opacity: 0, scale: 0.92, y: 6 }}
-                                        animate={{
-                                          opacity: isMatch ? 1 : 0.35,
-                                          scale: 1,
-                                          y: 0,
-                                        }}
-                                        transition={{
-                                          duration: 0.2,
-                                          delay: idx * 0.02,
-                                          ease: [0.16, 1, 0.3, 1],
-                                        }}
-                                        whileHover={{ scale: 1.05, y: -2 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        onClick={() => handleSelectDegreeType(deg)}
-                                        className={`degree-launchpad-btn group relative flex flex-col items-center justify-start p-1.5 sm:p-2.5 rounded-2xl bg-transparent hover:bg-[#F5F5F7] transition-all duration-200 cursor-pointer text-center min-w-0 outline-none focus:outline-none focus:ring-0 ring-0 border-0 shadow-none select-none ${
-                                          isMatch
-                                            ? 'grayscale-0'
-                                            : 'grayscale-[50%] hover:opacity-100 hover:grayscale-0'
-                                        }`}
-                                      >
-                                        <div
-                                          className={`w-[42px] h-[42px] sm:w-14 sm:h-14 rounded-[14px] sm:rounded-[20px] bg-gradient-to-br ${deg.gradient} text-white flex items-center justify-center shadow-md ${deg.shadow} group-hover:scale-105 transition-all duration-200 relative shrink-0`}
-                                        >
-                                          <IconComponent className="w-5.5 h-5.5 sm:w-7 sm:h-7 stroke-[2.2] relative z-10" />
-                                        </div>
-                                        <div className="mt-1.5 sm:mt-2 flex flex-col items-center w-full px-0.5">
-                                          <span className="text-[13px] sm:text-[14px] font-semibold text-[#1D1D1F] text-center leading-snug whitespace-normal w-full line-clamp-2">
-                                            {deg.title}
-                                          </span>
-                                        </div>
-                                      </motion.button>
-                                    );
-                                  })}
-                                </div>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </motion.div>
-                      ) : (
-                        /* ===================================================================== */
-                        /* CHẾ ĐỘ 2: Ô THÔNG TIN NHẬP CHỈNH CHU (TRÊN DESKTOP)                   */
-                        /* ===================================================================== */
-                        <motion.div
-                          key="spotlight-form-view"
-                          ref={formRef}
-                          custom={slideDirection}
-                          variants={viewVariants}
-                          initial={isSwitchingView ? "enter" : false}
-                          animate="center"
-                          exit="exit"
-                          style={{ willChange: 'transform, opacity' }}
-                          className="hidden sm:block w-full px-5 min-[390px]:px-6 sm:px-8 pt-4 pb-6 sm:pb-7"
-                        >
-                          {/* Header Form: Hiển thị đúng biểu tượng Squircle của loại bằng đã chọn + Nút quay lại gọn gàng 1 dòng */}
-                          <div className="flex items-center justify-between mb-2.5 sm:mb-3 gap-2.5">
-                            <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
-                              {/* Icon Squircle chuẩn xác của loại bằng đang chọn */}
-                              <div
-                                className={`w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-br ${selectedDegree.gradient} text-white flex items-center justify-center shrink-0 shadow-md ${selectedDegree.shadow}`}
-                              >
-                                {(() => {
-                                  const DegreeHeaderIcon = selectedDegree.icon || GraduationCap;
-                                  return <DegreeHeaderIcon className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />;
-                                })()}
-                              </div>
-
-                              <div className="min-w-0">
-                                <h2 className="text-[15.5px] sm:text-[18px] font-semibold text-[#1D1D1F] tracking-tight leading-snug pt-0.5 truncate">
-                                  Tra cứu {selectedDegree.title}
-                                </h2>
-                                <p className="text-[12px] text-[#1D1D1F] mt-0.5 truncate">
-                                  {selectedDegree.kindLabel} — {selectedDegree.subTitle}
-                                </p>
-                              </div>
-                            </div>
-
-                            {/* Nút Quay lại duy nhất trong Form View trên Desktop */}
-                            <div className="flex items-center shrink-0">
-                              <motion.button
-                                type="button"
-                                initial="rest"
-                                whileHover="hover"
-                                whileTap="tap"
-                                transition={{ type: 'spring', stiffness: 450, damping: 22 }}
-                                onClick={() => {
-                                  setIsSwitchingView(true);
-                                  setSlideDirection('backward');
-                                  updateOpenState(true, false);
-                                }}
-                                className="group inline-flex items-center justify-center gap-2 h-10 sm:h-11 px-3.5 sm:px-4.5 rounded-full bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] text-[#1D1D1F] transition-all duration-150 cursor-pointer text-[13.5px] sm:text-[14.5px] font-semibold select-none border-0 outline-none focus:outline-none shrink-0 [-webkit-tap-highlight-color:transparent]"
-                                title="Đổi loại bằng (Quay lại)"
-                                aria-label="Đổi loại bằng (Quay lại)"
-                              >
-                                <motion.div
-                                  variants={{
-                                    rest: { x: 0 },
-                                    hover: {
-                                      x: [0, -3.5, -1, -2.5],
-                                      transition: {
-                                        duration: 0.45,
-                                        times: [0, 0.4, 0.7, 1],
-                                        ease: 'easeOut',
-                                      },
-                                    },
-                                    tap: { x: -4, scale: 0.94 },
-                                  }}
-                                  className="flex items-center justify-center shrink-0"
-                                >
-                                  <ArrowLeft
-                                    className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] text-[#1D1D1F] pointer-events-none transition-colors duration-150"
-                                    strokeWidth={2.4}
-                                  />
-                                </motion.div>
-                                <span className="inline leading-none translate-y-[0.5px]">Quay lại</span>
-                              </motion.button>
-                            </div>
+                          <div className="min-w-0">
+                            <h2 className="text-[15.5px] sm:text-[18px] font-semibold text-[#1D1D1F] tracking-tight leading-snug pt-0.5 truncate">
+                              Tra cứu {selectedDegree.title}
+                            </h2>
+                            <p className="text-[13px] sm:text-[14px] text-[#1D1D1F] mt-0.5 truncate leading-snug">
+                              {selectedDegree.kindLabel} — {selectedDegree.subTitle}
+                            </p>
                           </div>
+                        </div>
 
-                          {/* Form Content: Tái sử dụng đồng nhất */}
-                          <div className="w-full">
-                            {renderFormContent()}
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+                        {/* Nút Quay lại duy nhất trong Form View trên Desktop */}
+                        <div className="flex items-center shrink-0">
+                          <motion.button
+                            type="button"
+                            initial="rest"
+                            whileHover="hover"
+                            whileTap="tap"
+                            transition={{ type: 'spring', stiffness: 450, damping: 22 }}
+                            onClick={() => {
+                              setIsSwitchingView(true);
+                              setSlideDirection('backward');
+                              updateOpenState(true, false);
+                            }}
+                            className="group inline-flex items-center justify-center gap-2 h-10 sm:h-11 px-3.5 sm:px-4.5 rounded-full bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] text-[#1D1D1F] transition-all duration-150 cursor-pointer text-[13.5px] sm:text-[14.5px] font-semibold select-none border-0 outline-none focus:outline-none shrink-0 [-webkit-tap-highlight-color:transparent]"
+                            title="Đổi loại bằng (Quay lại)"
+                            aria-label="Đổi loại bằng (Quay lại)"
+                          >
+                            <motion.div
+                              variants={{
+                                rest: { x: 0 },
+                                hover: {
+                                  x: [0, -3.5, -1, -2.5],
+                                  transition: {
+                                    duration: 0.45,
+                                    times: [0, 0.4, 0.7, 1],
+                                    ease: 'easeOut',
+                                  },
+                                },
+                                tap: { x: -4, scale: 0.94 },
+                              }}
+                              className="flex items-center justify-center shrink-0"
+                            >
+                              <ArrowLeft
+                                className="w-[18px] h-[18px] sm:w-[20px] sm:h-[20px] text-[#1D1D1F] pointer-events-none transition-colors duration-150"
+                                strokeWidth={2.4}
+                              />
+                            </motion.div>
+                            <span className="inline leading-none translate-y-[0.5px]">Quay lại</span>
+                          </motion.button>
+                        </div>
+                      </div>
 
-            {/* HÀNG GỢI Ý NHANH CÁC MỤC ĐƯỢC CHỌN NHIỀU NHẤT (CHUẨN WIDGET GOOGLE - NỀN XÁM MỊN, BỎ HOÀN TOÀN VIỀN & BÓNG LEM) */}
-            <AnimatePresence>
-              {!isWindowOpen && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                  animate={{ opacity: 1, height: 'auto', marginTop: isMobile ? 14 : 24 }}
-                  exit={{
-                    opacity: 0,
-                    height: 0,
-                    marginTop: 0,
-                    transition: {
-                      height: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
-                      opacity: { duration: 0.16, ease: [0.22, 1, 0.36, 1] },
-                      marginTop: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
-                    },
+                      {/* Form Content: Tái sử dụng đồng nhất */}
+                      <div className="w-full">
+                        {renderFormContent()}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* HÀNG GỢI Ý NHANH CÁC MỤC ĐƯỢC CHỌN NHIỀU NHẤT (CHUẨN WIDGET GOOGLE - NỀN XÁM MỊN, BỎ HOÀN TOÀN VIỀN & BÓNG LEM) */}
+      <AnimatePresence>
+        {!isWindowOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0, marginTop: 0 }}
+            animate={{ opacity: 1, height: 'auto', marginTop: isMobile ? 14 : 24 }}
+            exit={{
+              opacity: 0,
+              height: 0,
+              marginTop: 0,
+              transition: {
+                height: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
+                opacity: { duration: 0.16, ease: [0.22, 1, 0.36, 1] },
+                marginTop: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
+              },
+            }}
+            transition={{
+              height: { duration: 0.36, ease: [0.22, 1, 0.36, 1] },
+              opacity: { duration: 0.26, delay: 0.06, ease: [0.22, 1, 0.36, 1] },
+              marginTop: { duration: 0.36, ease: [0.22, 1, 0.36, 1] },
+            }}
+            className="grid grid-cols-3 gap-2 sm:gap-3.5 w-full"
+          >
+            {POPULAR_SEARCH_SHORTCUTS.map((item) => {
+              const IconComponent = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => {
+                    const targetDeg = DEGREE_TYPES.find((d) => d.id === item.degreeId);
+                    if (targetDeg) {
+                      handleSelectDegreeType(targetDeg);
+                    }
                   }}
-                  transition={{
-                    height: { duration: 0.36, ease: [0.22, 1, 0.36, 1] },
-                    opacity: { duration: 0.26, delay: 0.06, ease: [0.22, 1, 0.36, 1] },
-                    marginTop: { duration: 0.36, ease: [0.22, 1, 0.36, 1] },
-                  }}
-                  className="grid grid-cols-3 gap-2 sm:gap-3.5 w-full"
+                  className="h-[52px] sm:h-[78px] px-2.5 sm:px-5 py-2.5 sm:py-4 rounded-[16px] sm:rounded-[22px] bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] border-0 outline-none focus:outline-none focus:ring-0 transition-all duration-150 flex items-center justify-center sm:justify-start gap-2 sm:gap-4 text-center sm:text-left cursor-pointer active:scale-[0.98] select-none shadow-none overflow-hidden isolate [-webkit-tap-highlight-color:transparent] group min-w-0"
                 >
-                  {POPULAR_SEARCH_SHORTCUTS.map((item) => {
-                    const IconComponent = item.icon;
-                    return (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => {
-                          const targetDeg = DEGREE_TYPES.find((d) => d.id === item.degreeId);
-                          if (targetDeg) {
-                            handleSelectDegreeType(targetDeg);
-                          }
-                        }}
-                        className="h-[52px] sm:h-[78px] px-2.5 sm:px-5 py-2.5 sm:py-4 rounded-[16px] sm:rounded-[22px] bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] border-0 outline-none focus:outline-none focus:ring-0 transition-all duration-150 flex items-center justify-center sm:justify-start gap-2 sm:gap-4 text-center sm:text-left cursor-pointer active:scale-[0.98] select-none shadow-none overflow-hidden isolate [-webkit-tap-highlight-color:transparent] group min-w-0"
-                      >
-                        {/* Squircle Icon Apple: Gradient màu sắc đặc trưng từng loại bằng + icon trắng nổi bật, kích thước cân đối to rõ */}
-                        <div
-                          className={`w-[36px] h-[36px] sm:w-[48px] sm:h-[48px] rounded-[11px] sm:rounded-[15px] bg-gradient-to-br ${item.gradient} text-white flex items-center justify-center shrink-0 shadow-sm ${item.shadow} group-hover:scale-105 transition-transform duration-200`}
-                        >
-                          <IconComponent className="w-5 h-5 sm:w-[28px] sm:h-[28px] stroke-[2.2]" />
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="text-[12.5px] min-[380px]:text-[13.5px] sm:text-[16px] font-semibold text-[#1D1D1F] tracking-tight leading-snug truncate">
-                            <span className="sm:hidden">{item.shortTitle}</span>
-                            <span className="hidden sm:inline">{item.title}</span>
-                          </p>
-                          <p className="hidden sm:block text-[12px] sm:text-[13px] text-[#1D1D1F] font-normal truncate mt-1 leading-snug">
-                            {item.desc}
-                          </p>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </motion.div>
-              )}
-            </AnimatePresence>
+                  {/* Squircle Icon Apple: Gradient màu sắc đặc trưng từng loại bằng + icon trắng nổi bật, kích thước cân đối to rõ */}
+                  <div
+                    className={`w-[36px] h-[36px] sm:w-[48px] sm:h-[48px] rounded-[11px] sm:rounded-[15px] bg-gradient-to-br ${item.gradient} text-white flex items-center justify-center shrink-0 shadow-sm ${item.shadow} group-hover:scale-105 transition-transform duration-200`}
+                  >
+                    <IconComponent className="w-5 h-5 sm:w-[28px] sm:h-[28px] stroke-[2.2]" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[12.5px] min-[380px]:text-[13.5px] sm:text-[16px] font-semibold text-[#1D1D1F] tracking-tight leading-snug truncate">
+                      <span className="sm:hidden">{item.shortTitle}</span>
+                      <span className="hidden sm:inline">{item.title}</span>
+                    </p>
+                    <p className="hidden sm:block text-[12px] sm:text-[13px] text-[#1D1D1F] font-normal truncate mt-1 leading-snug">
+                      {item.desc}
+                    </p>
+                  </div>
+                </button>
+              );
+            })}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ========================================================================= */}
       {/* ========================================================================= */}
@@ -1405,9 +1416,8 @@ export default function SpotlightBar({
       {isMounted && typeof document !== 'undefined' && (isFormExpanded || isClosingMobileSheet) && isMobile && createPortal(
         <div
           id="mobile-form-bottom-sheet"
-          className={`fixed inset-0 z-[999] sm:hidden flex flex-col justify-end overflow-hidden ${
-            isClosingMobileSheet ? 'animate-omninotch-backdrop-exit' : 'animate-omninotch-backdrop-enter'
-          }`}
+          className={`fixed inset-0 z-[999] sm:hidden flex flex-col justify-end overflow-hidden ${isClosingMobileSheet ? 'animate-omninotch-backdrop-exit' : 'animate-omninotch-backdrop-enter'
+            }`}
         >
           {/* Lớp Backdrop làm mờ toàn màn hình chuẩn khung kết quả */}
           <div
@@ -1418,9 +1428,8 @@ export default function SpotlightBar({
 
           {/* Khung Drawer chuẩn hiệu ứng hiện có (đẩy lên ra kết quả / báo không có dữ liệu) */}
           <div
-            className={`w-full flex justify-center mt-auto relative z-10 pointer-events-auto ${
-              isClosingMobileSheet ? 'mobile-drawer-exit' : 'mobile-drawer-enter'
-            }`}
+            className={`w-full flex justify-center mt-auto relative z-10 pointer-events-auto ${isClosingMobileSheet ? 'mobile-drawer-exit' : 'mobile-drawer-enter'
+              }`}
           >
             <div className="relative w-full bg-white rounded-t-[36px] shadow-[0_24px_70px_-15px_rgba(15,23,42,0.28),0_10px_28px_-4px_rgba(15,23,42,0.12)] max-h-[80dvh] flex flex-col overflow-hidden outline-none">
               {/* Thanh gạt tay kéo vuốt (Drag Handle) */}
@@ -1448,7 +1457,7 @@ export default function SpotlightBar({
                     <h2 className="text-[15.5px] min-[380px]:text-[16.5px] font-bold text-[#1D1D1F] tracking-tight leading-snug truncate">
                       Tra cứu {selectedDegree.title}
                     </h2>
-                    <p className="text-[12px] text-[#6E6E73] truncate leading-tight mt-0.5">
+                    <p className="text-[13px] sm:text-[14px] text-[#6E6E73] truncate leading-tight mt-0.5">
                       {selectedDegree.kindLabel} — {selectedDegree.subTitle}
                     </p>
                   </div>
