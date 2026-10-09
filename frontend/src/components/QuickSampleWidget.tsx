@@ -295,8 +295,16 @@ export default function QuickSampleWidget({
     }, 400);
   };
 
-  // Nút Hồ sơ mẫu test luôn luôn hiển thị thường trực ở góc màn hình để tiện thử nghiệm mọi lúc
-  const shouldHide = false;
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Tự động ẩn nhẹ nhàng khi có kết quả tra cứu hiển thị hoặc khi form sheet đang mở trên mobile
+  const shouldHide = Boolean(isResultOpen || (isSpotlightOpen && isMobile));
 
   return (
     <aside

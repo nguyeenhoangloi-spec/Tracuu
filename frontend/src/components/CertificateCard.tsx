@@ -106,15 +106,24 @@ export default function CertificateCard({
 
   return (
     <div className="font-sans text-apple-text w-full flex flex-col justify-end sm:justify-center my-auto print:my-0 print:w-full">
-      {/* THẺ KẾT QUẢ TRA CỨU: DRAWER THOÁNG ĐÃNG TRÊN MOBILE (~76VH), TRONG ĐÓ CUỘN NỘI DUNG, POPUP OMNINOTCH TRÊN DESKTOP */}
+      {/* THẺ KẾT QUẢ TRA CỨU: DRAWER THOÁNG ĐÃNG TRÊN MOBILE (TỐI ĐA 88DVH), TRONG ĐÓ CUỘN NỘI DUNG, POPUP OMNINOTCH TRÊN DESKTOP */}
       <div
         className={`bg-white rounded-t-[36px] rounded-b-none sm:rounded-[38px] sm:rounded-b-[38px] border-0 transition-shadow duration-300 ${isExpanded
           ? 'shadow-[0_32px_90px_-15px_rgba(15,23,42,0.32),0_12px_36px_-6px_rgba(15,23,42,0.12)]'
           : 'shadow-[0_24px_65px_-15px_rgba(15,23,42,0.22),0_10px_26px_-4px_rgba(15,23,42,0.08)]'
-          } overflow-hidden certificate-card w-full h-[71vh] max-h-[75dvh] sm:h-auto sm:max-h-[88vh] flex flex-col no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden print:rounded-none print:shadow-none print:border-none print:overflow-visible print:h-auto print:max-h-none`}
+          } overflow-hidden certificate-card w-full max-h-[75dvh] sm:h-auto sm:max-h-[88vh] flex flex-col no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden print:rounded-none print:shadow-none print:border-none print:overflow-visible print:h-auto print:max-h-none`}
       >
+        {/* Thanh gạt tay kéo vuốt trên Mobile (Đồng bộ 100% nhận diện với Form Sheet) */}
+        <div
+          onClick={onClose}
+          className="pt-3 pb-1 flex justify-center shrink-0 cursor-pointer sm:hidden group select-none bg-slate-50/95"
+          title="Chạm hoặc vuốt để đóng"
+        >
+          <div className="w-10 h-1.2 rounded-full bg-slate-300 group-hover:bg-slate-400 active:bg-slate-500 transition-colors" />
+        </div>
+
         {/* TIÊU ĐỀ KẾT QUẢ VĂN BẰNG / CHỨNG CHỈ (NỀN XÁM NHẸ TRÊN MÀN HÌNH, NỀN TRẮNG KHI IN) */}
-        <div className="bg-slate-50/95 print:bg-white backdrop-blur-xs relative px-5 min-[390px]:px-6 sm:px-10 lg:px-12 pt-6 sm:pt-6 pb-3.5 sm:pb-6 print:pb-2 print:pt-0 print:px-0 shrink-0 border-0 border-none z-10">
+        <div className="bg-slate-50/95 print:bg-white backdrop-blur-xs relative px-5 min-[390px]:px-6 sm:px-10 lg:px-12 pt-3 sm:pt-6 pb-3.5 sm:pb-6 print:pb-2 print:pt-0 print:px-0 shrink-0 border-0 border-none z-10">
           {/* Header Quốc hiệu / Tên trường chuẩn hóa (Chỉ xuất hiện khi In) */}
           <div className="hidden print:flex items-center justify-between pb-3 mb-3 border-b-2 border-brand-navy">
             <div className="flex items-center gap-3">
@@ -154,13 +163,13 @@ export default function CertificateCard({
                 <button
                   type="button"
                   onClick={onToggleExpand}
-                  className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-slate-200/60 hover:bg-slate-300/80 active:bg-slate-300 text-slate-700 hover:text-slate-900 transition-all duration-150 cursor-pointer flex-shrink-0 active:scale-90 outline-none border-0 border-none backdrop-blur-xs hidden sm:flex"
+                  className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] text-[#1D1D1F] transition-all duration-150 cursor-pointer flex-shrink-0 active:scale-90 outline-none border-0 border-none backdrop-blur-xs hidden sm:flex"
                   title={isExpanded ? 'Thu nhỏ lại kích thước chuẩn' : 'Phóng to toàn màn hình'}
                 >
                   {isExpanded ? (
-                    <Minimize2 className="w-5 h-5 sm:w-[22px] sm:h-[22px] text-slate-700 transition-transform duration-200" strokeWidth={2.3} />
+                    <Minimize2 className="w-5 h-5 sm:w-[22px] sm:h-[22px] text-[#1D1D1F] transition-transform duration-200" strokeWidth={2.3} />
                   ) : (
-                    <Maximize2 className="w-5 h-5 sm:w-[22px] sm:h-[22px] text-slate-700 transition-transform duration-200" strokeWidth={2.3} />
+                    <Maximize2 className="w-5 h-5 sm:w-[22px] sm:h-[22px] text-[#1D1D1F] transition-transform duration-200" strokeWidth={2.3} />
                   )}
                 </button>
               )}
@@ -169,7 +178,7 @@ export default function CertificateCard({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="relative overflow-hidden w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-[#E8E8ED] hover:bg-[#DFDFE4] active:bg-[#D2D2D7] text-[#1D1D1F] transition-all duration-150 cursor-pointer flex-shrink-0 active:scale-90 outline-none border-0 border-none select-none [-webkit-tap-highlight-color:transparent]"
+                  className="relative overflow-hidden w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] text-[#1D1D1F] transition-all duration-150 cursor-pointer flex-shrink-0 active:scale-90 outline-none border-0 border-none select-none [-webkit-tap-highlight-color:transparent]"
                   title="Đóng (Esc)"
                   aria-label="Đóng kết quả"
                 >
@@ -181,7 +190,7 @@ export default function CertificateCard({
         </div>
 
         {/* BẢNG THÔNG TIN TOÀN DIỆN - NỀN TRẮNG TINH KHÔI, CUỘN TRONG PHẠM VI DRAWER TRÊN MOBILE, CHUẨN 20PX TRÊN DESKTOP */}
-        <div className="bg-white px-4 min-[390px]:px-5 sm:px-10 lg:px-12 pt-3 pb-[calc(2.5rem+env(safe-area-inset-bottom,0px))] sm:py-8 overflow-y-auto overscroll-contain flex-1 touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden print:px-0 print:py-2 print:overflow-visible">
+        <div className="bg-white px-4 min-[390px]:px-5 sm:px-10 lg:px-12 pt-3 pb-[calc(3.5rem+env(safe-area-inset-bottom,0px))] sm:py-8 overflow-y-auto overscroll-contain flex-1 touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden print:px-0 print:py-2 print:overflow-visible">
           <div>
             {/* 1. HỌ TÊN: XANH NAVY THƯƠNG HIỆU CHUẨN NCTU (#25359D) */}
             <div className="flex items-start justify-between sm:justify-start gap-3 sm:gap-3.5 py-2 sm:py-3.5 w-full">
@@ -503,9 +512,9 @@ export default function CertificateCard({
             <button
               type="button"
               onClick={onReset}
-              className="flex-1 sm:flex-initial h-[48px] sm:h-[52px] px-5 sm:px-6 text-[15px] sm:text-[16px] rounded-full border border-slate-300/80 hover:border-slate-400 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 font-semibold transition-all duration-150 cursor-pointer flex items-center justify-center gap-2.5 active:scale-95 shadow-sm select-none"
+              className="flex-1 sm:flex-initial h-[48px] sm:h-[52px] px-5 sm:px-6 text-[15px] sm:text-[16px] rounded-full border border-[#D2D2D7] hover:border-[#86868B] bg-white hover:bg-[#F5F5F7] text-[#1D1D1F] font-semibold transition-all duration-150 cursor-pointer flex items-center justify-center gap-2.5 active:scale-95 shadow-sm select-none"
             >
-              <RotateCcw className="w-4.5 h-4.5 text-slate-500 stroke-[2.2] shrink-0" />
+              <RotateCcw className="w-4.5 h-4.5 text-[#1D1D1F] stroke-[2.2] shrink-0" />
               <span className="whitespace-nowrap">Tra cứu hồ sơ khác</span>
             </button>
           </div>

@@ -280,7 +280,7 @@ export default function SpotlightBar({
 
   // Tọa độ và kích thước viên con nhộng trượt liên tục chuẩn Apple Mac
   const [tabIndicator, setTabIndicator] = useState<{ left: number; width: number; ready: boolean }>({
-    left: 4,
+    left: 5,
     width: 65,
     ready: false,
   });
@@ -290,10 +290,21 @@ export default function SpotlightBar({
     const measure = () => {
       const activeEl = chipRefs.current[categoryFilter];
       if (activeEl) {
-        setTabIndicator({
-          left: activeEl.offsetLeft,
-          width: activeEl.offsetWidth,
-          ready: true,
+        const newLeft = activeEl.offsetLeft;
+        const newWidth = activeEl.offsetWidth;
+        setTabIndicator((prev) => {
+          if (
+            prev.ready &&
+            Math.abs(prev.left - newLeft) < 0.5 &&
+            Math.abs(prev.width - newWidth) < 0.5
+          ) {
+            return prev;
+          }
+          return {
+            left: newLeft,
+            width: newWidth,
+            ready: true,
+          };
         });
       }
     };
@@ -315,8 +326,8 @@ export default function SpotlightBar({
     };
   }, [categoryFilter, isFocused, displayMode]);
 
-  const [gridHeight, setGridHeight] = useState<number>(480);
-  const [formHeight, setFormHeight] = useState<number>(350);
+  const [gridHeight, setGridHeight] = useState<number>(330);
+  const [formHeight, setFormHeight] = useState<number>(390);
   const bodyContentRef = useRef<HTMLDivElement | null>(null);
 
   // Hàm cập nhật trạng thái mở/đóng đồng bộ tức thì 0ms sang component cha (page.tsx)
@@ -326,8 +337,12 @@ export default function SpotlightBar({
       return;
     }
     if (newFormExpanded !== isFormExpanded) {
-      setIsSwitchingView(true);
-      setSlideDirection(newFormExpanded ? 'forward' : 'backward');
+      // Chỉ kích hoạt hiệu ứng trượt đổi view trên Desktop (nơi Form thay thế Lưới trong cùng khung)
+      // Trên Mobile, Form hiển thị ở Bottom Sheet độc lập nên khung bự ở nền sau đứng yên 100%, không bị giật nảy y: 12px
+      if (!isMobile) {
+        setIsSwitchingView(true);
+        setSlideDirection(newFormExpanded ? 'forward' : 'backward');
+      }
     }
     setIsFocused(newFocused);
     setIsFormExpanded(newFormExpanded);
@@ -535,15 +550,20 @@ export default function SpotlightBar({
     const measure = () => {
       if (!gridRef.current) return;
       const h = Math.round(
-        gridRef.current.scrollHeight ||
+        gridRef.current.offsetHeight ||
         gridRef.current.getBoundingClientRect().height
       );
       if (h >= 140) setGridHeight(h);
     };
     measure();
 
-    const ro = new ResizeObserver(() => {
-      measure();
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const h = Math.round(
+          entry.borderBoxSize?.[0]?.blockSize ?? entry.target.getBoundingClientRect().height
+        );
+        if (h >= 140) setGridHeight(h);
+      }
     });
     ro.observe(gridRef.current);
     return () => ro.disconnect();
@@ -571,8 +591,10 @@ export default function SpotlightBar({
 
   // Xử lý khi nhấn chọn 1 loại bằng từ Grid -> Chuyển cảnh sang Form (Desktop) hoặc mở Bottom Sheet (Mobile)
   const handleSelectDegreeType = (deg: DegreeTypeConfig) => {
-    setIsSwitchingView(true);
-    setSlideDirection('forward');
+    if (!isMobile) {
+      setIsSwitchingView(true);
+      setSlideDirection('forward');
+    }
     setSelectedDegree(deg);
     onTabChange(deg.category);
     if (deg.loaiDaoTao) {
@@ -653,34 +675,56 @@ export default function SpotlightBar({
     };
   }, [categoryFilter]);
 
-  // Animation chuyển đổi siêu mượt chuẩn Apple giữa Chế độ Lưới và Chế độ Form
+  // Animation chuyển đổi siêu mượt chuẩn Apple giữa Chế độ Lưới và Chế độ Form ô nhập
   const viewVariants = {
     enter: (direction: 'forward' | 'backward') => ({
       opacity: 0,
-      y: direction === 'forward' ? 12 : -12,
-      scale: 0.99,
-      filter: 'blur(3px)',
+      y: direction === 'forward' ? 10 : -10,
+      scale: 0.995,
     }),
     center: {
       opacity: 1,
       y: 0,
       scale: 1,
-      filter: 'blur(0px)',
       transition: {
-        duration: 0.40,
-        ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+        duration: 0.28,
+        ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
       },
     },
     exit: (direction: 'forward' | 'backward') => ({
       opacity: 0,
-      y: direction === 'forward' ? -10 : 10,
-      scale: 0.99,
-      filter: 'blur(3px)',
+      y: direction === 'forward' ? -8 : 8,
+      scale: 0.995,
       transition: {
-        duration: 0.28,
-        ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+        duration: 0.16,
+        ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
       },
     }),
+  };
+
+  // Xử lý chuyển cảnh nhịp nhàng khi tra cứu trên Mobile:
+  // Cho Form Bottom Sheet trượt xuống mượt mà trước (200ms), sau đó Thẻ kết quả trượt vút lên đón mắt người dùng
+  // Giữ nguyên isFocused để khung bự ở nền web đứng yên tĩnh lặng, tuyệt đối không co rút làm đẩy rung trang
+  const handleFormSuccess = (type: 'vanbang' | 'cntt' | 'vstep', data: any) => {
+    if (isMobile) {
+      handleCloseMobileSheet(isFocused);
+      setTimeout(() => {
+        onSelectResult?.(type, data);
+      }, 200);
+    } else {
+      onSelectResult?.(type, data);
+    }
+  };
+
+  const handleFormNotFound = (type: 'vanbang' | 'cntt' | 'vstep', notFoundData: any) => {
+    if (isMobile) {
+      handleCloseMobileSheet(isFocused);
+      setTimeout(() => {
+        onNotFound?.(type, notFoundData);
+      }, 200);
+    } else {
+      onNotFound?.(type, notFoundData);
+    }
   };
 
   // Khối nội dung Form: Dùng chung thống nhất giữa Desktop (Floodlight) và Mobile (Bottom Sheet)
@@ -688,18 +732,15 @@ export default function SpotlightBar({
     <AnimatePresence mode="wait" initial={false}>
       <motion.div
         key={activeTab}
-        initial={{ opacity: 0, y: 6 }}
+        initial={{ opacity: 0, y: 4 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -6 }}
-        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+        exit={{ opacity: 0, y: -4 }}
+        transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
       >
         {activeTab === 'vanbang' && (
           <VanBangForm
-            onSuccess={(data) => {
-              if (isMobile) updateOpenState(false, false);
-              onSelectResult?.('vanbang', data);
-            }}
-            onNotFound={(data) => onNotFound?.('vanbang', data)}
+            onSuccess={(data) => handleFormSuccess('vanbang', data)}
+            onNotFound={(data) => handleFormNotFound('vanbang', data)}
             initialSoHieuPhoi={query}
             initialLoaiDaoTao={selectedLoaiDaoTao}
             sampleData={sampleData?.vanbang}
@@ -709,11 +750,8 @@ export default function SpotlightBar({
 
         {activeTab === 'cntt' && (
           <CnttForm
-            onSuccess={(data) => {
-              if (isMobile) updateOpenState(false, false);
-              onSelectResult?.('cntt', data);
-            }}
-            onNotFound={(data) => onNotFound?.('cntt', data)}
+            onSuccess={(data) => handleFormSuccess('cntt', data)}
+            onNotFound={(data) => handleFormNotFound('cntt', data)}
             initialSoHieuPhoi={query}
             initialCapDo={selectedCapDo}
             onCapDoChange={(newCapDo) => {
@@ -730,11 +768,8 @@ export default function SpotlightBar({
 
         {activeTab === 'vstep' && (
           <VstepForm
-            onSuccess={(data) => {
-              if (isMobile) updateOpenState(false, false);
-              onSelectResult?.('vstep', data);
-            }}
-            onNotFound={(data) => onNotFound?.('vstep', data)}
+            onSuccess={(data) => handleFormSuccess('vstep', data)}
+            onNotFound={(data) => handleFormNotFound('vstep', data)}
             initialSoHieuPhoi={query}
             sampleData={sampleData?.vstep}
             sampleToApply={sampleToApply}
@@ -912,15 +947,31 @@ export default function SpotlightBar({
             <motion.div
               key="floodlight-body-flow"
               initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
+              animate={{
+                opacity: 1,
+                height: isFormExpanded && !isMobile ? formHeight : gridHeight,
+              }}
+              exit={{
+                opacity: 0,
+                height: 0,
+                transition: {
+                  height: {
+                    duration: 0.36,
+                    ease: [0.22, 1, 0.36, 1], // Thu gọn êm ái, kéo nền lên thanh thoát
+                  },
+                  opacity: {
+                    duration: 0.18,
+                    ease: [0.22, 1, 0.36, 1],
+                  },
+                },
+              }}
               transition={{
                 height: {
-                  duration: 0.48,
-                  ease: [0.22, 1, 0.36, 1], // Chuẩn Apple WWDC Fluid Ease: trượt mở êm ái, nhẹ nhàng, không bị giật nhanh
+                  duration: 0.40,
+                  ease: [0.22, 1, 0.36, 1], // Chuẩn Apple WWDC Fluid Momentum Ease: nở êm dịu, co giãn đẩy nền mượt mà
                 },
                 opacity: {
-                  duration: 0.38,
+                  duration: 0.28,
                   ease: [0.22, 1, 0.36, 1],
                 },
               }}
@@ -937,22 +988,22 @@ export default function SpotlightBar({
                     ref={gridRef}
                     custom={slideDirection}
                     variants={viewVariants}
-                    initial={isSwitchingView ? "enter" : false}
+                    initial={isSwitchingView && !isMobile ? "enter" : false}
                     animate="center"
                     exit="exit"
-                    style={{ willChange: 'transform, opacity, filter' }}
+                    style={{ willChange: 'transform, opacity' }}
                     className="w-full"
                   >
-                          {/* THANH CHIPS LỌC DANH MỤC: PLATTER NỀN #E8E8ED CHUẨN APPLE */}
-                          <div className="flex items-center justify-between gap-2.5 sm:gap-3.5 px-3 sm:px-5 py-2.5 sm:py-3 border-b border-slate-100 bg-white">
-                            {/* Apple TabNav Platter: flex-1 chia đều 6 chips lấp đầy thanh, loại bỏ hoàn toàn khoảng trống thừa */}
+                          {/* THANH CHIPS LỌC DANH MỤC: PLATTER NỀN #E8E8ED CHUẨN APPLE (MOBILE 44PX, DESKTOP 56PX) */}
+                          <div className="flex items-center justify-between gap-2.5 sm:gap-4 px-3 sm:px-5 py-2 sm:py-3.5 border-b border-slate-100 bg-white">
+                            {/* Apple TabNav Platter: Chuẩn Apple 44px trên Mobile (p-4px), 56px trên Desktop (p-6px) */}
                             <div
                               ref={platterRef}
-                              className="relative bg-[#E8E8ED] p-[4px] sm:p-[5px] rounded-full flex items-center gap-1 overflow-x-auto no-scrollbar flex-1 min-w-0 scroll-smooth"
+                              className="relative h-[44px] sm:h-[56px] bg-[#E8E8ED] p-[4px] sm:p-[6px] rounded-full flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar flex-1 min-w-0 scroll-smooth"
                             >
                               {/* VIÊN PILL DUY NHẤT LƯỚT LIÊN TỤC CHUẨN APPLE MAC (TRƯỢT THUẦN TÚY LEFT & WIDTH 380MS) */}
                               <div
-                                className="absolute top-[4px] sm:top-[5px] bottom-[4px] sm:bottom-[5px] bg-white rounded-full pointer-events-none shadow-[0_1.5px_4px_rgba(0,0,0,0.12),0_0.5px_1.5px_rgba(0,0,0,0.06)]"
+                                className="absolute top-[4px] sm:top-[6px] bottom-[4px] sm:bottom-[6px] bg-white rounded-full pointer-events-none shadow-[0_1.5px_4px_rgba(0,0,0,0.12),0_0.5px_1.5px_rgba(0,0,0,0.06)]"
                                 style={{
                                   left: `${tabIndicator.left}px`,
                                   width: `${tabIndicator.width}px`,
@@ -964,7 +1015,6 @@ export default function SpotlightBar({
                               />
 
                               {FILTER_CHIPS.map((chip) => {
-                                const count = getChipCount(chip.id);
                                 const isCurrent = categoryFilter === chip.id;
                                 return (
                                   <button
@@ -976,178 +1026,224 @@ export default function SpotlightBar({
                                     onClick={(e) => {
                                       setCategoryFilter(chip.id);
                                       setSelectedIndex(0);
-                                      // Chỉ cuộn nếu tab bị khuất mép ngoài vùng nhìn thấy của platter
-                                      const platter = platterRef.current;
-                                      if (platter) {
-                                        const btnRect = e.currentTarget.getBoundingClientRect();
-                                        const pRect = platter.getBoundingClientRect();
-                                        if (btnRect.left < pRect.left || btnRect.right > pRect.right) {
-                                          e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                                      // Chỉ cuộn trên màn hình nhỏ di động nếu tab bị khuất mép ngoài vùng nhìn thấy
+                                      if (isMobile) {
+                                        const platter = platterRef.current;
+                                        if (platter) {
+                                          if (chip.id === 'all') {
+                                            platter.scrollTo({ left: 0, behavior: 'smooth' });
+                                          } else {
+                                            const btnRect = e.currentTarget.getBoundingClientRect();
+                                            const pRect = platter.getBoundingClientRect();
+                                            if (btnRect.left < pRect.left || btnRect.right > pRect.right) {
+                                              e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+                                            }
+                                          }
                                         }
                                       }
                                     }}
-                                    className={`relative z-10 inline-flex items-center justify-center gap-1.5 px-3 sm:px-2 py-1.5 rounded-full text-[14px] whitespace-nowrap shrink-0 sm:shrink sm:flex-1 transition-colors duration-250 cursor-pointer select-none outline-none focus:outline-none [-webkit-tap-highlight-color:transparent] ${
+                                    className={`relative z-10 h-full inline-flex items-center justify-center px-3 sm:px-2.5 md:px-3 rounded-full text-[14px] sm:text-[17px] whitespace-nowrap shrink-0 sm:flex-1 transition-colors duration-250 cursor-pointer select-none outline-none focus:outline-none [-webkit-tap-highlight-color:transparent] ${
                                       isCurrent
                                         ? 'text-[#1D1D1F] font-semibold'
                                         : 'text-[#1D1D1F] hover:text-black font-medium'
                                     }`}
                                   >
                                     <span className="relative z-10 whitespace-nowrap">{chip.label}</span>
-                                    <span
-                                      className={`relative z-10 text-[11px] px-1.5 py-0.5 rounded-full font-semibold tabular-nums transition-colors duration-250 ${
-                                        isCurrent ? 'bg-black/[0.08] text-[#1D1D1F] font-semibold' : 'bg-black/[0.05] text-[#1D1D1F] font-medium'
-                                      }`}
-                                    >
-                                      {count}
-                                    </span>
                                   </button>
                                 );
                               })}
                             </div>
 
                             {/* Action: View switcher (List / Grid) */}
-                            <div className="flex items-center shrink-0 pl-2 sm:pl-3 border-l border-[#E8E8ED]">
+                            <div className="flex items-center shrink-0 pl-2 sm:pl-3.5 border-l border-[#E8E8ED]">
                               <button
                                 type="button"
                                 onClick={() => setDisplayMode(displayMode === 'list' ? 'grid' : 'list')}
-                                className="w-10 h-10 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center bg-transparent hover:bg-[#F5F5F7] active:bg-[#E8E8ED] text-[#6E6E73] hover:text-[#1D1D1F] active:scale-95 transition-all cursor-pointer select-none outline-none focus:outline-none [-webkit-tap-highlight-color:transparent]"
+                                className="w-[44px] h-[44px] sm:w-11 sm:h-11 rounded-xl flex items-center justify-center bg-transparent hover:bg-[#F5F5F7] active:bg-[#E8E8ED] text-[#6E6E73] hover:text-[#1D1D1F] active:scale-95 transition-colors duration-150 cursor-pointer select-none outline-none focus:outline-none [-webkit-tap-highlight-color:transparent] relative overflow-hidden"
                                 title={displayMode === 'list' ? 'Chuyển sang dạng Lưới icon' : 'Chuyển sang dạng Danh sách'}
                                 aria-label={displayMode === 'list' ? 'Chuyển sang dạng Lưới icon' : 'Chuyển sang dạng Danh sách'}
                               >
-                                {displayMode === 'list' ? (
-                                  <LayoutGrid className="w-5 h-5 stroke-[2]" />
-                                ) : (
-                                  <List className="w-5 h-5 stroke-[2]" />
-                                )}
+                                <AnimatePresence mode="wait" initial={false}>
+                                  {displayMode === 'list' ? (
+                                    <motion.div
+                                      key="switcher-to-grid"
+                                      initial={{ opacity: 0, rotate: -25, scale: 0.8 }}
+                                      animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                                      exit={{ opacity: 0, rotate: 25, scale: 0.8 }}
+                                      transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                                      className="flex items-center justify-center"
+                                    >
+                                      <LayoutGrid className="w-5 h-5 stroke-[2]" />
+                                    </motion.div>
+                                  ) : (
+                                    <motion.div
+                                      key="switcher-to-list"
+                                      initial={{ opacity: 0, rotate: 25, scale: 0.8 }}
+                                      animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                                      exit={{ opacity: 0, rotate: -25, scale: 0.8 }}
+                                      transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                                      className="flex items-center justify-center"
+                                    >
+                                      <List className="w-5 h-5 stroke-[2]" />
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
                               </button>
                             </div>
                           </div>
 
-                          {/* NỘI DUNG VIEW: DANH SÁCH HÀNG (MẶC ĐỊNH CHUẨN FLOODLIGHT) HOẶC LƯỚI ICON */}
-                          {displayMode === 'list' ? (
-                            /* DANH SÁCH HÀNG CHUẨN FLOODLIGHT (IMAGE 2) - CUỘN MƯỢT MÀ TÀNG HÌNH (NO-SCROLLBAR), TRẦN TỐI ĐA MAX-H TỰ CO GIÃN THEO NỘI DUNG */
-                            <div className="p-2 sm:p-2.5 pb-3.5 sm:pb-3.5 max-h-[255px] min-[420px]:max-h-[270px] sm:max-h-[310px] overflow-y-auto overscroll-contain touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                              <div className="relative flex flex-col gap-1 sm:gap-1.5 w-full">
-                                <AnimatePresence mode="popLayout" initial={false}>
-                                  {filteredDegrees.length === 0 ? (
-                                    <motion.div
-                                      key="empty-state"
-                                      initial={{ opacity: 0, y: 6 }}
-                                      animate={{ opacity: 1, y: 0 }}
-                                      exit={{ opacity: 0 }}
-                                      transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-                                      className="py-8 text-center text-[#6E6E73] text-sm"
-                                    >
-                                      <p className="font-medium">Không tìm thấy loại văn bằng phù hợp với &quot;{query}&quot;</p>
-                                      <p className="text-xs text-[#86868B] mt-1">Vui lòng thử tìm từ khóa khác hoặc bấm chọn Tất cả</p>
-                                    </motion.div>
-                                  ) : (
-                                    filteredDegrees.map((deg, idx) => {
-                                      const IconComponent = deg.icon;
-                                      const isSelected = idx === selectedIndex;
-                                      return (
-                                        <motion.div
-                                          layout
-                                          key={deg.id}
-                                          initial={{ opacity: 0, scale: 0.96, y: 8 }}
-                                          animate={{ opacity: 1, scale: 1, y: 0 }}
-                                          exit={{
-                                            opacity: 0,
-                                            scale: 0.96,
-                                            y: -6,
-                                            transition: { duration: 0.20, ease: [0.16, 1, 0.3, 1] },
-                                          }}
-                                          transition={{
-                                            layout: { duration: 0.38, ease: [0.16, 1, 0.3, 1] },
-                                            opacity: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
-                                            scale: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
-                                            y: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
-                                          }}
-                                          role="option"
-                                          aria-selected={isSelected}
-                                          onClick={() => handleSelectDegreeType(deg)}
-                                          onMouseEnter={() => setSelectedIndex(idx)}
-                                          className={`group w-full flex items-center gap-2.5 sm:gap-3.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl cursor-pointer transition-colors duration-150 text-left select-none will-change-[transform,opacity] ${
-                                            isSelected
-                                              ? 'bg-[#E8E8ED] text-[#1D1D1F] shadow-2xs'
-                                              : 'hover:bg-[#E8E8ED] text-[#1D1D1F]'
-                                          }`}
-                                        >
-                                          {/* Squircle Icon: Kích thước 38px chuẩn Apple, bo góc 12px không bị lẹm viền */}
-                                          <div
-                                            className={`w-[38px] h-[38px] sm:w-10 sm:h-10 rounded-[12px] sm:rounded-[13px] bg-gradient-to-br ${deg.gradient} text-white flex items-center justify-center shrink-0 shadow-sm ${deg.shadow} group-hover:scale-105 transition-transform duration-200`}
-                                          >
-                                            <IconComponent className="w-5 h-5 sm:w-5.5 sm:h-5.5 stroke-[2.2]" />
-                                          </div>
-
-                                          {/* Text: Title + Kind Badge + Subtitle */}
-                                          <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2 flex-wrap">
-                                              <span className="text-[15px] sm:text-[16px] font-semibold text-[#1D1D1F] tracking-tight leading-snug">
-                                                {deg.title}
-                                              </span>
-                                              <span className="text-[10px] sm:text-[10.5px] font-semibold px-2 py-0.5 rounded-[6px] bg-white text-[#1D1D1F] border border-[#E8E8ED] shrink-0">
-                                                {deg.kindLabel}
-                                              </span>
-                                            </div>
-                                            <p className="text-[12.5px] sm:text-[13px] text-[#1D1D1F] truncate mt-0.5">
-                                              {deg.subTitle}
-                                            </p>
-                                          </div>
-
-                                          {/* Enter key shortcut ↵: Đổi sang xanh thương hiệu chuẩn token apple-blue */}
-                                          <span
-                                            className={`w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-lg flex items-center justify-center text-xs font-mono transition-all duration-150 shrink-0 ${
+                          {/* NỘI DUNG VIEW: CHUYỂN ĐỔI SIÊU MƯỢT GIỮA DANH SÁCH HÀNG VÀ LƯỚI ICON */}
+                          <AnimatePresence mode="wait" initial={false}>
+                            {displayMode === 'list' ? (
+                              /* DANH SÁCH HÀNG CHUẨN FLOODLIGHT - CUỘN MƯỢT MÀ TÀNG HÌNH (NO-SCROLLBAR), TRẦN TỐI ĐA MAX-H TỰ CO GIÃN THEO NỘI DUNG */
+                              <motion.div
+                                key="view-mode-list"
+                                initial={{ opacity: 0, y: 8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -6 }}
+                                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                                className="p-2 sm:p-2.5 pb-3.5 sm:pb-3.5 max-h-[255px] min-[420px]:max-h-[270px] sm:max-h-[310px] overflow-y-auto overscroll-contain touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                              >
+                                <div className="relative flex flex-col gap-1 sm:gap-1.5 w-full">
+                                  <AnimatePresence mode="popLayout" initial={false}>
+                                    {filteredDegrees.length === 0 ? (
+                                      <motion.div
+                                        key="empty-state"
+                                        initial={{ opacity: 0, y: 6 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                                        className="py-8 text-center text-[#6E6E73] text-sm"
+                                      >
+                                        <p className="font-medium">Không tìm thấy loại văn bằng phù hợp với &quot;{query}&quot;</p>
+                                        <p className="text-xs text-[#86868B] mt-1">Vui lòng thử tìm từ khóa khác hoặc bấm chọn Tất cả</p>
+                                      </motion.div>
+                                    ) : (
+                                      filteredDegrees.map((deg, idx) => {
+                                        const IconComponent = deg.icon;
+                                        const isSelected = idx === selectedIndex;
+                                        return (
+                                          <motion.div
+                                            layout
+                                            key={deg.id}
+                                            initial={{ opacity: 0, scale: 0.96, y: 8 }}
+                                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                                            exit={{
+                                              opacity: 0,
+                                              scale: 0.96,
+                                              y: -6,
+                                              transition: { duration: 0.20, ease: [0.16, 1, 0.3, 1] },
+                                            }}
+                                            transition={{
+                                              layout: { duration: 0.38, ease: [0.16, 1, 0.3, 1] },
+                                              opacity: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
+                                              scale: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
+                                              y: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
+                                            }}
+                                            role="option"
+                                            aria-selected={isSelected}
+                                            onClick={() => handleSelectDegreeType(deg)}
+                                            onMouseEnter={() => setSelectedIndex(idx)}
+                                            className={`group w-full flex items-center gap-2.5 sm:gap-3.5 px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl cursor-pointer transition-colors duration-150 text-left select-none will-change-[transform,opacity] ${
                                               isSelected
-                                                ? 'bg-apple-blue text-white shadow-xs'
-                                                : 'bg-white/80 text-[#6E6E73] group-hover:bg-white group-hover:text-[#1D1D1F]'
+                                                ? 'bg-[#E8E8ED] text-[#1D1D1F] shadow-2xs'
+                                                : 'hover:bg-[#E8E8ED] text-[#1D1D1F]'
                                             }`}
                                           >
-                                            ↵
-                                          </span>
-                                        </motion.div>
-                                      );
-                                    })
-                                  )}
-                                </AnimatePresence>
-                              </div>
-                            </div>
-                          ) : (
-                            /* LƯỚI ICON LAUNCHPAD (7 BIỂU TƯỢNG) - CÙNG TRẦN TỐI ĐA MAX-H ĐỒNG NHẤT VỚI CHẾ ĐỘ DANH SÁCH (KHÔNG BAO GIỜ BỊ DÀI HƠN) */
-                            <div className="p-2 sm:p-2.5 pb-3.5 sm:pb-3.5 max-h-[255px] min-[420px]:max-h-[270px] sm:max-h-[310px] overflow-y-auto overscroll-contain touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-                              <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-2 sm:gap-4 py-1">
-                                {DEGREE_TYPES.map((deg) => {
-                                  const IconComponent = deg.icon;
-                                  const isMatch = isDegreeMatch(deg);
-                                  return (
-                                    <motion.button
-                                      key={deg.id}
-                                      type="button"
-                                      whileHover={{ scale: 1.05, y: -2 }}
-                                      whileTap={{ scale: 0.95 }}
-                                      onClick={() => handleSelectDegreeType(deg)}
-                                      className={`degree-launchpad-btn group relative flex flex-col items-center justify-start p-1.5 sm:p-2.5 rounded-2xl bg-transparent hover:bg-[#F5F5F7] transition-all duration-200 cursor-pointer text-center min-w-0 outline-none focus:outline-none focus:ring-0 ring-0 border-0 shadow-none select-none ${
-                                        isMatch
-                                          ? 'opacity-100 scale-100'
-                                          : 'opacity-35 grayscale-[50%] hover:opacity-100 hover:grayscale-0'
-                                      }`}
-                                    >
-                                      <div
-                                        className={`w-[42px] h-[42px] sm:w-14 sm:h-14 rounded-[14px] sm:rounded-[20px] bg-gradient-to-br ${deg.gradient} text-white flex items-center justify-center shadow-md ${deg.shadow} group-hover:scale-105 transition-all duration-200 relative shrink-0`}
+                                            {/* Squircle Icon: Kích thước 38px chuẩn Apple, bo góc 12px không bị lẹm viền */}
+                                            <div
+                                              className={`w-[38px] h-[38px] sm:w-10 sm:h-10 rounded-[12px] sm:rounded-[13px] bg-gradient-to-br ${deg.gradient} text-white flex items-center justify-center shrink-0 shadow-sm ${deg.shadow} group-hover:scale-105 transition-transform duration-200`}
+                                            >
+                                              <IconComponent className="w-5 h-5 sm:w-5.5 sm:h-5.5 stroke-[2.2]" />
+                                            </div>
+
+                                            {/* Text: Title + Kind Badge + Subtitle */}
+                                            <div className="flex-1 min-w-0">
+                                              <div className="flex items-center gap-2 flex-wrap">
+                                                <span className="text-[15px] sm:text-[16px] font-semibold text-[#1D1D1F] tracking-tight leading-snug">
+                                                  {deg.title}
+                                                </span>
+                                                <span className="text-[10px] sm:text-[10.5px] font-semibold px-2 py-0.5 rounded-[6px] bg-white text-[#1D1D1F] border border-[#D2D2D7] shrink-0">
+                                                  {deg.kindLabel}
+                                                </span>
+                                              </div>
+                                              <p className="text-[12.5px] sm:text-[13px] text-[#1D1D1F] truncate mt-0.5">
+                                                {deg.subTitle}
+                                              </p>
+                                            </div>
+
+                                            {/* Enter key shortcut ↵: Đổi sang xanh thương hiệu chuẩn token apple-blue */}
+                                            <span
+                                              className={`w-6 h-6 sm:w-6.5 sm:h-6.5 rounded-lg flex items-center justify-center text-xs font-mono transition-all duration-150 shrink-0 ${
+                                                isSelected
+                                                  ? 'bg-apple-blue text-white shadow-xs'
+                                                  : 'bg-white/80 text-[#6E6E73] group-hover:bg-white group-hover:text-[#1D1D1F]'
+                                              }`}
+                                            >
+                                              ↵
+                                            </span>
+                                          </motion.div>
+                                        );
+                                      })
+                                    )}
+                                  </AnimatePresence>
+                                </div>
+                              </motion.div>
+                            ) : (
+                              /* LƯỚI ICON LAUNCHPAD (7 BIỂU TƯỢNG) - CÙNG TRẦN TỐI ĐA MAX-H ĐỒNG NHẤT VỚI CHẾ ĐỘ DANH SÁCH (KHÔNG BAO GIỜ BỊ DÀI HƠN) */
+                              <motion.div
+                                key="view-mode-grid"
+                                initial={{ opacity: 0, y: 8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -6 }}
+                                transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                                className="p-2 sm:p-2.5 pb-3.5 sm:pb-3.5 max-h-[255px] min-[420px]:max-h-[270px] sm:max-h-[310px] overflow-y-auto overscroll-contain touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                              >
+                                <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-2 sm:gap-4 py-1">
+                                  {DEGREE_TYPES.map((deg, idx) => {
+                                    const IconComponent = deg.icon;
+                                    const isMatch = isDegreeMatch(deg);
+                                    return (
+                                      <motion.button
+                                        key={deg.id}
+                                        type="button"
+                                        initial={{ opacity: 0, scale: 0.92, y: 6 }}
+                                        animate={{
+                                          opacity: isMatch ? 1 : 0.35,
+                                          scale: 1,
+                                          y: 0,
+                                        }}
+                                        transition={{
+                                          duration: 0.2,
+                                          delay: idx * 0.02,
+                                          ease: [0.16, 1, 0.3, 1],
+                                        }}
+                                        whileHover={{ scale: 1.05, y: -2 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={() => handleSelectDegreeType(deg)}
+                                        className={`degree-launchpad-btn group relative flex flex-col items-center justify-start p-1.5 sm:p-2.5 rounded-2xl bg-transparent hover:bg-[#F5F5F7] transition-all duration-200 cursor-pointer text-center min-w-0 outline-none focus:outline-none focus:ring-0 ring-0 border-0 shadow-none select-none ${
+                                          isMatch
+                                            ? 'grayscale-0'
+                                            : 'grayscale-[50%] hover:opacity-100 hover:grayscale-0'
+                                        }`}
                                       >
-                                        <IconComponent className="w-5.5 h-5.5 sm:w-7 sm:h-7 stroke-[2.2] relative z-10" />
-                                      </div>
-                                      <div className="mt-1.5 sm:mt-2 flex flex-col items-center w-full px-0.5">
-                                        <span className="text-[12px] sm:text-[13.5px] font-semibold text-[#1D1D1F] text-center leading-snug whitespace-normal w-full line-clamp-2">
-                                          {deg.title}
-                                        </span>
-                                      </div>
-                                    </motion.button>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          )}
+                                        <div
+                                          className={`w-[42px] h-[42px] sm:w-14 sm:h-14 rounded-[14px] sm:rounded-[20px] bg-gradient-to-br ${deg.gradient} text-white flex items-center justify-center shadow-md ${deg.shadow} group-hover:scale-105 transition-all duration-200 relative shrink-0`}
+                                        >
+                                          <IconComponent className="w-5.5 h-5.5 sm:w-7 sm:h-7 stroke-[2.2] relative z-10" />
+                                        </div>
+                                        <div className="mt-1.5 sm:mt-2 flex flex-col items-center w-full px-0.5">
+                                          <span className="text-[13px] sm:text-[14px] font-semibold text-[#1D1D1F] text-center leading-snug whitespace-normal w-full line-clamp-2">
+                                            {deg.title}
+                                          </span>
+                                        </div>
+                                      </motion.button>
+                                    );
+                                  })}
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
                         </motion.div>
                       ) : (
                         /* ===================================================================== */
@@ -1161,8 +1257,8 @@ export default function SpotlightBar({
                           initial={isSwitchingView ? "enter" : false}
                           animate="center"
                           exit="exit"
-                          style={{ willChange: 'transform, opacity, filter' }}
-                          className="hidden sm:block w-full px-5 min-[390px]:px-6 sm:px-8 pt-4 sm:pt-4 pb-5 sm:pb-6 rounded-t-[32px] sm:rounded-t-[28px]"
+                          style={{ willChange: 'transform, opacity' }}
+                          className="hidden sm:block w-full px-5 min-[390px]:px-6 sm:px-8 pt-4 pb-6 sm:pb-7"
                         >
                           {/* Header Form: Hiển thị đúng biểu tượng Squircle của loại bằng đã chọn + Nút quay lại gọn gàng 1 dòng */}
                           <div className="flex items-center justify-between mb-2.5 sm:mb-3 gap-2.5">
@@ -1248,8 +1344,21 @@ export default function SpotlightBar({
                 <motion.div
                   initial={{ opacity: 0, height: 0, marginTop: 0 }}
                   animate={{ opacity: 1, height: 'auto', marginTop: isMobile ? 14 : 24 }}
-                  exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                  transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                  exit={{
+                    opacity: 0,
+                    height: 0,
+                    marginTop: 0,
+                    transition: {
+                      height: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
+                      opacity: { duration: 0.16, ease: [0.22, 1, 0.36, 1] },
+                      marginTop: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
+                    },
+                  }}
+                  transition={{
+                    height: { duration: 0.36, ease: [0.22, 1, 0.36, 1] },
+                    opacity: { duration: 0.26, delay: 0.06, ease: [0.22, 1, 0.36, 1] },
+                    marginTop: { duration: 0.36, ease: [0.22, 1, 0.36, 1] },
+                  }}
                   className="grid grid-cols-3 gap-2 sm:gap-3.5 w-full"
                 >
                   {POPULAR_SEARCH_SHORTCUTS.map((item) => {
@@ -1313,7 +1422,7 @@ export default function SpotlightBar({
               isClosingMobileSheet ? 'mobile-drawer-exit' : 'mobile-drawer-enter'
             }`}
           >
-            <div className="relative w-full bg-white rounded-t-[36px] shadow-[0_24px_70px_-15px_rgba(15,23,42,0.28),0_10px_28px_-4px_rgba(15,23,42,0.12)] max-h-[92dvh] flex flex-col overflow-hidden outline-none">
+            <div className="relative w-full bg-white rounded-t-[36px] shadow-[0_24px_70px_-15px_rgba(15,23,42,0.28),0_10px_28px_-4px_rgba(15,23,42,0.12)] max-h-[80dvh] flex flex-col overflow-hidden outline-none">
               {/* Thanh gạt tay kéo vuốt (Drag Handle) */}
               <div
                 onClick={() => handleCloseMobileSheet(false)}

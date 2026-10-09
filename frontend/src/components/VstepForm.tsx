@@ -259,7 +259,7 @@ export default function VstepForm({
       </div>
 
       {/* HÀNG NÚT TRA CỨU: NÚT BẤM TO RÕ, ĐẸP MẮT, BẤM TRA CỨU TRỰC TIẾP */}
-      <div className="pt-2 sm:pt-2.5 pb-1 sm:pb-1.5 px-1 sm:px-1.5 flex justify-center sm:justify-end">
+      <div className="pt-1 flex justify-center sm:justify-end">
         <button
           type="submit"
           onClick={handleSubmit}

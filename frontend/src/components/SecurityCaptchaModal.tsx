@@ -126,7 +126,7 @@ export default function SecurityCaptchaModal({
               e.stopPropagation();
               handleClose();
             }}
-            className="absolute right-4 top-4 sm:right-5 sm:top-5 overflow-hidden w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-[#E8E8ED] hover:bg-[#DFDFE4] active:bg-[#D2D2D7] text-[#1D1D1F] transition-all duration-150 cursor-pointer active:scale-90 no-print outline-none border-0 border-none select-none [-webkit-tap-highlight-color:transparent]"
+            className="absolute right-4 top-4 sm:right-5 sm:top-5 overflow-hidden w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] text-[#1D1D1F] transition-all duration-150 cursor-pointer active:scale-90 no-print outline-none border-0 border-none select-none [-webkit-tap-highlight-color:transparent]"
             title="Đóng (Esc)"
             aria-label="Đóng xác thực"
           >

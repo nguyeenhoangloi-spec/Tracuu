@@ -1,18 +1,64 @@
+'use client';
+
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Home, Phone, Mail, MessageCircle, MapPin } from 'lucide-react';
+
+// ═══ ANIMATION VARIANTS KIỂU APPLE: FADE-IN + SLIDE-UP NHẸ NHÀNG ═══
+
+const footerContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.05,
+    },
+  },
+};
+
+const footerItemVariants = {
+  hidden: {
+    opacity: 0,
+    y: 18,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number], // Apple SF Motion ease-out
+    },
+  },
+};
+
+const footerBottomVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number],
+    },
+  },
+};
 
 export default function Footer() {
   return (
-    <footer
+    <motion.footer
       id="lien-he"
-      className="bg-white text-footer-link pt-6 sm:pt-8 pb-3 sm:pb-4 no-print mt-auto relative overflow-hidden select-none border-t border-slate-100"
+      className="bg-[#F5F5F7] text-footer-link pt-8 sm:pt-10 pb-4 sm:pb-5 no-print mt-auto relative overflow-hidden select-none border-t-0"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.15 }}
+      variants={footerContainerVariants}
     >
       {/* NỘI DUNG CHÂN TRANG: BỐ CỤC 3 CỘT GỌN GÀNG, TINH TẾ, CHUẨN KÍCH THƯỚC */}
       <div className="max-w-[1180px] mx-auto px-4 sm:px-6 relative z-10">
         {/* Bố cục 3 Cột */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 pb-4">
           {/* CỘT 1: Trung tâm chuẩn đầu ra */}
-          <div className="space-y-2">
+          <motion.div className="space-y-2" variants={footerItemVariants}>
             <h3 className="text-[14px] sm:text-[15px] font-semibold text-footer-title leading-snug">
               Trung tâm chuẩn đầu ra và Phát triển nguồn nhân lực
             </h3>
@@ -63,10 +109,10 @@ export default function Footer() {
                 </a>
               </li>
             </ul>
-          </div>
+          </motion.div>
 
           {/* CỘT 2: Phòng Quản lý đào tạo */}
-          <div className="space-y-2">
+          <motion.div className="space-y-2" variants={footerItemVariants}>
             <h3 className="text-[14px] sm:text-[15px] font-semibold text-footer-title leading-snug">
               Phòng Quản lý đào tạo
             </h3>
@@ -117,10 +163,10 @@ export default function Footer() {
                 </a>
               </li>
             </ul>
-          </div>
+          </motion.div>
 
           {/* CỘT 3: Trung tâm Phát triển & Ứng dụng phần mềm */}
-          <div className="space-y-2">
+          <motion.div className="space-y-2" variants={footerItemVariants}>
             <h3 className="text-[14px] sm:text-[15px] font-semibold text-footer-title leading-snug">
               Trung tâm Phát triển &amp; Ứng dụng phần mềm
             </h3>
@@ -171,24 +217,24 @@ export default function Footer() {
                 </a>
               </li>
             </ul>
-          </div>
+          </motion.div>
         </div>
 
         {/* Địa chỉ — trên đường gạch */}
-        <div className="pt-3 pb-2.5 text-center">
+        <motion.div className="pt-3 pb-2.5 text-center" variants={footerBottomVariants}>
           <div className="inline-flex items-center justify-center gap-2 text-[12.5px] sm:text-[13px] text-footer-link font-normal">
             <MapPin className="w-3.5 h-3.5 text-footer-link flex-shrink-0" />
             <span>Số 168, Đường Nguyễn Văn Cừ (nối dài), P. An Bình, Q. Ninh Kiều, TP. Cần Thơ</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Bản quyền — dưới đường gạch */}
-        <div className="pt-2.5 pb-1 text-center border-t border-slate-100">
+        <motion.div className="pt-3 pb-1 text-center border-t border-black/[0.08]" variants={footerBottomVariants}>
           <p className="text-[12px] text-footer-copyright font-normal">
             Bản quyền © {new Date().getFullYear()} Trường Đại học Nam Cần Thơ. Tất cả quyền được bảo lưu.
           </p>
-        </div>
+        </motion.div>
       </div>
-    </footer>
+    </motion.footer>
   );
 }

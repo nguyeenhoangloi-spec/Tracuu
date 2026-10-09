@@ -276,7 +276,7 @@ export default function CnttForm({
       </div>
 
       {/* HÀNG GÓC PHẢI: NÚT TRA CỨU - BẤM TRA CỨU TRỰC TIẾP SẠCH ĐẸP */}
-      <div className="pt-2 sm:pt-2.5 pb-1 sm:pb-1.5 px-1 sm:px-1.5 flex justify-center sm:justify-end">
+      <div className="pt-1 flex justify-center sm:justify-end">
         <button
           type="submit"
           onClick={handleSubmit}

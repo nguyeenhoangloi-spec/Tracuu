@@ -761,16 +761,16 @@ input:focus, input:focus-visible, input:active {
   transition: background-color 500000s ease-in-out 0s !important;
 }
 
-/* ══ THIẾT KẾ Ô NHẬP LIỆU CAO CẤP CHUẨN APPLE & STRIPE DESIGN SYSTEM ══
-   Nền trắng tinh (#ffffff), viền slate-300 sắc nét (1.5px), đổ bóng ngoại vi tinh tế,
-   tương phản cao, triệt tiêu hoàn toàn cảm giác nhạt nhòa, mờ đục cũ. */
+/* ══ THIẾT KẾ Ô NHẬP LIỆU CAO CẤP CHUẨN APPLE DESIGN SYSTEM ══
+   Nền trắng tinh (#ffffff), viền Apple Neutral Gray thanh thoát (#D2D2D7, 1px),
+   tương phản tự nhiên, tiệp màu 100% với SpotlightBar và toàn hệ thống. */
 .lbi-box {
   position: relative;
   width: 100%;
   border-radius: 18px;
-  border: 1.5px solid #cbd5e1;
+  border: 1px solid #D2D2D7;
   background-color: #ffffff;
-  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.03);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
   transition: border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
     background-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
     box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -778,9 +778,9 @@ input:focus, input:focus-visible, input:active {
 }
 
 .lbi-box:hover {
-  border-color: #94a3b8;
+  border-color: #86868B;
   background-color: #ffffff;
-  box-shadow: 0 2px 6px 0 rgba(15, 23, 42, 0.07);
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.06);
 }
 
 .lbi-box[data-is-select="true"] {
@@ -814,13 +814,13 @@ input:focus, input:focus-visible, input:active {
 
 .lbi[data-filled="true"]:not([data-focus="true"]):not(:focus-within):not([data-error="true"]) .lbi-box {
   background-color: #ffffff;
-  border: 1.5px solid #cbd5e1;
-  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.05);
+  border: 1px solid #D2D2D7;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
 }
 
 .lbi[data-filled="true"]:not([data-focus="true"]):not(:focus-within):not([data-error="true"]) .lbi-box:hover {
-  border-color: #94a3b8;
-  box-shadow: 0 2px 6px 0 rgba(15, 23, 42, 0.07);
+  border-color: #86868B;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.06);
 }
 
 /* Khi ô bị lỗi (Error): Nền trắng tinh, viền đỏ 2px tinh tế */

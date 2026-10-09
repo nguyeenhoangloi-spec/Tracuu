@@ -437,7 +437,7 @@ export default function Home() {
       {result && isResultVisible && (
         <div
           id="omninotch-overlay"
-          className={`fixed inset-0 z-[60] flex flex-col justify-end sm:justify-center items-center p-0 sm:p-5 md:p-6 overflow-hidden sm:overflow-y-auto no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-colors duration-300 ${isCardExpanded ? 'bg-slate-950/60 backdrop-blur-[6px]' : 'bg-slate-950/50 backdrop-blur-[6px]'
+          className={`fixed inset-0 z-[1000] flex flex-col justify-end sm:justify-center items-center p-0 sm:p-5 md:p-6 overflow-hidden sm:overflow-y-auto no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-colors duration-300 ${isCardExpanded ? 'bg-slate-950/60 backdrop-blur-[6px]' : 'bg-slate-950/50 backdrop-blur-[6px]'
             } ${isClosingResult ? 'animate-omninotch-backdrop-exit' : 'animate-omninotch-backdrop-enter'
             }`}
           onClick={(e) => {

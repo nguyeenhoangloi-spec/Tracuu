@@ -28,12 +28,20 @@ export default function NotFoundResultCard({
   return (
     <div className="font-google-sans text-[#1D1D1F] w-full max-w-[540px] mx-auto flex flex-col justify-end sm:justify-center my-auto">
       {/* THẺ THÔNG BÁO KHÔNG TÌM THẤY KẾT QUẢ - BOTTOM SHEET TRÊN MOBILE, POPUP BO TRÒN 38PX ĐỒNG BỘ TRÊN DESKTOP */}
-      <div className="bg-white rounded-t-[36px] rounded-b-none sm:rounded-[38px] sm:rounded-b-[38px] shadow-[0_24px_70px_-15px_rgba(15,23,42,0.28),0_10px_28px_-4px_rgba(15,23,42,0.12)] overflow-hidden border-0 relative px-4 min-[390px]:px-6 sm:px-8 pt-7 pb-[calc(2rem+env(safe-area-inset-bottom,0px))] sm:py-12 text-center w-full">
-        {/* Nút đóng góc phải: Nền tròn xám #E8E8ED chuẩn Apple UI, nổi bật rõ ràng trên nền trắng */}
+      <div className="bg-white rounded-t-[36px] rounded-b-none sm:rounded-[38px] sm:rounded-b-[38px] shadow-[0_24px_70px_-15px_rgba(15,23,42,0.28),0_10px_28px_-4px_rgba(15,23,42,0.12)] overflow-hidden border-0 relative px-4 min-[390px]:px-6 sm:px-8 pt-3 sm:pt-7 pb-[calc(2rem+env(safe-area-inset-bottom,0px))] sm:py-12 text-center w-full">
+        {/* Thanh gạt tay kéo vuốt trên Mobile (Đồng bộ 100% nhận diện với Form Sheet và Result Card) */}
+        <div
+          onClick={handleClose}
+          className="pt-1 pb-3 flex justify-center shrink-0 cursor-pointer sm:hidden group select-none"
+          title="Chạm hoặc vuốt để đóng"
+        >
+          <div className="w-10 h-1.2 rounded-full bg-slate-300 group-hover:bg-slate-400 active:bg-slate-500 transition-colors" />
+        </div>
+        {/* Nút đóng góc phải: Nền tròn xám #F5F5F7 chuẩn Apple UI, thanh lịch và êm mắt trên nền trắng */}
         <button
           type="button"
           onClick={handleClose}
-          className="absolute top-5 right-5 sm:top-6 sm:right-6 overflow-hidden w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-[#E8E8ED] hover:bg-[#DFDFE4] active:bg-[#D2D2D7] text-[#1D1D1F] transition-all duration-150 cursor-pointer active:scale-90 no-print outline-none border-0 border-none select-none [-webkit-tap-highlight-color:transparent]"
+          className="absolute top-5 right-5 sm:top-6 sm:right-6 overflow-hidden w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] text-[#1D1D1F] transition-all duration-150 cursor-pointer active:scale-90 no-print outline-none border-0 border-none select-none [-webkit-tap-highlight-color:transparent]"
           title="Đóng (Esc)"
           aria-label="Đóng thông báo"
         >

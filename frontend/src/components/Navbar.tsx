@@ -93,10 +93,14 @@ export default function Navbar({ activeTab = 'vanbang', onTabChange }: NavbarPro
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [headerVisible, setHeaderVisible] = useState(true);
+  const [hasEntrance, setHasEntrance] = useState(false);
   const lastScrollYRef = useRef(0);
 
   useEffect(() => {
     setMounted(true);
+    // Kích hoạt entrance animation sau micro-delay để tránh FOUC
+    const raf = requestAnimationFrame(() => setHasEntrance(true));
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   // Theo dõi hướng cuộn trang siêu nhạy (Wheel + Touch + Scroll): Bắt ngay cử chỉ cuộn lên/xuống tức thì
@@ -259,14 +263,17 @@ export default function Navbar({ activeTab = 'vanbang', onTabChange }: NavbarPro
   return (
     <>
       <motion.header
-        initial={{ y: 0 }}
-        animate={{ y: headerVisible || mobileMenuOpen ? 0 : -85 }}
+        initial={{ y: -12, opacity: 0 }}
+        animate={{
+          y: headerVisible || mobileMenuOpen ? 0 : -85,
+          opacity: hasEntrance ? 1 : 0,
+        }}
         transition={{
-          duration: 0.24,
-          ease: [0.22, 1, 0.36, 1], // Chuẩn Apple WWDC Fluid Curve: cực nhạy, lướt êm ru không giật
+          y: { duration: 0.24, ease: [0.22, 1, 0.36, 1] },
+          opacity: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] },
         }}
         style={{
-          willChange: 'transform',
+          willChange: 'transform, opacity',
           transform: 'translateZ(0)',
         }}
         className={`sticky top-0 w-full z-[210] no-print antialiased select-none border-none shadow-none transition-colors ${
@@ -293,71 +300,56 @@ export default function Navbar({ activeTab = 'vanbang', onTabChange }: NavbarPro
           </Link>
 
           {/* MENU LIÊN KẾT TRẢI NGANG TRÊN DESKTOP (CỠ CHỮ 18PX, FONT HỆ THỐNG, CHỮ ĐỨNG THẲNG, ĐỘ ĐẬM FONT-MEDIUM RÕ NÉT, CÓ HIỆU ỨNG RIPPLE & THANH GẠCH CỐ ĐỊNH 100%, VUÔNG GÓC ROUNDED-NONE) */}
-          <nav className="hidden lg:flex items-center gap-3 xl:gap-5 text-[18px] font-sans">
-            <a
-              href="https://www.nctu.edu.vn/"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-ripple="rgba(236, 30, 36, 0.15)"
-              className="relative px-3 py-1.5 rounded-none font-medium text-apple-text hover:text-brand-red transition-colors duration-150 cursor-pointer select-none outline-none focus:outline-none not-italic overflow-hidden hover:bg-black/[0.03]"
-            >
-              <span className="relative z-40">Trang chủ</span>
-            </a>
-
-            <Link
-              href="/"
-              onClick={() => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
-              data-ripple="rgba(236, 30, 36, 0.18)"
-              className="relative px-3 py-1.5 rounded-none font-medium text-brand-red cursor-pointer select-none outline-none focus:outline-none not-italic overflow-hidden transition-colors duration-150 hover:bg-red-50/50"
-              title="Cổng tra cứu văn bằng & chứng chỉ điện tử"
-            >
-              <span className="relative z-40">Tra cứu</span>
-              {/* Thanh gạch đỏ cố định 100%, z-40 nổi bật trên ripple, vuông góc chuẩn xác */}
-              <span className="absolute bottom-1 left-3 right-3 h-[1.5px] bg-brand-red rounded-none z-40 pointer-events-none" />
-            </Link>
-
-            <a
-              href="https://nctu.edu.vn/trang-sinh-vien"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-ripple="rgba(236, 30, 36, 0.15)"
-              className="relative px-3 py-1.5 rounded-none font-medium text-apple-text hover:text-brand-red transition-colors duration-150 cursor-pointer select-none outline-none focus:outline-none not-italic overflow-hidden hover:bg-black/[0.03]"
-            >
-              <span className="relative z-40">Sinh viên</span>
-            </a>
-
-            <a
-              href="https://alumni.nctu.edu.vn/"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-ripple="rgba(236, 30, 36, 0.15)"
-              className="relative px-3 py-1.5 rounded-none font-medium text-apple-text hover:text-brand-red transition-colors duration-150 cursor-pointer select-none outline-none focus:outline-none not-italic overflow-hidden hover:bg-black/[0.03]"
-            >
-              <span className="relative z-40">Cựu sinh viên</span>
-            </a>
-
-            <a
-              href="https://nctu.edu.vn/cb-gv"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-ripple="rgba(236, 30, 36, 0.15)"
-              className="relative px-3 py-1.5 rounded-none font-medium text-apple-text hover:text-brand-red transition-colors duration-150 cursor-pointer select-none outline-none focus:outline-none not-italic overflow-hidden hover:bg-black/[0.03]"
-            >
-              <span className="relative z-40">CB-GV</span>
-            </a>
-
-            <a
-              href="https://vr360.nctu.edu.vn/"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-ripple="rgba(236, 30, 36, 0.15)"
-              className="relative px-3 py-1.5 rounded-none font-medium text-apple-text hover:text-brand-red transition-colors duration-150 cursor-pointer select-none outline-none focus:outline-none not-italic overflow-hidden hover:bg-black/[0.03]"
-            >
-              <span className="relative z-40">Tham quan trường</span>
-            </a>
-          </nav>
+          <motion.nav
+            className="hidden lg:flex items-center gap-3 xl:gap-5 text-[18px] font-sans"
+            initial="hidden"
+            animate={hasEntrance ? 'visible' : 'hidden'}
+            variants={{
+              hidden: {},
+              visible: {
+                transition: { staggerChildren: 0.04, delayChildren: 0.15 },
+              },
+            }}
+          >
+            {[
+              { name: 'Trang chủ', href: 'https://www.nctu.edu.vn/', isExternal: true, isCurrent: false },
+              { name: 'Tra cứu', href: '/', isExternal: false, isCurrent: true },
+              { name: 'Sinh viên', href: 'https://nctu.edu.vn/trang-sinh-vien', isExternal: true, isCurrent: false },
+              { name: 'Cựu sinh viên', href: 'https://alumni.nctu.edu.vn/', isExternal: true, isCurrent: false },
+              { name: 'CB-GV', href: 'https://nctu.edu.vn/cb-gv', isExternal: true, isCurrent: false },
+              { name: 'Tham quan trường', href: 'https://vr360.nctu.edu.vn/', isExternal: true, isCurrent: false },
+            ].map((item) =>
+              item.isCurrent ? (
+                <motion.div
+                  key={item.name}
+                  variants={{ hidden: { opacity: 0, y: -8 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] } } }}
+                >
+                  <Link
+                    href={item.href}
+                    onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    data-ripple="rgba(236, 30, 36, 0.18)"
+                    className="relative px-3 py-1.5 rounded-none font-medium text-brand-red cursor-pointer select-none outline-none focus:outline-none not-italic overflow-hidden transition-colors duration-150 hover:bg-red-50/50"
+                    title="Cổng tra cứu văn bằng & chứng chỉ điện tử"
+                  >
+                    <span className="relative z-40">{item.name}</span>
+                    <span className="absolute bottom-1 left-3 right-3 h-[1.5px] bg-brand-red rounded-none z-40 pointer-events-none" />
+                  </Link>
+                </motion.div>
+              ) : (
+                <motion.a
+                  key={item.name}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-ripple="rgba(236, 30, 36, 0.15)"
+                  className="relative px-3 py-1.5 rounded-none font-medium text-apple-text hover:text-brand-red transition-colors duration-150 cursor-pointer select-none outline-none focus:outline-none not-italic overflow-hidden hover:bg-black/[0.03]"
+                  variants={{ hidden: { opacity: 0, y: -8 }, visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] } } }}
+                >
+                  <span className="relative z-40">{item.name}</span>
+                </motion.a>
+              )
+            )}
+          </motion.nav>
 
           {/* CỤM NÚT MENU TRÊN MOBILE/TABLET: 2 THANH GẠCH BIẾN HÌNH MORPHING CHUẨN APPLE WWDC */}
           <div className="lg:hidden flex items-center shrink-0">
