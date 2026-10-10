@@ -96,36 +96,56 @@
      ══════════════════════════════════════════════════════════════════════ */
 
   /* 1. Nhóm màu văn bản & tương tác chuẩn Apple Minimalist */
-  --color-apple-text: #1D1D1F;            /* Màu chữ chính, tiêu đề H1/H2, navbar desktop */
-  --color-apple-muted: #6E6E73;           /* Màu chữ phụ chuẩn Apple (#6E6E73) tương phản 4.86:1 đạt chuẩn WCAG AA */
-  --color-apple-hover: #E8E8ED;           /* Nền hover, tab platter, pill chip, nút tròn đóng/mở (#E8E8ED) */
-  --color-apple-blue: #2563EB;            /* Xanh dương tương tác chuẩn (#2563EB) đồng bộ Primary CTA, tươi tắn không bị đen */
+  --color-apple-text: #1D1D1F;
+  /* Màu chữ chính, tiêu đề H1/H2, navbar desktop */
+  --color-apple-muted: #6E6E73;
+  /* Màu chữ phụ chuẩn Apple (#6E6E73) tương phản 4.86:1 đạt chuẩn WCAG AA */
+  --color-apple-hover: #E8E8ED;
+  /* Nền hover, tab platter, pill chip, nút tròn đóng/mở (#E8E8ED) */
+  --color-apple-blue: #2563EB;
+  /* Xanh dương tương tác chuẩn (#2563EB) đồng bộ Primary CTA, tươi tắn không bị đen */
 
   /* Token 2 màu xám chuẩn chính thức của hệ thống */
-  --color-gray-surface-subtle: #F5F5F7;   /* 1. Nền xám cao cấp (#F5F5F7): Dùng cho nền thẻ gợi ý và panel phụ */
-  --color-gray-surface-hover: #E8E8ED;    /* 2. Màu xám rê chuột hover & nền tab chips (#E8E8ED) */
+  --color-gray-surface-subtle: #F5F5F7;
+  /* 1. Nền xám cao cấp (#F5F5F7): Dùng cho nền thẻ gợi ý và panel phụ */
+  --color-gray-surface-hover: #E8E8ED;
+  /* 2. Màu xám rê chuột hover & nền tab chips (#E8E8ED) */
 
   /* 2. Nhóm màu thương hiệu trường Đại học Nam Cần Thơ (NCTU / DNC) */
-  --color-brand-red: #EC1E24;             /* Đỏ nhận diện chính NCTU */
-  --color-brand-red-dark: #B71526;        /* Đỏ đậm khi hover/active */
-  --color-brand-navy: #25359D;            /* Xanh navy thương hiệu NCTU */
-  --color-brand-navy-dark: #1A2570;       /* Xanh navy đậm */
-  --color-brand-gold: #FFD24B;            /* Vàng kim điểm xuyết */
+  --color-brand-red: #EC1E24;
+  /* Đỏ nhận diện chính NCTU */
+  --color-brand-red-dark: #B71526;
+  /* Đỏ đậm khi hover/active */
+  --color-brand-navy: #25359D;
+  /* Xanh navy thương hiệu NCTU */
+  --color-brand-navy-dark: #1A2570;
+  /* Xanh navy đậm */
+  --color-brand-gold: #FFD24B;
+  /* Vàng kim điểm xuyết */
 
   /* 3. Nhóm 3 cấp độ màu chân trang chuẩn Apple Footer */
-  --color-footer-title: #000000E0;        /* Tiêu đề các phòng ban: Đen 88% (#000000E0) */
-  --color-footer-link: #000000B8;         /* Liên kết, địa chỉ, icon: Đen 72% (#000000B8) */
-  --color-footer-copyright: #0000008F;    /* Dòng bản quyền copyright: Đen 56% (#0000008F) */
+  --color-footer-title: #000000E0;
+  /* Tiêu đề các phòng ban: Đen 88% (#000000E0) */
+  --color-footer-link: #000000B8;
+  /* Liên kết, địa chỉ, icon: Đen 72% (#000000B8) */
+  --color-footer-copyright: #0000008F;
+  /* Dòng bản quyền copyright: Đen 56% (#0000008F) */
 
   /* 4. Nhóm nền & đường viền tinh tế */
-  --color-surface-white: #ffffff;         /* Nền trắng tinh khôi */
-  --color-surface-subtle: #f9fafb;        /* Nền xám nhẹ dịu mắt */
-  --color-border-subtle: rgba(0, 0, 0, 0.08); /* Viền mờ ngăn cách */
-  --color-focus-ring: #111827;            /* Viền focus trợ năng */
+  --color-surface-white: #ffffff;
+  /* Nền trắng tinh khôi */
+  --color-surface-subtle: #f9fafb;
+  /* Nền xám nhẹ dịu mắt */
+  --color-border-subtle: rgba(0, 0, 0, 0.08);
+  /* Viền mờ ngăn cách */
+  --color-focus-ring: #111827;
+  /* Viền focus trợ năng */
 
   /* 5. Nhóm hiệu ứng Ripple loang màu gợn sóng toàn cục */
-  --color-ripple-brand: rgba(236, 30, 36, 0.20);   /* Sóng loang đỏ chuẩn thương hiệu NCTU #EC1E24 */
-  --color-ripple-light: rgba(255, 255, 255, 0.35);  /* Sóng loang trắng cho nút nền tối/màu */
+  --color-ripple-brand: rgba(236, 30, 36, 0.20);
+  /* Sóng loang đỏ chuẩn thương hiệu NCTU #EC1E24 */
+  --color-ripple-light: rgba(255, 255, 255, 0.35);
+  /* Sóng loang trắng cho nút nền tối/màu */
 
   /* Typography fonts */
   --font-ui: 'Momo Trust Sans', 'Google Sans', 'Roboto Flex', system-ui, -apple-system, sans-serif;
@@ -145,22 +165,37 @@
   --btn-primary-font-size: 18px;
 
   /* 7. Nhóm Design Tokens cho Form Input, DatePicker & Select Dropdown */
-  --color-input-border: #D2D2D7;          /* Viền mặc định ô nhập liệu 1px */
-  --color-input-border-hover: #86868B;    /* Viền khi rê chuột vào ô nhập liệu */
-  --color-input-focus-border: #2563EB;    /* Viền khi focus/active ô nhập liệu (Apple Blue 2px) */
-  --color-input-focus-ring: rgba(37, 99, 235, 0.12); /* Ánh bóng hào quang khi focus ô nhập liệu */
-  --color-input-focus-label: #2563EB;     /* Màu chữ nhãn nổi khi ô đang được focus */
+  --color-input-border: #D2D2D7;
+  /* Viền mặc định ô nhập liệu 1px */
+  --color-input-border-hover: #86868B;
+  /* Viền khi rê chuột vào ô nhập liệu */
+  --color-input-focus-border: #2563EB;
+  /* Viền khi focus/active ô nhập liệu (Apple Blue 2px) */
+  --color-input-focus-ring: rgba(37, 99, 235, 0.12);
+  /* Ánh bóng hào quang khi focus ô nhập liệu */
+  --color-input-focus-label: #2563EB;
+  /* Màu chữ nhãn nổi khi ô đang được focus */
 
-  --color-datepicker-surface: #ffffff;    /* Nền popover lịch & dropdown */
-  --color-datepicker-radius: 22px;        /* Bo góc khung popover chuẩn Apple (22px) */
-  --color-datepicker-text: #1D1D1F;       /* Màu chữ tiêu đề ngày, tháng, năm, nút Hủy */
-  --color-datepicker-item-hover-bg: rgba(37, 99, 235, 0.08); /* Nền xanh nhẹ khi rê chuột vào ô ngày/tháng/năm (blue-50) */
-  --color-datepicker-item-hover-text: #2563EB; /* Màu chữ xanh khi rê chuột vào ô ngày/tháng/năm */
-  --color-datepicker-selected-bg: #2563EB; /* Nền xanh nút ngày/tháng/năm đang được chọn */
-  --color-datepicker-selected-text: #ffffff; /* Chữ trắng nút đang được chọn */
-  --color-datepicker-today-bg: rgba(37, 99, 235, 0.10); /* Nền xanh nhạt đánh dấu ngày hôm nay */
-  --color-datepicker-today-text: #2563EB; /* Chữ xanh đánh dấu ngày hôm nay */
-  --color-datepicker-muted: #94A3B8;      /* Chữ mờ cho ngày ngoài tháng (slate-400) */
+  --color-datepicker-surface: #ffffff;
+  /* Nền popover lịch & dropdown */
+  --color-datepicker-radius: 22px;
+  /* Bo góc khung popover chuẩn Apple (22px) */
+  --color-datepicker-text: #1D1D1F;
+  /* Màu chữ tiêu đề ngày, tháng, năm, nút Hủy */
+  --color-datepicker-item-hover-bg: rgba(37, 99, 235, 0.08);
+  /* Nền xanh nhẹ khi rê chuột vào ô ngày/tháng/năm (blue-50) */
+  --color-datepicker-item-hover-text: #2563EB;
+  /* Màu chữ xanh khi rê chuột vào ô ngày/tháng/năm */
+  --color-datepicker-selected-bg: #2563EB;
+  /* Nền xanh nút ngày/tháng/năm đang được chọn */
+  --color-datepicker-selected-text: #ffffff;
+  /* Chữ trắng nút đang được chọn */
+  --color-datepicker-today-bg: rgba(37, 99, 235, 0.10);
+  /* Nền xanh nhạt đánh dấu ngày hôm nay */
+  --color-datepicker-today-text: #2563EB;
+  /* Chữ xanh đánh dấu ngày hôm nay */
+  --color-datepicker-muted: #94A3B8;
+  /* Chữ mờ cho ngày ngoài tháng (slate-400) */
 }
 
 .btn-primary-apple {
@@ -170,9 +205,9 @@
   border: 0 !important;
   outline: none !important;
   box-shadow: 0 8px 24px -4px var(--btn-primary-glow);
-  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1),
-              background-color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
   cursor: pointer;
   user-select: none;
 }
@@ -200,15 +235,19 @@
 .text-footer-title {
   color: #000000E0 !important;
 }
+
 .text-footer-link {
   color: #000000B8 !important;
 }
+
 .text-footer-copyright {
   color: #0000008F !important;
 }
+
 .text-apple-blue {
   color: #0066CC !important;
 }
+
 .hover-apple-blue:hover {
   color: #0066CC !important;
 }
@@ -217,22 +256,28 @@
 .text-brand-red {
   color: var(--color-brand-red, #EC1E24) !important;
 }
+
 .bg-brand-red {
   background-color: var(--color-brand-red, #EC1E24) !important;
 }
+
 .hover\:text-brand-red:hover,
 a.hover\:text-brand-red:hover {
   color: var(--color-brand-red, #EC1E24) !important;
 }
+
 .text-brand-navy {
   color: var(--color-brand-navy, #25359D) !important;
 }
+
 .bg-brand-navy {
   background-color: var(--color-brand-navy, #25359D) !important;
 }
+
 .text-brand-gold {
   color: var(--color-brand-gold, #FFD24B) !important;
 }
+
 .bg-brand-gold {
   background-color: var(--color-brand-gold, #FFD24B) !important;
 }
@@ -241,6 +286,7 @@ a.hover\:text-brand-red:hover {
 .degree-lookup-h1 {
   font-size: 32px !important;
 }
+
 @media (min-width: 768px) {
   .degree-lookup-h1 {
     font-size: 64px !important;
@@ -249,6 +295,7 @@ a.hover\:text-brand-red:hover {
 
 html {
   overflow-x: clip;
+  scrollbar-gutter: stable;
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
 }
@@ -360,9 +407,11 @@ body::-webkit-scrollbar {
     transform: scale(0);
     opacity: 0.85;
   }
+
   45% {
     opacity: 0.5;
   }
+
   100% {
     transform: scale(1);
     opacity: 0;
@@ -415,7 +464,8 @@ body::-webkit-scrollbar {
     margin: 12mm 15mm;
   }
 
-  html, body {
+  html,
+  body {
     background: #ffffff !important;
     background-color: #ffffff !important;
     color: #0f172a !important;
@@ -477,7 +527,7 @@ body::-webkit-scrollbar {
     border: none !important;
   }
 
-  #omninotch-overlay > div {
+  #omninotch-overlay>div {
     margin: 0 !important;
     padding: 0 !important;
     width: 100% !important;
@@ -516,7 +566,7 @@ body::-webkit-scrollbar {
     background: #ffffff !important;
   }
 
-  .certificate-card > div,
+  .certificate-card>div,
   .certificate-card div {
     overflow: visible !important;
     max-height: none !important;
@@ -595,7 +645,7 @@ body::-webkit-scrollbar {
 }
 
 .form-card-reveal {
-  animation: formCardEntrance 1.35s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
+  animation: formCardEntrance 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
   will-change: transform, opacity;
   pointer-events: auto !important;
   backface-visibility: hidden;
@@ -626,7 +676,7 @@ body::-webkit-scrollbar {
 
 .card-shine-sweep.active,
 .form-card-reveal .card-shine-sweep {
-  animation: cardShineSweep 1.8s cubic-bezier(0.16, 1, 0.3, 1) 0.65s forwards;
+  animation: cardShineSweep 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.55s forwards;
 }
 
 @keyframes cardShineSweep {
@@ -659,7 +709,7 @@ body::-webkit-scrollbar {
   }
 
   .form-card-reveal {
-    animation: formCardEntranceMobile 1.15s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
+    animation: formCardEntranceMobile 1s cubic-bezier(0.22, 1, 0.36, 1) 0.06s both;
     will-change: transform, opacity;
     pointer-events: auto !important;
     backface-visibility: hidden;
@@ -724,8 +774,8 @@ body::-webkit-scrollbar {
     0 1px 2px rgba(0, 0, 0, 0.06),
     0 4px 12px -2px rgba(215, 33, 52, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.22);
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.2s cubic-bezier(0.22, 1, 0.36, 1),
     background 0.2s ease;
 }
 
@@ -754,12 +804,20 @@ body::-webkit-scrollbar {
 }
 
 /* Triệt tiêu hoàn toàn viền focus/active mặc định của trình duyệt gây mất thẩm mỹ */
-button, input, select, textarea {
+button,
+input,
+select,
+textarea {
   outline: none !important;
   -webkit-tap-highlight-color: transparent !important;
 }
-button:focus, button:focus-visible, button:active,
-input:focus, input:focus-visible, input:active {
+
+button:focus,
+button:focus-visible,
+button:active,
+input:focus,
+input:focus-visible,
+input:active {
   outline: none !important;
 }
 
@@ -795,9 +853,9 @@ input:focus, input:focus-visible, input:active {
   border: 1.5px solid var(--color-input-border, #D2D2D7);
   background-color: var(--color-surface-white, #ffffff);
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
-  transition: border-color 260ms cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 260ms cubic-bezier(0.16, 1, 0.3, 1),
-    background-color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: border-color 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
   cursor: text;
 }
 
@@ -866,7 +924,7 @@ input:focus, input:focus-visible, input:active {
   grid-template-rows: 0fr;
   opacity: 0;
   transition:
-    grid-template-rows 200ms cubic-bezier(0.25, 1, 0.5, 1),
+    grid-template-rows 200ms cubic-bezier(0.32, 0, 0.67, 0),
     opacity 140ms cubic-bezier(0.4, 0, 0.2, 1);
   will-change: grid-template-rows, opacity;
 }
@@ -890,7 +948,7 @@ input:focus, input:focus-visible, input:active {
   gap: 6px;
   padding-top: 6px;
   padding-bottom: 2px;
-  padding-left: 14px;
+  padding-left: 2px;
   font-size: 13.5px;
   font-weight: 500;
   color: #D72134;
@@ -938,21 +996,21 @@ input:focus, input:focus-visible, input:active {
 }
 
 .lbi-popover-open {
-  animation: lbiPopoverEnter 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  animation: lbiPopoverEnter 300ms cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
   pointer-events: auto !important;
 }
 
 .lbi-popover-open[data-placement="top"] {
-  animation: lbiPopoverEnterTop 300ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+  animation: lbiPopoverEnterTop 300ms cubic-bezier(0.22, 1, 0.36, 1) forwards !important;
 }
 
 .lbi-popover-closed {
-  animation: lbiPopoverExit 260ms cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+  animation: lbiPopoverExit 260ms cubic-bezier(0.32, 0, 0.67, 0) forwards !important;
   pointer-events: none !important;
 }
 
 .lbi-popover-closed[data-placement="top"] {
-  animation: lbiPopoverExitTop 260ms cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+  animation: lbiPopoverExitTop 260ms cubic-bezier(0.32, 0, 0.67, 0) forwards !important;
 }
 
 @keyframes lbiPopoverEnter {
@@ -1016,7 +1074,7 @@ input:focus, input:focus-visible, input:active {
 }
 
 .animate-view-enter {
-  animation: lbiViewEnter 200ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: lbiViewEnter 200ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: transform, opacity;
 }
 
@@ -1033,7 +1091,7 @@ input:focus, input:focus-visible, input:active {
 }
 
 .animate-month-fade {
-  animation: lbiMonthFade 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: lbiMonthFade 220ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
   will-change: transform, opacity;
 }
 
@@ -1042,10 +1100,7 @@ input:focus, input:focus-visible, input:active {
   display: none !important;
 }
 
-/* ── the label (Apple / Stripe inside floating label) ───────
-   In resting state: centered vertically as an elegant placeholder with clear contrast.
-   When focused/filled: floats smoothly to the upper area INSIDE the box.
-   The value/placeholder sits cleanly underneath, never breaking the border. */
+/* ── FLOATING LABEL CHUẨN APPLE: NGHỈ Ở GIỮA, KHI NHẤN VÀO MỚI CHẠY LÊN (TRIỆT TIÊU BÓNG MỜ) ── */
 .lbi-label {
   position: absolute;
   left: var(--lbi-x, 22px);
@@ -1057,14 +1112,14 @@ input:focus, input:focus-visible, input:active {
   line-height: 1;
   letter-spacing: -0.015em;
   white-space: pre;
-  color: #6E6E73;
+  color: #1D1D1F;
   cursor: text;
   -webkit-user-select: none;
   user-select: none;
   pointer-events: none;
   z-index: 5;
-  transition: transform 300ms cubic-bezier(0.32, 0.72, 0, 1),
-    color 260ms cubic-bezier(0.32, 0.72, 0, 1);
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 200ms cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, color;
   backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
@@ -1121,34 +1176,30 @@ input:focus, input:focus-visible, input:active {
   color: #1D1D1F;
   outline: none;
   z-index: 2;
-  will-change: opacity, transform;
+  will-change: opacity;
+  animation: none !important;
+  filter: none !important;
 }
 
-/* Khi chưa kích hoạt: Ẩn hoàn toàn, hơi lệch xuống 4px */
+/* Khi chưa kích hoạt: Ẩn tại chỗ tĩnh lặng, không dịch chuyển */
 .lbi:not([data-up="true"]) .lbi-field {
   opacity: 0;
-  transform: translateY(4px);
   pointer-events: none;
-  transition: opacity 140ms cubic-bezier(0.32, 0.72, 0, 1),
-    transform 140ms cubic-bezier(0.32, 0.72, 0, 1);
+  transition: opacity 140ms ease;
 }
 
-/* Khi kích hoạt (nhấn vào): Trượt lướt lên và hiện ra êm ái sau nhịp nhãn bay lên */
+/* Khi kích hoạt (nhấn vào): Hiện sắc nét tại chỗ tĩnh, tuyệt đối không có bóng mờ */
 .lbi[data-up="true"] .lbi-field {
   opacity: 1;
-  transform: translateY(0);
   pointer-events: auto;
-  transition: opacity 240ms cubic-bezier(0.32, 0.72, 0, 1) 60ms,
-    transform 280ms cubic-bezier(0.32, 0.72, 0, 1) 40ms,
-    color 200ms ease;
+  transition: opacity 180ms ease 30ms, color 180ms ease;
 }
 
 .lbi-field::placeholder {
-  color: var(--color-apple-muted, #6E6E73);
-  font-size: 16px;
+  color: var(--color-apple-muted, #86868B);
+  font-size: 15.5px;
   font-weight: 400;
   opacity: 1;
-  transition: opacity 220ms ease;
 }
 
 /* Support browser autofill gracefully */
@@ -1156,7 +1207,7 @@ input:focus, input:focus-visible, input:active {
 .lbi:has(.lbi-field:autofill) .lbi-label {
   transform: translateY(calc(-50% - 14px)) scale(0.875) !important;
   color: #6E6E73 !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
 }
 
 .lbi:has(.lbi-field:-webkit-autofill) .lbi-field,
@@ -1164,15 +1215,11 @@ input:focus, input:focus-visible, input:active {
   opacity: 1 !important;
 }
 
-/* the reveal: the text passes through a soft blur rather than
-   snapping between dots and letters. Two names so a second
-   press restarts it. */
-.lbi-field[data-flip="1"] {
-  animation: lbi-flip-a 260ms ease-out;
-}
-
+/* Triệt tiêu hoàn toàn animation flip/blur trên field để không gây nhòe bóng */
+.lbi-field[data-flip="1"],
 .lbi-field[data-flip="0"] {
-  animation: lbi-flip-b 260ms ease-out;
+  animation: none !important;
+  filter: none !important;
 }
 
 .lbi-eye {
@@ -1285,7 +1332,7 @@ input:focus, input:focus-visible, input:active {
 .animate-tab-right,
 .animate-tab-left,
 .animate-tab-fade {
-  animation: tabFadeSoft 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: tabFadeSoft 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
   will-change: opacity;
 }
 
@@ -1294,14 +1341,14 @@ input:focus, input:focus-visible, input:active {
   display: flex;
   width: 300%;
   align-items: flex-start;
-  transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
 
 .tab-carousel-pane {
   width: 33.333333%;
   flex-shrink: 0;
-  transition: opacity 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 300ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ══ HIỆU ỨNG XUẤT HIỆN & THU GỌN KẾT QUẢ TRA CỨU (SMOOTH ACCORDION SLIDE DOWN TỪ HEADER XUỐNG) ══ */
@@ -1309,8 +1356,8 @@ input:focus, input:focus-visible, input:active {
   display: grid;
   grid-template-rows: 0fr;
   opacity: 0;
-  transition: grid-template-rows 640ms cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 500ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: grid-template-rows 640ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 500ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: grid-template-rows, opacity;
 }
 
@@ -1365,7 +1412,7 @@ input:focus, input:focus-visible, input:active {
 }
 
 .animate-result-enter {
-  animation: resultSlideDownEntrance 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: resultSlideDownEntrance 600ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .animate-result-exit {
@@ -1373,45 +1420,39 @@ input:focus, input:focus-visible, input:active {
 }
 
 .animate-banner-enter {
-  animation: bannerSlideDown 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: bannerSlideDown 450ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* ══ HIỆU ỨNG OMNINOTCH DYNAMIC ISLAND CUỘN TỪ HEADER XUỐNG (APPLE FLUID SPRING MOTION) ══ */
+/* ══ HIỆU ỨNG OMNINOTCH MODAL ÊM ÁI CHUẨN APPLE (IN-PLACE GENTLE SCALE & SOLID CARD) ══ */
 @keyframes omniNotchEnter {
   0% {
     opacity: 0;
-    transform: translate3d(0, -68px, 0) scaleY(0.68) scaleX(0.92);
-    filter: blur(8px);
+    transform: scale(0.96) translate3d(0, 10px, 0);
   }
 
-  60% {
+  20% {
     opacity: 1;
-    transform: translate3d(0, 8px, 0) scaleY(1.02) scaleX(1.006);
-    filter: blur(0);
-  }
-
-  82% {
-    transform: translate3d(0, -2px, 0) scaleY(0.995) scaleX(0.998);
   }
 
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
-    filter: blur(0);
+    transform: scale(1) translate3d(0, 0, 0);
   }
 }
 
 @keyframes omniNotchExit {
   0% {
     opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
-    filter: blur(0);
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+
+  40% {
+    opacity: 0.9;
   }
 
   100% {
     opacity: 0;
-    transform: translate3d(0, -60px, 0) scaleY(0.72) scaleX(0.92);
-    filter: blur(6px);
+    transform: scale(0.96) translate3d(0, 12px, 0);
   }
 }
 
@@ -1422,18 +1463,22 @@ input:focus, input:focus-visible, input:active {
     -webkit-backdrop-filter: blur(0px);
   }
 
+  60% {
+    opacity: 0.85;
+  }
+
   100% {
     opacity: 1;
-    backdrop-filter: blur(3.5px);
-    -webkit-backdrop-filter: blur(3.5px);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
   }
 }
 
 @keyframes omniNotchBackdropExit {
   0% {
     opacity: 1;
-    backdrop-filter: blur(3.5px);
-    -webkit-backdrop-filter: blur(3.5px);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
   }
 
   100% {
@@ -1496,26 +1541,26 @@ input:focus, input:focus-visible, input:active {
 }
 
 .animate-omninotch-enter {
-  transform-origin: top center;
-  animation: omniNotchEnter 540ms cubic-bezier(0.16, 1, 0.3, 1) both;
-  will-change: transform, opacity, filter;
+  transform-origin: center center;
+  animation: omniNotchEnter 340ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform, opacity;
 }
 
 .animate-omninotch-exit {
-  transform-origin: top center;
-  animation: omniNotchExit 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  will-change: transform, opacity, filter;
+  transform-origin: center center;
+  animation: omniNotchExit 260ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  will-change: transform, opacity;
 }
 
 .animate-omninotch-enter-bottom {
   transform-origin: bottom center;
-  animation: omniNotchEnterFromBottom 540ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: omniNotchEnterFromBottom 580ms cubic-bezier(0.22, 1, 0.36, 1) both;
   will-change: transform, opacity, filter;
 }
 
 .animate-omninotch-exit-bottom {
   transform-origin: bottom center;
-  animation: omniNotchExitToBottom 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: omniNotchExitToBottom 260ms cubic-bezier(0.32, 0, 0.67, 0) forwards;
   will-change: transform, opacity, filter;
 }
 
@@ -1542,56 +1587,56 @@ input:focus, input:focus-visible, input:active {
 
 @media (max-width: 639px) {
   .mobile-drawer-enter {
-    animation: mobileDrawerSlideUp 420ms cubic-bezier(0.16, 1, 0.3, 1) both !important;
+    animation: mobileDrawerSlideUp 460ms cubic-bezier(0.22, 1, 0.36, 1) both !important;
     will-change: transform;
     transform-origin: bottom center;
   }
 
   .mobile-drawer-exit {
-    animation: mobileDrawerSlideDown 320ms cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+    animation: mobileDrawerSlideDown 260ms cubic-bezier(0.32, 0.72, 0, 1) forwards !important;
     will-change: transform;
     transform-origin: bottom center;
   }
 }
 
 .animate-drawer-slide-up {
-  animation: mobileDrawerSlideUp 380ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: mobileDrawerSlideUp 460ms cubic-bezier(0.22, 1, 0.36, 1) both;
   will-change: transform;
 }
 
 .animate-drawer-slide-down {
-  animation: mobileDrawerSlideDown 320ms cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: mobileDrawerSlideDown 260ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
   will-change: transform;
 }
 
 .animate-omninotch-backdrop-enter {
-  animation: omniNotchBackdropEnter 380ms ease-out both;
+  animation: omniNotchBackdropEnter 340ms cubic-bezier(0.16, 1, 0.3, 1) both;
   will-change: opacity, backdrop-filter;
-  backdrop-filter: blur(3.5px);
-  -webkit-backdrop-filter: blur(3.5px);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 .animate-omninotch-backdrop-exit {
-  animation: omniNotchBackdropExit 280ms ease-in forwards;
+  animation: omniNotchBackdropExit 260ms cubic-bezier(0.32, 0.72, 0, 1) forwards;
   will-change: opacity, backdrop-filter;
 }
 
 .animate-omninotch-pill-enter {
-  animation: omniNotchPillEnter 340ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: omniNotchPillEnter 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .animate-omninotch-pill-enter-top {
-  animation: omniNotchPillEnter 340ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: omniNotchPillEnter 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .animate-omninotch-pill-enter-bottom {
-  animation: omniNotchPillEnterBottom 340ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: omniNotchPillEnterBottom 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 /* ══ HIỆU ỨNG PHÓNG TO / THU NHỎ THẺ KẾT QUẢ SIÊU MƯỢT (APPLE FLUID SPRING MOTION) ══ */
 .certificate-expand-shell {
   transform-origin: center center;
-  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
 }
 
@@ -1690,7 +1735,7 @@ input:focus, input:focus-visible, input:active {
   transform: translateY(0%) rotateX(0deg);
   opacity: 1;
   transform-origin: 50% 100%;
-  transition: transform 340ms cubic-bezier(0.16, 1, 0.3, 1),
+  transition: transform 340ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 260ms ease;
   will-change: transform, opacity;
 }
@@ -1711,7 +1756,7 @@ input:focus, input:focus-visible, input:active {
   transform: translateY(100%) rotateX(-85deg);
   opacity: 0;
   transform-origin: 50% 0%;
-  transition: transform 340ms cubic-bezier(0.16, 1, 0.3, 1),
+  transition: transform 340ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 260ms ease;
   will-change: transform, opacity;
 }
@@ -1836,37 +1881,37 @@ input:focus, input:focus-visible, input:active {
 }
 
 .animate-hero-seal {
-  animation: heroEntranceFadeIn 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0s both;
+  animation: heroEntranceFadeIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0s both;
   will-change: opacity;
 }
 
 .animate-hero-badge {
-  --hero-slide-y: 16px;
-  animation: heroEntranceFadeUp 0.68s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
+  --hero-slide-y: 14px;
+  animation: heroEntranceFadeUp 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.10s both;
   will-change: opacity, transform;
 }
 
 .animate-hero-title {
-  --hero-slide-y: 22px;
-  animation: heroEntranceFadeUp 0.78s cubic-bezier(0.16, 1, 0.3, 1) 0.20s both;
+  --hero-slide-y: 18px;
+  animation: heroEntranceFadeUp 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.22s both;
   will-change: opacity, transform;
 }
 
 .animate-hero-desc {
-  --hero-slide-y: 18px;
-  animation: heroEntranceFadeUp 0.78s cubic-bezier(0.16, 1, 0.3, 1) 0.32s both;
+  --hero-slide-y: 14px;
+  animation: heroEntranceFadeUp 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.34s both;
   will-change: opacity, transform;
 }
 
 .animate-hero-btn {
-  --hero-slide-y: 20px;
-  animation: heroEntranceFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.44s both;
+  --hero-slide-y: 16px;
+  animation: heroEntranceFadeUp 0.88s cubic-bezier(0.22, 1, 0.36, 1) 0.46s both;
   will-change: opacity, transform;
 }
 
 .animate-hero-scroll {
-  --hero-slide-y: 14px;
-  animation: heroEntranceFadeUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.58s both;
+  --hero-slide-y: 12px;
+  animation: heroEntranceFadeUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.60s both;
   will-change: opacity, transform;
 }
 
@@ -1906,9 +1951,92 @@ button:focus-visible,
   width: 0 !important;
   height: 0 !important;
 }
+
 .no-scrollbar {
-  -ms-overflow-style: none !important; /* IE and Edge */
-  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important;
+  /* IE and Edge */
+  scrollbar-width: none !important;
+  /* Firefox */
 }
 
+/* ══ HỆ THỐNG SCROLL-REVEAL KIỂU APPLE (FADE-UP MƯỢT KHI VÀO VIEWPORT) ══
+   Lấy cảm hứng từ apple.com/mac: mỗi phần tử trượt lên nhẹ nhàng + mờ dần
+   khi cuộn vào viewport, với stagger delay tuần tự qua --reveal-delay.
+   IntersectionObserver thêm class .revealed khi element vào viewport.         */
 
+@keyframes appleRevealUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--reveal-y, 28px), 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes appleRevealScale {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--reveal-y, 20px), 0) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* Trạng thái chờ: ẩn hoàn toàn, sẵn sàng cho animation */
+.reveal-on-scroll {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+/* Khi IntersectionObserver trigger → chạy animation mượt */
+.reveal-on-scroll.revealed {
+  animation: appleRevealUp var(--reveal-duration, 0.8s) cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s) both;
+}
+
+/* Biến thể scale nhẹ — cho card, icon */
+.reveal-scale-on-scroll {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.reveal-scale-on-scroll.revealed {
+  animation: appleRevealScale var(--reveal-duration, 0.85s) cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s) both;
+}
+
+/* Tiện ích stagger delay — dùng trên từng child */
+.reveal-d1 {
+  --reveal-delay: 0.06s;
+}
+
+.reveal-d2 {
+  --reveal-delay: 0.14s;
+}
+
+.reveal-d3 {
+  --reveal-delay: 0.22s;
+}
+
+.reveal-d4 {
+  --reveal-delay: 0.30s;
+}
+
+.reveal-d5 {
+  --reveal-delay: 0.38s;
+}
+
+/* Tôn trọng người dùng tắt motion */
+@media (prefers-reduced-motion: reduce) {
+
+  .reveal-on-scroll,
+  .reveal-scale-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}

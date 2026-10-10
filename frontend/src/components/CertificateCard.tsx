@@ -116,14 +116,14 @@ export default function CertificateCard({
         {/* Thanh gạt tay kéo vuốt trên Mobile (Đồng bộ 100% nhận diện với Form Sheet) */}
         <div
           onClick={onClose}
-          className="pt-3 pb-1 flex justify-center shrink-0 cursor-pointer sm:hidden group select-none bg-slate-50/95"
+          className="pt-3 pb-1 flex justify-center shrink-0 cursor-pointer sm:hidden group select-none bg-[#F8F9FA]"
           title="Chạm hoặc vuốt để đóng"
         >
           <div className="w-10 h-1.2 rounded-full bg-slate-300 group-hover:bg-slate-400 active:bg-slate-500 transition-colors" />
         </div>
 
         {/* TIÊU ĐỀ KẾT QUẢ VĂN BẰNG / CHỨNG CHỈ (NỀN XÁM NHẸ TRÊN MÀN HÌNH, NỀN TRẮNG KHI IN) */}
-        <div className="bg-slate-50/95 print:bg-white backdrop-blur-xs relative px-5 min-[390px]:px-6 sm:px-10 lg:px-12 pt-3 sm:pt-6 pb-3.5 sm:pb-6 print:pb-2 print:pt-0 print:px-0 shrink-0 border-0 border-none z-10">
+        <div className="bg-[#F8F9FA] print:bg-white relative px-5 min-[390px]:px-6 sm:px-10 lg:px-12 pt-3 sm:pt-6 pb-3.5 sm:pb-6 print:pb-2 print:pt-0 print:px-0 shrink-0 border-0 border-none z-10">
           {/* Header Quốc hiệu / Tên trường chuẩn hóa (Chỉ xuất hiện khi In) */}
           <div className="hidden print:flex items-center justify-between pb-3 mb-3 border-b-2 border-brand-navy">
             <div className="flex items-center gap-3">
@@ -163,7 +163,7 @@ export default function CertificateCard({
                 <button
                   type="button"
                   onClick={onToggleExpand}
-                  className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] text-[#1D1D1F] transition-all duration-150 cursor-pointer flex-shrink-0 active:scale-90 outline-none border-0 border-none backdrop-blur-xs hidden sm:flex"
+                  className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center rounded-full bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] text-[#1D1D1F] transition-all duration-150 cursor-pointer flex-shrink-0 active:scale-90 outline-none border-0 border-none hidden sm:flex"
                   title={isExpanded ? 'Thu nhỏ lại kích thước chuẩn' : 'Phóng to toàn màn hình'}
                 >
                   {isExpanded ? (
@@ -484,7 +484,7 @@ export default function CertificateCard({
         </div>
 
         {/* CHÂN THẺ GỌN GÀNG: TRÊN PC VÀ KHI IN HIỂN THỊ ĐẦY ĐỦ QR */}
-        <div className="hidden sm:flex print:flex bg-slate-50/95 print:bg-white backdrop-blur-xs flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 px-5 sm:px-10 lg:px-12 py-3.5 sm:py-5 print:py-3 print:px-0 border-0 border-none print:border-t print:border-slate-200 shrink-0 z-10 print:mt-4">
+        <div className="hidden sm:flex print:flex bg-[#F8F9FA] print:bg-white flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 px-5 sm:px-10 lg:px-12 py-3.5 sm:py-5 print:py-3 print:px-0 border-0 border-none print:border-t print:border-slate-200 shrink-0 z-10 print:mt-4">
           <div className="flex items-center gap-3 justify-start">
             <div className="p-1.5 bg-white border border-slate-200/80 print:border-slate-300 rounded-xl shadow-2xs shrink-0">
               <QRCodeSVG value={verificationUrl || 'https://tracuu.nctu.edu.vn'} size={46} />

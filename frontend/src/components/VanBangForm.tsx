@@ -57,6 +57,7 @@ export default function VanBangForm({
 
   const handleSubmit = (e?: React.FormEvent | React.MouseEvent) => {
     if (e) e.preventDefault();
+    if (loading) return;
     setError(null);
 
     let hasError = false;
@@ -200,7 +201,7 @@ export default function VanBangForm({
             label="Họ và tên"
             placeholder="Ví dụ: NGUYỄN VĂN AN"
             value={hoTen}
-            height={70}
+            height={72}
             corner={18}
             onChange={(e) => {
               setHoTen(e.target.value);
@@ -220,7 +221,7 @@ export default function VanBangForm({
             label="Ngày sinh"
             type="date"
             placeholder="dd/mm/yyyy"
-            height={70}
+            height={72}
             corner={18}
             required
             value={ngaySinh}
@@ -241,7 +242,7 @@ export default function VanBangForm({
             label="Số hiệu phôi"
             placeholder="Ví dụ: B6829104"
             value={soHieuPhoi}
-            height={70}
+            height={72}
             corner={18}
             onChange={(e) => {
               setSoHieuPhoi(e.target.value.toUpperCase());
@@ -261,7 +262,7 @@ export default function VanBangForm({
             label="Số vào sổ"
             placeholder="Ví dụ: NCTU-CNTT-2023/142"
             value={soVaoSo}
-            height={70}
+            height={72}
             corner={18}
             onChange={(e) => {
               setSoVaoSo(e.target.value);
@@ -280,16 +281,15 @@ export default function VanBangForm({
       <div className="pt-1 flex justify-center sm:justify-end">
         <button
           type="submit"
-          onClick={handleSubmit}
           disabled={loading}
-          className="btn-primary-apple text-btn-cta-mobile sm:text-btn-cta font-bold group w-full sm:w-auto min-w-[220px] sm:min-w-[230px] h-[54px] sm:h-[58px] px-8 sm:px-9 rounded-full flex items-center justify-center gap-3 shrink-0"
+          className="btn-primary-apple text-btn-cta-mobile sm:text-btn-cta font-bold group w-full sm:w-auto min-w-[160px] sm:min-w-[180px] h-[52px] sm:h-[56px] px-7 sm:px-8 rounded-full flex items-center justify-center gap-2.5 shrink-0"
         >
           {loading ? (
             <Loader2 className="w-5 h-5 sm:w-5.5 sm:h-5.5 animate-spin shrink-0 text-white" strokeWidth={2.4} />
           ) : (
             <Search className="w-5 h-5 sm:w-5.5 sm:h-5.5 transition-transform duration-200 shrink-0 group-hover:scale-110 group-hover:-rotate-6" strokeWidth={2.4} />
           )}
-          <span className="tracking-wide">{loading ? 'Đang xác thực...' : 'Tra cứu văn bằng'}</span>
+          <span className="tracking-wide">Tra cứu</span>
         </button>
       </div>
     </form>

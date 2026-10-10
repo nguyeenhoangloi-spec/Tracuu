@@ -73,7 +73,7 @@ export function LabelInput({
   id: customId,
   subLabel,
   corner = 18,
-  height: customH = 70,
+  height: customH = 72,
   showcase = false,
   className = "",
   autoComplete = "off",
@@ -411,8 +411,8 @@ export function LabelInput({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [dropdownOpen, datePickerOpen]);
 
-  /* Natural Apple & Stripe floating label: rests centered when empty, floats up when active/filled */
   const hasValue = Boolean(value !== undefined && value !== null && String(value).trim().length > 0);
+  /* Trạng thái floating: khi click/focus hoặc đã có chữ thì nhãn mới chạy lên */
   const up = Boolean(focus || dropdownOpen || datePickerOpen || hasValue);
 
   const selectedOption = isSelect
@@ -505,7 +505,7 @@ export function LabelInput({
               style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)' }}
               className={`calendar-icon-btn absolute right-3.5 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center cursor-pointer overflow-hidden z-10 hover:bg-[#F5F5F7] active:scale-95 transition-all duration-[380ms] ease-[cubic-bezier(0.32,0.72,0,1)] ${datePickerOpen
                 ? "text-[#2563EB] scale-105 bg-blue-50/60"
-                : "text-[#6E6E73] group-hover:text-[#1D1D1F] scale-100"
+                : "text-[#1D1D1F] scale-100"
                 }`}
               onClick={(e) => handleToggleDatePicker(e)}
             >
@@ -884,7 +884,7 @@ export function LabelInput({
             <div
               className={`absolute right-5 top-1/2 -translate-y-1/2 transition-[transform,color] duration-[380ms] ease-[cubic-bezier(0.32,0.72,0,1)] pointer-events-none ${dropdownOpen
                 ? "text-[#2563EB] rotate-180 scale-110"
-                : "text-[#6E6E73] group-hover:text-[#1D1D1F] rotate-0 scale-100"
+                : "text-[#1D1D1F] rotate-0 scale-100"
                 }`}
             >
               <ChevronDown size={20} strokeWidth={2.4} />
@@ -971,7 +971,6 @@ export function LabelInput({
             id={id}
             name={name}
             className="lbi-field"
-            data-flip={flip % 2}
             type={secret && !show ? "password" : secret ? "text" : type || "text"}
             value={value}
             required={required}

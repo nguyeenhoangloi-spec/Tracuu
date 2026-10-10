@@ -62,8 +62,8 @@ export default function NotFoundResultCard({
           Không tìm thấy kết quả tra cứu
         </h2>
 
-        {/* NỘI DUNG SÚC TÍCH - VỪA ĐỦ, GỌN GÀNG */}
-        <p className="text-[14.5px] sm:text-[16px] text-[#6E6E73] font-normal leading-relaxed max-w-md mx-auto mb-2 sm:mb-7">
+        {/* NỘI DUNG SÚC TÍCH - VỪA ĐỦ, GỌN GÀNG, MÀU CHỮ #1D1D1F RÕ NÉT */}
+        <p className="text-[14.5px] sm:text-[16px] text-[#1D1D1F] font-normal leading-relaxed max-w-md mx-auto mb-2 sm:mb-7">
           {displayMsg}
         </p>
 

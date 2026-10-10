@@ -87,12 +87,13 @@ export default function SecurityCaptchaModal({
   return createPortal(
     <div
       id="security-captcha-overlay"
-      className={`fixed inset-0 z-[99999] flex flex-col justify-end sm:justify-center items-center p-0 sm:p-5 md:p-6 overflow-hidden select-none pointer-events-auto ${isClosing ? 'animate-omninotch-backdrop-exit' : 'animate-omninotch-backdrop-enter'
-        }`}
+      className="fixed inset-0 z-[99999] flex flex-col justify-end sm:justify-center items-center p-0 sm:p-5 md:p-6 overflow-hidden select-none pointer-events-auto"
     >
       {/* LỚP BACKDROP BẤM RA NGOÀI ĐỂ ĐÓNG - ĐỒNG BỘ CHUẨN APPLE DỊU NHẸ, KHÔNG TẠO KHUNG ĐEN TƯƠNG PHẢN */}
       <div
-        className="absolute inset-0 bg-slate-950/25 backdrop-blur-[3.5px] cursor-pointer select-none no-print outline-none border-0 ring-0"
+        className={`absolute inset-0 bg-slate-950/25 backdrop-blur-[3.5px] cursor-pointer select-none no-print outline-none border-0 ring-0 ${
+          isClosing ? 'animate-omninotch-backdrop-exit' : 'animate-omninotch-backdrop-enter'
+        }`}
         onMouseDown={(e) => e.stopPropagation()}
         onClick={(e) => {
           e.stopPropagation();

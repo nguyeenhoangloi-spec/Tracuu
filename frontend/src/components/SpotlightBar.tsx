@@ -8,14 +8,16 @@ import {
   Folder,
   Layers,
   LayoutGrid,
-  List,
   CornerDownLeft,
   X,
   Award,
   Crown,
   BookOpen,
   Languages,
+  Globe,
+  Scroll,
   ArrowLeft,
+  ChevronLeft,
   Sparkles,
   ChevronRight,
   Laptop,
@@ -64,8 +66,8 @@ const DEGREE_TYPES: DegreeTypeConfig[] = [
     subTitle: 'Cử nhân, Kỹ sư, Dược sĩ, Bác sĩ chính quy',
     badge: 'Đại học',
     kindLabel: 'Bằng tốt nghiệp',
-    gradient: 'from-[#1E40AF] via-[#2563EB] to-[#3B82F6]',
-    shadow: 'shadow-blue-600/35',
+    gradient: 'from-[#1D4ED8] to-[#3B82F6]',
+    shadow: 'shadow-[0_2px_8px_rgba(0,0,0,0.08)]',
     icon: GraduationCap,
   },
   {
@@ -76,9 +78,9 @@ const DEGREE_TYPES: DegreeTypeConfig[] = [
     subTitle: 'Đào tạo Sau đại học - Học vị Thạc sĩ',
     badge: 'Thạc sĩ',
     kindLabel: 'Sau đại học',
-    gradient: 'from-[#581C87] via-[#7C3AED] to-[#9333EA]',
-    shadow: 'shadow-purple-600/35',
-    icon: Award,
+    gradient: 'from-[#6D28D9] to-[#8B5CF6]',
+    shadow: 'shadow-[0_2px_8px_rgba(0,0,0,0.08)]',
+    icon: Scroll,
   },
   {
     id: 'ts',
@@ -88,9 +90,9 @@ const DEGREE_TYPES: DegreeTypeConfig[] = [
     subTitle: 'Nghiên cứu sinh - Học vị Tiến sĩ',
     badge: 'Tiến sĩ',
     kindLabel: 'Sau đại học',
-    gradient: 'from-[#92400E] via-[#D97706] to-[#F59E0B]',
-    shadow: 'shadow-amber-600/35',
-    icon: Crown,
+    gradient: 'from-[#B45309] to-[#D97706]',
+    shadow: 'shadow-[0_2px_8px_rgba(0,0,0,0.08)]',
+    icon: Award,
   },
   {
     id: 'cntt-cb',
@@ -100,8 +102,8 @@ const DEGREE_TYPES: DegreeTypeConfig[] = [
     subTitle: 'Chuẩn kỹ năng CNTT cơ bản TT 03/2014',
     badge: 'CNTT Cơ bản',
     kindLabel: 'Tin học',
-    gradient: 'from-[#0369A1] via-[#0284C7] to-[#0EA5E9]',
-    shadow: 'shadow-cyan-600/35',
+    gradient: 'from-[#0284C7] to-[#0EA5E9]',
+    shadow: 'shadow-[0_2px_8px_rgba(0,0,0,0.08)]',
     icon: Laptop,
   },
   {
@@ -112,8 +114,8 @@ const DEGREE_TYPES: DegreeTypeConfig[] = [
     subTitle: 'Chuẩn kỹ năng CNTT nâng cao TT 03/2014',
     badge: 'CNTT Nâng cao',
     kindLabel: 'Tin học',
-    gradient: 'from-[#0F766E] via-[#0D9488] to-[#14B8A6]',
-    shadow: 'shadow-teal-600/35',
+    gradient: 'from-[#0F766E] to-[#14B8A6]',
+    shadow: 'shadow-[0_2px_8px_rgba(0,0,0,0.08)]',
     icon: Cpu,
   },
   {
@@ -123,9 +125,9 @@ const DEGREE_TYPES: DegreeTypeConfig[] = [
     subTitle: 'Đánh giá năng lực tiếng Anh B1 - C1',
     badge: 'VSTEP',
     kindLabel: 'Ngoại ngữ',
-    gradient: 'from-[#9F1239] via-[#E11D48] to-[#F43F5E]',
-    shadow: 'shadow-rose-600/35',
-    icon: Languages,
+    gradient: 'from-[#BE123C] to-[#E11D48]',
+    shadow: 'shadow-[0_2px_8px_rgba(0,0,0,0.08)]',
+    icon: Globe,
   },
   {
     id: 'cd',
@@ -135,8 +137,8 @@ const DEGREE_TYPES: DegreeTypeConfig[] = [
     subTitle: 'Hệ Cao đẳng chính quy DNC',
     badge: 'Cao đẳng',
     kindLabel: 'Cao đẳng',
-    gradient: 'from-[#065F46] via-[#059669] to-[#10B981]',
-    shadow: 'shadow-emerald-600/35',
+    gradient: 'from-[#047857] to-[#10B981]',
+    shadow: 'shadow-[0_2px_8px_rgba(0,0,0,0.08)]',
     icon: BookOpen,
   },
 ];
@@ -171,8 +173,8 @@ const POPULAR_SEARCH_SHORTCUTS: PopularShortcut[] = [
     desc: 'Cử nhân • Kỹ sư',
     degreeId: 'dh',
     icon: GraduationCap,
-    gradient: 'from-[#1E40AF] via-[#2563EB] to-[#3B82F6]',
-    shadow: 'shadow-blue-600/30',
+    gradient: 'from-[#1D4ED8] to-[#3B82F6]',
+    shadow: 'shadow-[0_2px_8px_rgba(0,0,0,0.08)]',
   },
   {
     id: 'vstep',
@@ -180,9 +182,9 @@ const POPULAR_SEARCH_SHORTCUTS: PopularShortcut[] = [
     shortTitle: 'VSTEP',
     desc: 'Bậc 3 – 5 tiếng Anh',
     degreeId: 'vstep',
-    icon: Languages,
-    gradient: 'from-[#9F1239] via-[#E11D48] to-[#F43F5E]',
-    shadow: 'shadow-rose-600/30',
+    icon: Globe,
+    gradient: 'from-[#BE123C] to-[#E11D48]',
+    shadow: 'shadow-[0_2px_8px_rgba(0,0,0,0.08)]',
   },
   {
     id: 'cntt-cb',
@@ -191,8 +193,8 @@ const POPULAR_SEARCH_SHORTCUTS: PopularShortcut[] = [
     desc: 'Chuẩn TT 03/2014',
     degreeId: 'cntt-cb',
     icon: Laptop,
-    gradient: 'from-[#0369A1] via-[#0284C7] to-[#0EA5E9]',
-    shadow: 'shadow-cyan-600/30',
+    gradient: 'from-[#0284C7] to-[#0EA5E9]',
+    shadow: 'shadow-[0_2px_8px_rgba(0,0,0,0.08)]',
   },
 ];
 
@@ -220,14 +222,14 @@ export default function SpotlightBar({
 }: SpotlightBarProps) {
   const isDark = variant === 'dark';
   const [query, setQuery] = useState('');
-  const [isFocused, setIsFocused] = useState(false);
+  // Mở sẵn danh sách loại văn bằng trên Desktop để giao diện đầy đặn, trực quan ngay từ đầu
+  const [isFocused, setIsFocused] = useState(true);
   const [isFormExpanded, setIsFormExpanded] = useState(false);
   const [isSwitchingView, setIsSwitchingView] = useState(false);
   const [slideDirection, setSlideDirection] = useState<'forward' | 'backward'>('forward');
   const [selectedLoaiDaoTao, setSelectedLoaiDaoTao] = useState('dh');
   const [selectedCapDo, setSelectedCapDo] = useState<'coban' | 'nangcao'>('coban');
   const [categoryFilter, setCategoryFilter] = useState<FilterChipId>('all');
-  const [displayMode, setDisplayMode] = useState<'list' | 'grid'>('list');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [selectedDegree, setSelectedDegree] = useState<DegreeTypeConfig>(DEGREE_TYPES[0]);
   const [isOpenedFromShortcut, setIsOpenedFromShortcut] = useState(false);
@@ -277,6 +279,8 @@ export default function SpotlightBar({
   const gridRef = useRef<HTMLDivElement | null>(null);
   const formRef = useRef<HTMLDivElement | null>(null);
   const platterRef = useRef<HTMLDivElement | null>(null);
+  const platterHeaderRef = useRef<HTMLDivElement | null>(null);
+  const gridContentRef = useRef<HTMLDivElement | null>(null);
   const chipRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
 
   // Tọa độ và kích thước viên con nhộng trượt liên tục chuẩn Apple Mac
@@ -325,18 +329,24 @@ export default function SpotlightBar({
       window.removeEventListener('resize', measure);
       if (ro) ro.disconnect();
     };
-  }, [categoryFilter, isFocused, displayMode]);
+  }, [categoryFilter, isFocused]);
 
-  const [gridHeight, setGridHeight] = useState<number>(330);
-  const [formHeight, setFormHeight] = useState<number>(325);
+  const [gridHeight, setGridHeight] = useState<number>(253);
+  const [formHeight, setFormHeight] = useState<number>(285);
   const bodyContentRef = useRef<HTMLDivElement | null>(null);
   const gridRoRef = useRef<ResizeObserver | null>(null);
   const formRoRef = useRef<ResizeObserver | null>(null);
 
   const isFocusedRef = useRef(isFocused);
   const isFormExpandedRef = useRef(isFormExpanded);
+  const isMobileRef = useRef(isMobile);
+  const categoryFilterRef = useRef(categoryFilter);
+  const queryRef = useRef(query);
   isFocusedRef.current = isFocused;
   isFormExpandedRef.current = isFormExpanded;
+  isMobileRef.current = isMobile;
+  categoryFilterRef.current = categoryFilter;
+  queryRef.current = query;
 
   // Hàm cập nhật trạng thái mở/đóng đồng bộ tức thì 0ms sang component cha (page.tsx)
   const updateOpenState = (newFocused: boolean, newFormExpanded: boolean) => {
@@ -391,6 +401,12 @@ export default function SpotlightBar({
         }
         if (isMobile && (isFormExpanded || isClosingMobileSheet)) {
           handleCloseMobileSheet(true);
+          return;
+        }
+        if (isFormExpanded && !isOpenedFromShortcut) {
+          setIsSwitchingView(true);
+          setSlideDirection('backward');
+          updateOpenState(true, false);
           return;
         }
         updateOpenState(false, false);
@@ -544,15 +560,28 @@ export default function SpotlightBar({
     );
   }, [categoryFilter, query]);
 
+  // Chiều cao chuẩn xác của Lưới Launchpad:
+  // Desktop (lg): 7 icon xếp trên 1 hàng ngang duy nhất (85 + 168 = 253px)
+  // Mobile / Tablet: xếp nhiều hàng (61 + 285 = 346px)
+  const getAdaptiveHeight = useCallback(
+    (mobile: boolean) => {
+      if (isFormExpanded && !mobile) return formHeight;
+      const headerH = platterHeaderRef.current?.offsetHeight || (mobile ? 61 : 85);
+      const gridContentH = mobile ? 285 : 168;
+      return headerH + gridContentH;
+    },
+    [isFormExpanded, formHeight]
+  );
+
   useEffect(() => {
     setSelectedIndex(0);
-  }, [categoryFilter, query]);
+    const nextH = getAdaptiveHeight(isMobile);
+    setGridHeight(nextH);
+  }, [categoryFilter, isMobile, getAdaptiveHeight]);
 
   const isDegreeMatch = (deg: DegreeTypeConfig) => {
     return matchesFilter(deg, categoryFilter) && matchesQuery(deg, query);
   };
-
-
 
   // Đồng bộ trạng thái mở/đóng lên component cha (page.tsx) làm fallback an toàn
   useEffect(() => {
@@ -570,28 +599,24 @@ export default function SpotlightBar({
     gridRoRef.current = null;
 
     if (node) {
-      const measure = () => {
-        const h = Math.round(node.offsetHeight || node.scrollHeight || node.getBoundingClientRect().height);
-        if (h >= 75) setGridHeight(h);
-      };
-      measure();
-      requestAnimationFrame(measure);
+      const nextH = getAdaptiveHeight(isMobileRef.current);
+      setGridHeight(nextH);
 
-      const ro = new ResizeObserver((entries) => {
-        for (const entry of entries) {
-          const measuredH = Math.round(
-            entry.borderBoxSize?.[0]?.blockSize ??
-            (entry.target as HTMLElement).offsetHeight ??
-            entry.target.scrollHeight ??
-            entry.target.getBoundingClientRect().height
-          );
-          if (measuredH >= 75) setGridHeight(measuredH);
+      const ro = new ResizeObserver(() => {
+        if (!isMobileRef.current) {
+          const targetH = getAdaptiveHeight(false);
+          setGridHeight(targetH);
+          return;
+        }
+        const measuredH = Math.round(node.offsetHeight || node.scrollHeight);
+        if (measuredH >= 75) {
+          setGridHeight((prev) => (Math.abs(prev - measuredH) > 6 ? measuredH : prev));
         }
       });
       ro.observe(node);
       gridRoRef.current = ro;
     }
-  }, []);
+  }, [getAdaptiveHeight]);
 
   // 2. Đo đạc chiều cao Form tra cứu (Form view) bằng Callback Ref - Cập nhật liên tục khi có dòng lỗi xuất hiện
   const setFormRef = useCallback((node: HTMLDivElement | null) => {
@@ -655,6 +680,11 @@ export default function SpotlightBar({
   // Xử lý khi nhấn chọn 1 loại bằng từ Grid -> Chuyển cảnh sang Form (Desktop) hoặc mở Bottom Sheet (Mobile)
   const handleSelectDegreeType = (deg: DegreeTypeConfig, fromShortcut: boolean = false) => {
     setIsOpenedFromShortcut(fromShortcut);
+    // Nhả focus ô tìm kiếm ngay lập tức để chống nhảy focus vào ô form gây chớp nháy placeholder ví dụ
+    inputRef.current?.blur();
+    if (typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
     if (!isMobile) {
       setIsSwitchingView(true);
       setSlideDirection('forward');
@@ -670,7 +700,6 @@ export default function SpotlightBar({
       setSelectedCapDo('coban');
     }
     if (isMobile) {
-      inputRef.current?.blur();
       // Trên Mobile: Nếu mở từ lối tắt ngoài, giữ isFocused = false để khi đóng quay về đúng trang chủ
       updateOpenState(fromShortcut ? false : isFocused, true);
     } else {
@@ -686,6 +715,10 @@ export default function SpotlightBar({
   // 3 Nút Companion trên thanh Spotlight: LỌC DANH MỤC TRONG LƯỚI & ĐỒNG BỘ TAB - MỞ BOTTOM SHEET TRÊN MOBILE KHÔNG GIẬT KHUNG
   const handleCompanionFilterClick = (filterCategory: 'dh' | 'cntt' | 'vstep') => {
     setCategoryFilter(filterCategory);
+    setSelectedIndex(0);
+    if (listScrollRef.current) {
+      listScrollRef.current.scrollTop = 0;
+    }
     if (filterCategory === 'dh') {
       onTabChange('vanbang');
       const matched = DEGREE_TYPES.find((d) => d.id === 'dh');
@@ -737,31 +770,33 @@ export default function SpotlightBar({
     };
   }, [categoryFilter]);
 
-  // Animation chuyển đổi siêu mượt chuẩn Apple giữa Chế độ Lưới và Chế độ Form ô nhập
+  // Animation chuyển đổi siêu mượt chuẩn Apple giữa Chế độ Lưới và Chế độ Form ô nhập:
+  // In-place crossfade mượt mà, đầm mướt chuẩn Apple [0.16, 1, 0.3, 1]
   const viewVariants = {
-    enter: (direction: 'forward' | 'backward') => ({
+    enter: {
       opacity: 0,
-      y: direction === 'forward' ? 10 : -10,
-      scale: 0.995,
-    }),
-    center: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
+      scale: 0.992,
       transition: {
-        duration: 0.28,
+        duration: 0.34,
         ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
       },
     },
-    exit: (direction: 'forward' | 'backward') => ({
-      opacity: 0,
-      y: direction === 'forward' ? -8 : 8,
-      scale: 0.995,
+    center: {
+      opacity: 1,
+      scale: 1,
       transition: {
-        duration: 0.16,
+        duration: 0.38,
         ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
       },
-    }),
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.992,
+      transition: {
+        duration: 0.20,
+        ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+      },
+    },
   };
 
   // Xử lý chuyển cảnh nhịp nhàng khi tra cứu trên Mobile:
@@ -791,54 +826,46 @@ export default function SpotlightBar({
 
   // Khối nội dung Form: Dùng chung thống nhất giữa Desktop (Floodlight) và Mobile (Bottom Sheet)
   const renderFormContent = () => (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={activeTab}
-        initial={{ opacity: 0, y: 4 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -4 }}
-        transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-      >
-        {activeTab === 'vanbang' && (
-          <VanBangForm
-            onSuccess={(data) => handleFormSuccess('vanbang', data)}
-            onNotFound={(data) => handleFormNotFound('vanbang', data)}
-            initialSoHieuPhoi={query}
-            initialLoaiDaoTao={selectedLoaiDaoTao}
-            sampleData={sampleData?.vanbang}
-            sampleToApply={sampleToApply}
-          />
-        )}
+    <div key={activeTab} className="w-full">
+      {activeTab === 'vanbang' && (
+        <VanBangForm
+          onSuccess={(data) => handleFormSuccess('vanbang', data)}
+          onNotFound={(data) => handleFormNotFound('vanbang', data)}
+          initialSoHieuPhoi={query}
+          initialLoaiDaoTao={selectedLoaiDaoTao}
+          sampleData={sampleData?.vanbang}
+          sampleToApply={sampleToApply}
+        />
+      )}
 
-        {activeTab === 'cntt' && (
-          <CnttForm
-            onSuccess={(data) => handleFormSuccess('cntt', data)}
-            onNotFound={(data) => handleFormNotFound('cntt', data)}
-            initialSoHieuPhoi={query}
-            initialCapDo={selectedCapDo}
-            onCapDoChange={(newCapDo) => {
-              setSelectedCapDo(newCapDo);
-              const matched = DEGREE_TYPES.find(
-                (d) => d.id === (newCapDo === 'nangcao' ? 'cntt-nc' : 'cntt-cb')
-              );
-              if (matched) setSelectedDegree(matched);
-            }}
-            sampleData={sampleData?.cntt}
-            sampleToApply={sampleToApply}
-          />
-        )}
+      {activeTab === 'cntt' && (
+        <CnttForm
+          onSuccess={(data) => handleFormSuccess('cntt', data)}
+          onNotFound={(data) => handleFormNotFound('cntt', data)}
+          initialSoHieuPhoi={query}
+          initialCapDo={selectedCapDo}
+          onCapDoChange={(newCapDo) => {
+            setSelectedCapDo(newCapDo);
+            const matched = DEGREE_TYPES.find(
+              (d) => d.id === (newCapDo === 'nangcao' ? 'cntt-nc' : 'cntt-cb')
+            );
+            if (matched) setSelectedDegree(matched);
+          }}
+          sampleData={sampleData?.cntt}
+          sampleToApply={sampleToApply}
+        />
+      )}
 
-        {activeTab === 'vstep' && (
-          <VstepForm
-            onSuccess={(data) => handleFormSuccess('vstep', data)}
-            onNotFound={(data) => handleFormNotFound('vstep', data)}
-            initialSoHieuPhoi={query}
-            sampleData={sampleData?.vstep}
-            sampleToApply={sampleToApply}
-          />
-        )}
-      </motion.div>
-    </AnimatePresence>
+      {activeTab === 'vstep' && (
+        <VstepForm
+          onSuccess={(data) => handleFormSuccess('vstep', data)}
+          onNotFound={(data) => handleFormNotFound('vstep', data)}
+          initialSoHieuPhoi={query}
+          sampleData={sampleData?.vstep}
+          sampleToApply={sampleToApply}
+        />
+      )}
+    </div>
   );
 
   return (
@@ -849,130 +876,204 @@ export default function SpotlightBar({
       {/* ========================================================================= */}
       <div
         id="floodlight-panel"
-        className={`w-full border-0 outline-none overflow-hidden transition-[box-shadow,border-radius,background] duration-500 ease-out ${isWindowOpen
+        className={`w-full border-0 outline-none overflow-hidden transition-[box-shadow,border-radius,background-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${isWindowOpen
           ? 'rounded-[26px] sm:rounded-[32px] bg-white/80 backdrop-blur-2xl shadow-[0_20px_50px_-10px_rgba(0,0,0,0.12),0_4px_16px_rgba(0,0,0,0.04)]'
           : 'rounded-[30px] sm:rounded-[38px] bg-white shadow-[0_16px_48px_-6px_rgba(0,0,0,0.10),0_4px_16px_rgba(0,0,0,0.05)] active:scale-[0.985]'
-          } transition-transform duration-100`}
+          }`}
       >
-        {/* HÀNG TRÊN CÙNG: INPUT TÌM KIẾM DÍNH LIỀN TRONG CÙNG KHUNG */}
-        <div
-          onClick={() => {
-            inputRef.current?.focus();
-            updateOpenState(true, isFormExpanded);
-          }}
-          className="w-full h-[60px] sm:h-[76px] flex items-center px-3.5 min-[380px]:px-4 sm:px-7 gap-2.5 sm:gap-4.5 cursor-text select-none sm:select-auto bg-transparent"
-        >
-          {/* Kính lúp icon: Luôn đồng bộ màu xám chuẩn token apple-muted cùng chữ placeholder */}
-          <motion.div
-            animate={{
-              scale: isWindowOpen ? 1.05 : 1,
-            }}
-            transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
-            className="flex-shrink-0 text-apple-muted"
-          >
-            <Search className="w-[22px] h-[22px] sm:w-[26px] sm:h-[26px] stroke-[2.2]" />
-          </motion.div>
-
-          {/* Input text tìm kiếm: Cỡ chữ 19.5px to rõ, gõ siêu êm */}
-          <input
-            ref={inputRef}
-            type="text"
-            id="spotlight-search-input"
-            name="degree_search_term"
-            autoComplete="off"
-            autoCorrect="off"
-            autoCapitalize="off"
-            spellCheck={false}
-            data-lpignore="true"
-            data-form-type="other"
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              if (!isWindowOpen) updateOpenState(true, false);
-            }}
-            onClick={() => {
-              updateOpenState(true, isFormExpanded);
-            }}
-            onFocus={() => {
-              updateOpenState(true, isFormExpanded);
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                if (!isWindowOpen) {
-                  updateOpenState(true, false);
-                  return;
-                }
-                if (filteredDegrees.length > 0) {
-                  setSelectedIndex((prev) => (prev + 1) % filteredDegrees.length);
-                }
-              } else if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                if (filteredDegrees.length > 0) {
-                  setSelectedIndex((prev) => (prev - 1 + filteredDegrees.length) % filteredDegrees.length);
-                }
-              } else if (e.key === 'Enter') {
-                e.preventDefault();
-                if (isWindowOpen && !isFormExpanded && filteredDegrees[selectedIndex]) {
-                  handleSelectDegreeType(filteredDegrees[selectedIndex]);
-                } else {
-                  handleDirectSearch();
-                }
-              }
-            }}
-            placeholder="Tra cứu văn bằng, chứng chỉ..."
-            className="flex-1 h-full py-0 my-0 min-w-0 bg-transparent text-[16px] sm:text-[19.5px] font-medium tracking-tight outline-none focus:outline-none focus:ring-0 border-0 text-apple-text placeholder:text-apple-muted caret-apple-blue"
-            style={{
-              backgroundColor: 'transparent',
-              background: 'transparent',
-              boxShadow: 'none',
-              border: 'none',
-              outline: 'none',
-            }}
-          />
-
-          {/* Nút xóa nhanh */}
-          {query && (
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setQuery('');
-                inputRef.current?.focus();
-              }}
-              className="p-1.5 sm:p-2 rounded-full text-apple-muted hover:text-apple-text hover:bg-graySurface-subtle transition-colors cursor-pointer outline-none focus:outline-none"
-              title="Xóa nội dung"
-            >
-              <X className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.4]" />
-            </button>
-          )}
-
-          {/* Nút hành động phải: Chuyển đổi siêu mượt giữa "Tra cứu" (khi đóng) và "Nút X" (khi mở) */}
-          <div className="relative flex items-center justify-end shrink-0">
-            <AnimatePresence mode="wait" initial={false}>
-              {isWindowOpen && (
-                <motion.button
-                  key="action-close-btn"
-                  type="button"
-                  initial={{ opacity: 0, scale: 0.88, rotate: -45 }}
-                  animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                  exit={{ opacity: 0, scale: 0.88, rotate: 45 }}
-                  transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-                  whileHover={{ scale: 1.08 }}
-                  whileTap={{ scale: 0.92 }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    updateOpenState(false, false);
+        {/* HÀNG TRÊN CÙNG: THANH HEADER CỐ ĐỊNH CHUẨN APPLE SPOTLIGHT (CHUYỂN TIẾP MƯỢT GIỮA TÌM KIẾM VÀ TIÊU ĐỀ FORM) */}
+        <div className="w-full h-[60px] sm:h-[76px] relative overflow-hidden bg-transparent">
+          <AnimatePresence mode="wait" initial={false}>
+            {(!isFormExpanded || isMobile) ? (
+              <motion.div
+                key="top-header-search"
+                initial={{ opacity: 0, y: slideDirection === 'backward' ? -4 : 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: slideDirection === 'backward' ? 4 : -4 }}
+                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                onClick={() => {
+                  inputRef.current?.focus();
+                  updateOpenState(true, isFormExpanded);
+                }}
+                className="w-full h-full flex items-center px-3.5 min-[380px]:px-4 sm:px-7 gap-2.5 sm:gap-4.5 cursor-text select-none sm:select-auto bg-transparent"
+              >
+                {/* Kính lúp icon: Luôn đồng bộ màu xám chuẩn token apple-muted cùng chữ placeholder */}
+                <motion.div
+                  animate={{
+                    scale: isWindowOpen ? 1.05 : 1,
                   }}
-                  className="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-transparent text-apple-text hover:bg-graySurface-subtle active:bg-apple-hover transition-colors duration-150 cursor-pointer shrink-0 select-none border-0 outline-none focus:outline-none"
-                  title="Đóng (Esc)"
-                  aria-label="Đóng bảng tra cứu"
+                  transition={{ type: 'spring', bounce: 0, duration: 0.4 }}
+                  className="flex-shrink-0 text-apple-muted"
                 >
-                  <X className="w-5 h-5 sm:w-[22px] sm:h-[22px]" strokeWidth={2.3} />
+                  <Search className="w-[22px] h-[22px] sm:w-[26px] sm:h-[26px] stroke-[2.2]" />
+                </motion.div>
+
+                {/* Input text tìm kiếm: Cỡ chữ 19.5px to rõ, gõ siêu êm */}
+                <input
+                  ref={inputRef}
+                  type="text"
+                  id="spotlight-search-input"
+                  name="degree_search_term"
+                  autoComplete="off"
+                  autoCorrect="off"
+                  autoCapitalize="off"
+                  spellCheck={false}
+                  data-lpignore="true"
+                  data-form-type="other"
+                  value={query}
+                  onChange={(e) => {
+                    const nextQ = e.target.value;
+                    setQuery(nextQ);
+                    if (!isWindowOpen) updateOpenState(true, false);
+                    const nextH = getAdaptiveHeight(isMobile);
+                    setGridHeight(nextH);
+                  }}
+                  onClick={() => {
+                    updateOpenState(true, isFormExpanded);
+                  }}
+                  onFocus={() => {
+                    updateOpenState(true, isFormExpanded);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'ArrowDown') {
+                      e.preventDefault();
+                      if (!isWindowOpen) {
+                        updateOpenState(true, false);
+                        return;
+                      }
+                      if (filteredDegrees.length > 0) {
+                        setSelectedIndex((prev) => (prev + 1) % filteredDegrees.length);
+                      }
+                    } else if (e.key === 'ArrowUp') {
+                      e.preventDefault();
+                      if (filteredDegrees.length > 0) {
+                        setSelectedIndex((prev) => (prev - 1 + filteredDegrees.length) % filteredDegrees.length);
+                      }
+                    } else if (e.key === 'Enter') {
+                      e.preventDefault();
+                      if (isWindowOpen && !isFormExpanded && filteredDegrees[selectedIndex]) {
+                        handleSelectDegreeType(filteredDegrees[selectedIndex]);
+                      } else {
+                        handleDirectSearch();
+                      }
+                    }
+                  }}
+                  placeholder="Tìm nhanh loại văn bằng, chứng chỉ (Đại học, Thạc sĩ, Tin học, VSTEP...)"
+                  className="flex-1 h-full py-0 my-0 min-w-0 bg-transparent text-[16px] sm:text-[18px] font-medium tracking-tight outline-none focus:outline-none focus:ring-0 border-0 text-apple-text placeholder:text-apple-muted caret-apple-blue"
+                  style={{
+                    backgroundColor: 'transparent',
+                    background: 'transparent',
+                    boxShadow: 'none',
+                    border: 'none',
+                    outline: 'none',
+                  }}
+                />
+
+                {/* Nút xóa nhanh nội dung tìm kiếm (Chuẩn pill icon xmark.circle.fill của Apple) */}
+                <AnimatePresence>
+                  {query && (
+                    <motion.button
+                      type="button"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.15 }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setQuery('');
+                        inputRef.current?.focus();
+                        const nextH = getAdaptiveHeight(isMobile);
+                        setGridHeight(nextH);
+                      }}
+                      className="w-5 h-5 sm:w-5.5 sm:h-5.5 rounded-full bg-[#8E8E93]/20 hover:bg-[#8E8E93]/35 text-[#6E6E73] hover:text-[#1D1D1F] flex items-center justify-center transition-colors cursor-pointer outline-none focus:outline-none mr-1.5 shrink-0 select-none"
+                      title="Xóa nội dung tìm kiếm"
+                      aria-label="Xóa nội dung tìm kiếm"
+                    >
+                      <X className="w-3 h-3 stroke-[2.8]" />
+                    </motion.button>
+                  )}
+                </AnimatePresence>
+
+                {/* Nút hành động phải: Chuyển đổi siêu mượt giữa "Tra cứu" (khi đóng) và "Nút X" (khi mở) */}
+                <div className="relative flex items-center justify-end shrink-0">
+                  <AnimatePresence mode="wait" initial={false}>
+                    {isWindowOpen && (
+                      <motion.button
+                        key="action-close-btn"
+                        type="button"
+                        initial={{ opacity: 0, scale: 0.88, rotate: -45 }}
+                        animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                        exit={{ opacity: 0, scale: 0.88, rotate: 45 }}
+                        transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                        whileHover={{ scale: 1.08 }}
+                        whileTap={{ scale: 0.92 }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          updateOpenState(false, false);
+                        }}
+                        className="w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center bg-transparent text-apple-text hover:bg-graySurface-subtle active:bg-apple-hover transition-colors duration-150 cursor-pointer shrink-0 select-none border-0 outline-none focus:outline-none"
+                        title="Đóng (Esc)"
+                        aria-label="Đóng bảng tra cứu"
+                      >
+                        <X className="w-5 h-5 sm:w-[22px] sm:h-[22px]" strokeWidth={2.3} />
+                      </motion.button>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="top-header-form"
+                initial={{ opacity: 0, y: slideDirection === 'forward' ? 4 : -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: slideDirection === 'forward' ? -4 : 4 }}
+                transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                className="w-full h-full flex items-center justify-between px-3.5 min-[380px]:px-4 sm:px-7 gap-3 select-none"
+              >
+                {/* Cụm biểu tượng Squircle loại bằng + Tiêu đề tra cứu */}
+                <div className="flex items-center gap-3 sm:gap-3.5 min-w-0">
+                  <div
+                    className={`w-[40px] h-[40px] sm:w-[48px] sm:h-[48px] rounded-[13px] sm:rounded-[15px] bg-gradient-to-br ${selectedDegree.gradient} text-white flex items-center justify-center shrink-0 ${selectedDegree.shadow} ring-1 ring-inset ring-white/20`}
+                  >
+                    {(() => {
+                      const DegreeHeaderIcon = selectedDegree.icon || GraduationCap;
+                      return <DegreeHeaderIcon className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2]" />;
+                    })()}
+                  </div>
+
+                  <div className="min-w-0 py-0.5">
+                    <h2 className="text-[22px] sm:text-[28px] font-bold text-[#1D1D1F] tracking-tight leading-[1.25] whitespace-nowrap">
+                      Tra cứu {selectedDegree.title}
+                    </h2>
+                  </div>
+                </div>
+
+                {/* Nút quay lại danh sách chọn loại bằng: Dạng pill rõ nghĩa chuẩn UX Apple, tự co lại icon trên màn hình hẹp */}
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
+                  transition={{ type: 'spring', stiffness: 450, damping: 22 }}
+                  onClick={() => {
+                    if (isOpenedFromShortcut) {
+                      setIsOpenedFromShortcut(false);
+                      updateOpenState(false, false);
+                    } else {
+                      setIsSwitchingView(true);
+                      setSlideDirection('backward');
+                      updateOpenState(true, false);
+                    }
+                  }}
+                  className="inline-flex items-center gap-1.5 h-10 sm:h-11 px-3 sm:px-4 rounded-full bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] text-[#1D1D1F] text-[13.5px] sm:text-[14px] font-semibold transition-colors duration-150 cursor-pointer select-none border-0 outline-none focus:outline-none shrink-0"
+                  title={isOpenedFromShortcut ? "Đóng (Quay lại trang chủ)" : "Đổi loại bằng khác (Quay lại)"}
+                  aria-label={isOpenedFromShortcut ? "Đóng (Quay lại trang chủ)" : "Đổi loại bằng khác (Quay lại)"}
+                >
+                  <ChevronLeft className="w-4.5 h-4.5 sm:w-5 sm:h-5 stroke-[2.4] -ml-0.5" />
+                  <span className="hidden min-[460px]:inline whitespace-nowrap">Đổi loại bằng</span>
                 </motion.button>
-              )}
-            </AnimatePresence>
-          </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* PHẦN THÂN MỞ RỘNG (CHIPS + DANH SÁCH HOẶC FORM TRA CỨU) */}
@@ -995,23 +1096,23 @@ export default function SpotlightBar({
                 height: 0,
                 transition: {
                   height: {
-                    duration: 0.34,
-                    ease: [0.22, 1, 0.36, 1], // Thu gọn êm ái, kéo nền lên thanh thoát
+                    duration: 0.46,
+                    ease: [0.16, 1, 0.3, 1],
                   },
                   opacity: {
-                    duration: 0.18,
-                    ease: [0.22, 1, 0.36, 1],
+                    duration: 0.26,
+                    ease: [0.16, 1, 0.3, 1],
                   },
                 },
               }}
               transition={{
                 height: {
-                  duration: 0.38,
-                  ease: [0.22, 1, 0.36, 1], // Chuẩn Apple WWDC Fluid Momentum Ease
+                  duration: 0.52,
+                  ease: [0.16, 1, 0.3, 1],
                 },
                 opacity: {
-                  duration: 0.28,
-                  ease: [0.22, 1, 0.36, 1],
+                  duration: 0.32,
+                  ease: [0.16, 1, 0.3, 1],
                 },
               }}
               className="w-full relative overflow-hidden border-t border-slate-100"
@@ -1034,13 +1135,16 @@ export default function SpotlightBar({
                       className="w-full"
                     >
                       {/* THANH CHIPS LỌC DANH MỤC: PLATTER NỀN #E8E8ED CHUẨN APPLE (MOBILE 44PX, DESKTOP 56PX) */}
-                      <div className="flex items-center justify-between gap-2.5 sm:gap-4 px-3 sm:px-5 py-2 sm:py-3.5 border-b border-slate-100 bg-white">
+                      <div
+                        ref={platterHeaderRef}
+                        className="flex items-center justify-between gap-2.5 sm:gap-4 px-3 sm:px-5 py-2 sm:py-3.5 border-b border-slate-100 bg-white"
+                      >
                         {/* Apple TabNav Platter: Chuẩn Apple 44px trên Mobile (p-4px), 56px trên Desktop (p-6px) */}
                         <div
                           ref={platterRef}
                           className="relative h-[44px] sm:h-[56px] bg-[#E8E8ED] p-[4px] sm:p-[6px] rounded-full flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar flex-1 min-w-0 scroll-smooth"
                         >
-                          {/* VIÊN PILL DUY NHẤT LƯỚT LIÊN TỤC CHUẨN APPLE MAC (TRƯỢT THUẦN TÚY LEFT & WIDTH 380MS) */}
+                          {/* VIÊN PILL DUY NHẤT LƯỚT LIÊN TỤC CHUẨN APPLE MAC (TRƯỢT THUẦN TÚY LEFT & WIDTH 520MS) */}
                           <div
                             className="absolute top-[4px] sm:top-[6px] bottom-[4px] sm:bottom-[6px] bg-white rounded-full pointer-events-none shadow-[0_1.5px_4px_rgba(0,0,0,0.12),0_0.5px_1.5px_rgba(0,0,0,0.06)]"
                             style={{
@@ -1048,7 +1152,7 @@ export default function SpotlightBar({
                               width: `${tabIndicator.width}px`,
                               opacity: tabIndicator.ready ? 1 : 0,
                               zIndex: 1,
-                              transition: 'left 500ms cubic-bezier(0.16, 1, 0.3, 1), width 500ms cubic-bezier(0.16, 1, 0.3, 1)',
+                              transition: 'left 520ms cubic-bezier(0.16, 1, 0.3, 1), width 520ms cubic-bezier(0.16, 1, 0.3, 1)',
                               willChange: 'left, width',
                             }}
                           />
@@ -1063,8 +1167,11 @@ export default function SpotlightBar({
                                 }}
                                 type="button"
                                 onClick={(e) => {
+                                  if (categoryFilter === chip.id) return;
                                   setCategoryFilter(chip.id);
                                   setSelectedIndex(0);
+                                  const nextH = getAdaptiveHeight(isMobile);
+                                  setGridHeight(nextH);
                                   // Chỉ cuộn trên màn hình nhỏ di động nếu tab bị khuất mép ngoài vùng nhìn thấy
                                   if (isMobile) {
                                     const platter = platterRef.current;
@@ -1072,11 +1179,11 @@ export default function SpotlightBar({
                                       if (chip.id === 'all') {
                                         platter.scrollTo({ left: 0, behavior: 'smooth' });
                                       } else {
-                                        const btnRect = e.currentTarget.getBoundingClientRect();
-                                        const pRect = platter.getBoundingClientRect();
-                                        if (btnRect.left < pRect.left || btnRect.right > pRect.right) {
-                                          e.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
-                                        }
+                                        const btnLeft = e.currentTarget.offsetLeft;
+                                        const btnWidth = e.currentTarget.offsetWidth;
+                                        const platterWidth = platter.clientWidth;
+                                        const targetScrollLeft = btnLeft - (platterWidth - btnWidth) / 2;
+                                        platter.scrollTo({ left: Math.max(0, targetScrollLeft), behavior: 'smooth' });
                                       }
                                     }
                                   }
@@ -1092,193 +1199,59 @@ export default function SpotlightBar({
                           })}
                         </div>
 
-                        {/* Action: View switcher (List / Grid) */}
-                        <div className="flex items-center shrink-0 pl-2 sm:pl-3.5 border-l border-[#E8E8ED]">
-                          <button
-                            type="button"
-                            onClick={() => setDisplayMode(displayMode === 'list' ? 'grid' : 'list')}
-                            className="w-[44px] h-[44px] sm:w-11 sm:h-11 rounded-xl flex items-center justify-center bg-transparent hover:bg-[#F5F5F7] active:bg-[#E8E8ED] text-[#6E6E73] hover:text-[#1D1D1F] active:scale-95 transition-colors duration-150 cursor-pointer select-none outline-none focus:outline-none [-webkit-tap-highlight-color:transparent] relative overflow-hidden"
-                            title={displayMode === 'list' ? 'Chuyển sang dạng Lưới icon' : 'Chuyển sang dạng Danh sách'}
-                            aria-label={displayMode === 'list' ? 'Chuyển sang dạng Lưới icon' : 'Chuyển sang dạng Danh sách'}
-                          >
-                            <AnimatePresence mode="wait" initial={false}>
-                              {displayMode === 'list' ? (
-                                <motion.div
-                                  key="switcher-to-grid"
-                                  initial={{ opacity: 0, rotate: -25, scale: 0.8 }}
-                                  animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                                  exit={{ opacity: 0, rotate: 25, scale: 0.8 }}
-                                  transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                                  className="flex items-center justify-center"
-                                >
-                                  <LayoutGrid className="w-5 h-5 stroke-[2]" />
-                                </motion.div>
-                              ) : (
-                                <motion.div
-                                  key="switcher-to-list"
-                                  initial={{ opacity: 0, rotate: 25, scale: 0.8 }}
-                                  animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                                  exit={{ opacity: 0, rotate: -25, scale: 0.8 }}
-                                  transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                                  className="flex items-center justify-center"
-                                >
-                                  <List className="w-5 h-5 stroke-[2]" />
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </button>
-                        </div>
                       </div>
 
-                      {/* NỘI DUNG VIEW: CHUYỂN ĐỔI SIÊU MƯỢT GIỮA DANH SÁCH HÀNG VÀ LƯỚI ICON */}
-                      <AnimatePresence mode="wait" initial={false}>
-                        {displayMode === 'list' ? (
-                          /* DANH SÁCH HÀNG CHUẨN FLOODLIGHT - CUỘN MƯỢT MÀ TÀNG HÌNH (NO-SCROLLBAR), TRẦN TỐI ĐA MAX-H TỰ CO GIÃN THEO NỘI DUNG */
-                          <motion.div
-                            key="view-mode-list"
-                            initial={{ opacity: 0, y: 8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -6 }}
-                            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                            className="p-2.5 sm:p-3 pb-3.5 sm:pb-3.5 max-h-[280px] min-[420px]:max-h-[305px] sm:max-h-[345px] overflow-y-auto overscroll-contain touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-                          >
-                            <div className="relative flex flex-col gap-1 sm:gap-1.5 w-full">
-                              <AnimatePresence mode="popLayout" initial={false}>
-                                {filteredDegrees.length === 0 ? (
-                                  <motion.div
-                                    key="empty-state"
-                                    initial={{ opacity: 0, y: 6 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0 }}
-                                    transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-                                    className="py-8 text-center text-[#6E6E73] text-sm"
-                                  >
-                                    <p className="font-medium">Không tìm thấy loại văn bằng phù hợp với &quot;{query}&quot;</p>
-                                    <p className="text-xs text-[#86868B] mt-1">Vui lòng thử tìm từ khóa khác hoặc bấm chọn Tất cả</p>
-                                  </motion.div>
-                                ) : (
-                                  filteredDegrees.map((deg, idx) => {
-                                    const IconComponent = deg.icon;
-                                    const isSelected = idx === selectedIndex;
-                                    return (
-                                      <motion.div
-                                        layout
-                                        key={deg.id}
-                                        initial={{ opacity: 0, scale: 0.96, y: 8 }}
-                                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                                        exit={{
-                                          opacity: 0,
-                                          scale: 0.96,
-                                          y: -6,
-                                          transition: { duration: 0.20, ease: [0.16, 1, 0.3, 1] },
-                                        }}
-                                        transition={{
-                                          layout: { duration: 0.38, ease: [0.16, 1, 0.3, 1] },
-                                          opacity: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
-                                          scale: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
-                                          y: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
-                                        }}
-                                        role="option"
-                                        aria-selected={isSelected}
-                                        onClick={() => handleSelectDegreeType(deg)}
-                                        onMouseEnter={() => setSelectedIndex(idx)}
-                                        className={`group w-full flex items-center gap-2.5 sm:gap-3.5 px-3 sm:px-4.5 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl cursor-pointer transition-colors duration-150 text-left select-none will-change-[transform,opacity] ${isSelected
-                                          ? 'bg-[#E8E8ED] text-[#1D1D1F] shadow-2xs'
-                                          : 'hover:bg-[#E8E8ED] text-[#1D1D1F]'
-                                          }`}
-                                      >
-                                        {/* Squircle Icon: Kích thước đồng bộ với form bên trong, bo góc chuẩn Apple */}
-                                        <div
-                                          className={`w-10 h-10 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-br ${deg.gradient} text-white flex items-center justify-center shrink-0 shadow-sm ${deg.shadow} group-hover:scale-105 transition-transform duration-200`}
-                                        >
-                                          <IconComponent className="w-5.5 h-5.5 sm:w-6 sm:h-6 stroke-[2.2]" />
-                                        </div>
-
-                                        {/* Text: Title + Kind Badge + Subtitle - Kích thước bằng chuẩn form bên trong */}
-                                        <div className="flex-1 min-w-0">
-                                          <div className="flex items-center gap-2 flex-wrap">
-                                            <span className="text-[15.5px] sm:text-[18px] font-semibold text-[#1D1D1F] tracking-tight leading-snug">
-                                              {deg.title}
-                                            </span>
-                                            <span className="text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded-[6px] bg-white text-[#1D1D1F] border border-[#E8E8ED] shrink-0">
-                                              {deg.kindLabel}
-                                            </span>
-                                          </div>
-                                          <p className="text-[13px] sm:text-[14px] text-[#1D1D1F] truncate mt-0.5 leading-snug">
-                                            {deg.subTitle}
-                                          </p>
-                                        </div>
-
-                                        {/* Enter key shortcut ↵: Đổi sang xanh thương hiệu chuẩn token apple-blue */}
-                                        <span
-                                          className={`w-6.5 h-6.5 sm:w-7 sm:h-7 rounded-lg flex items-center justify-center text-xs font-mono transition-all duration-150 shrink-0 ${isSelected
-                                            ? 'bg-apple-blue text-white shadow-xs'
-                                            : 'bg-white/80 text-[#6E6E73] group-hover:bg-white group-hover:text-[#1D1D1F]'
-                                            }`}
-                                        >
-                                          ↵
-                                        </span>
-                                      </motion.div>
-                                    );
-                                  })
-                                )}
-                              </AnimatePresence>
-                            </div>
-                          </motion.div>
-                        ) : (
-                          /* LƯỚI ICON LAUNCHPAD (7 BIỂU TƯỢNG) - CÙNG TRẦN TỐI ĐA MAX-H ĐỒNG NHẤT VỚI CHẾ ĐỘ DANH SÁCH (KHÔNG BAO GIỜ BỊ DÀI HƠN) */
-                          <motion.div
-                            key="view-mode-grid"
-                            initial={{ opacity: 0, y: 8 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -6 }}
-                            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                            className="p-2 sm:p-2.5 pb-3.5 sm:pb-3.5 max-h-[255px] min-[420px]:max-h-[270px] sm:max-h-[310px] overflow-y-auto overscroll-contain touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-                          >
-                            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-2 sm:gap-4 py-1">
-                              {DEGREE_TYPES.map((deg, idx) => {
-                                const IconComponent = deg.icon;
-                                const isMatch = isDegreeMatch(deg);
-                                return (
-                                  <motion.button
-                                    key={deg.id}
-                                    type="button"
-                                    initial={{ opacity: 0, scale: 0.92, y: 6 }}
-                                    animate={{
-                                      opacity: isMatch ? 1 : 0.35,
-                                      scale: 1,
-                                      y: 0,
-                                    }}
-                                    transition={{
-                                      duration: 0.2,
-                                      delay: idx * 0.02,
-                                      ease: [0.16, 1, 0.3, 1],
-                                    }}
-                                    whileHover={{ scale: 1.05, y: -2 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={() => handleSelectDegreeType(deg)}
-                                    className={`degree-launchpad-btn group relative flex flex-col items-center justify-start p-1.5 sm:p-2.5 rounded-2xl bg-transparent hover:bg-[#F5F5F7] transition-all duration-200 cursor-pointer text-center min-w-0 outline-none focus:outline-none focus:ring-0 ring-0 border-0 shadow-none select-none ${isMatch
-                                      ? 'grayscale-0'
-                                      : 'grayscale-[50%] hover:opacity-100 hover:grayscale-0'
-                                      }`}
-                                  >
-                                    <div
-                                      className={`w-[42px] h-[42px] sm:w-14 sm:h-14 rounded-[14px] sm:rounded-[20px] bg-gradient-to-br ${deg.gradient} text-white flex items-center justify-center shadow-md ${deg.shadow} group-hover:scale-105 transition-all duration-200 relative shrink-0`}
-                                    >
-                                      <IconComponent className="w-5.5 h-5.5 sm:w-7 sm:h-7 stroke-[2.2] relative z-10" />
-                                    </div>
-                                    <div className="mt-1.5 sm:mt-2 flex flex-col items-center w-full px-0.5">
-                                      <span className="text-[13.5px] sm:text-[15px] font-semibold text-[#1D1D1F] text-center leading-snug whitespace-normal w-full line-clamp-2">
-                                        {deg.title}
-                                      </span>
-                                    </div>
-                                  </motion.button>
-                                );
-                              })}
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                      {/* LƯỚI ICON LAUNCHPAD (7 BIỂU TƯỢNG) */}
+                      <motion.div
+                        key="view-mode-grid"
+                        ref={gridContentRef}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                        className="p-2 sm:p-2.5 pb-2.5 sm:pb-2.5 max-h-[310px] min-[420px]:max-h-[330px] sm:max-h-[375px] overflow-y-auto overscroll-contain touch-pan-y no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                      >
+                        <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-2 sm:gap-3 lg:gap-2.5 py-1.5">
+                          {DEGREE_TYPES.map((deg, idx) => {
+                            const IconComponent = deg.icon;
+                            const isMatch = isDegreeMatch(deg);
+                            return (
+                              <motion.button
+                                key={deg.id}
+                                type="button"
+                                animate={{
+                                  opacity: isMatch ? 1 : 0.35,
+                                }}
+                                transition={{
+                                  duration: 0.18,
+                                  ease: [0.22, 1, 0.36, 1],
+                                }}
+                                whileHover={{ scale: 1.05, y: -2 }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  handleSelectDegreeType(deg);
+                                }}
+                                className={`degree-launchpad-btn group relative flex flex-col items-center justify-start p-1.5 sm:p-2 rounded-2xl bg-transparent hover:bg-[#F5F5F7] transition-all duration-200 cursor-pointer text-center min-w-0 outline-none focus:outline-none focus:ring-0 ring-0 border-0 shadow-none select-none ${isMatch
+                                  ? 'grayscale-0'
+                                  : 'grayscale-[50%] hover:opacity-100 hover:grayscale-0'
+                                  }`}
+                              >
+                                <div
+                                  className={`relative overflow-hidden w-[54px] h-[54px] sm:w-[74px] sm:h-[74px] rounded-[18px] sm:rounded-[24px] bg-gradient-to-br ${deg.gradient} text-white flex items-center justify-center ${deg.shadow} ring-1 ring-inset ring-white/20 group-hover:scale-105 group-hover:shadow-[0_4px_14px_rgba(0,0,0,0.10)] transition-all duration-200 shrink-0`}
+                                >
+                                  <IconComponent className="w-7 h-7 sm:w-9 sm:h-9 stroke-[2] relative z-10" />
+                                </div>
+                                <div className="mt-2.5 sm:mt-3 flex flex-col items-center w-full px-0.5">
+                                  <span className="text-[14.5px] sm:text-[17px] font-semibold text-[#1D1D1F] text-center leading-[1.22] whitespace-normal w-full line-clamp-2 tracking-[-0.015em]">
+                                    {deg.title}
+                                  </span>
+                                </div>
+                              </motion.button>
+                            );
+                          })}
+                        </div>
+                      </motion.div>
                     </motion.div>
                   ) : (
                     /* ===================================================================== */
@@ -1292,77 +1265,10 @@ export default function SpotlightBar({
                       initial={isSwitchingView ? "enter" : false}
                       animate="center"
                       exit="exit"
+                      onAnimationComplete={() => setIsSwitchingView(false)}
                       style={{ willChange: 'transform, opacity' }}
-                      className="hidden sm:block w-full px-3.5 min-[380px]:px-4 sm:px-7 pt-4 pb-7 sm:pb-8"
+                      className={`hidden sm:block w-full px-3.5 min-[380px]:px-4 sm:px-7 pt-4 sm:pt-5 pb-6 sm:pb-7 `}
                     >
-                      {/* Header Form: Hiển thị đúng biểu tượng Squircle của loại bằng đã chọn + Nút quay lại gọn gàng 1 dòng */}
-                      <div className="flex items-center justify-between mb-5 sm:mb-6 gap-2.5">
-                        <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0">
-                          {/* Icon Squircle chuẩn xác của loại bằng đang chọn */}
-                          <div
-                            className={`w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-br ${selectedDegree.gradient} text-white flex items-center justify-center shrink-0 shadow-md ${selectedDegree.shadow}`}
-                          >
-                            {(() => {
-                              const DegreeHeaderIcon = selectedDegree.icon || GraduationCap;
-                              return <DegreeHeaderIcon className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />;
-                            })()}
-                          </div>
-
-                          <div className="min-w-0">
-                            <h2 className="text-[15.5px] sm:text-[18px] font-semibold text-[#1D1D1F] tracking-tight leading-snug pt-0.5 truncate">
-                              Tra cứu {selectedDegree.title}
-                            </h2>
-                            <p className="text-[13px] sm:text-[14px] text-[#1D1D1F] mt-0.5 truncate leading-snug">
-                              {selectedDegree.kindLabel} — {selectedDegree.subTitle}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Nút Quay lại duy nhất trong Form View trên Desktop */}
-                        <div className="flex items-center shrink-0">
-                          <motion.button
-                            type="button"
-                            initial="rest"
-                            whileHover="hover"
-                            whileTap="tap"
-                            transition={{ type: 'spring', stiffness: 450, damping: 22 }}
-                            onClick={() => {
-                              if (isOpenedFromShortcut) {
-                                setIsOpenedFromShortcut(false);
-                                updateOpenState(false, false);
-                              } else {
-                                setIsSwitchingView(true);
-                                setSlideDirection('backward');
-                                updateOpenState(true, false);
-                              }
-                            }}
-                            className="group inline-flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] text-[#1D1D1F] transition-all duration-150 cursor-pointer select-none border-0 outline-none focus:outline-none shrink-0 [-webkit-tap-highlight-color:transparent]"
-                            title={isOpenedFromShortcut ? "Đóng (Quay lại trang chủ)" : "Đổi loại bằng (Quay lại)"}
-                            aria-label={isOpenedFromShortcut ? "Đóng (Quay lại trang chủ)" : "Đổi loại bằng (Quay lại)"}
-                          >
-                            <motion.div
-                              variants={{
-                                rest: { x: 0 },
-                                hover: {
-                                  x: [0, -2.5, -0.5, -1.5],
-                                  transition: {
-                                    duration: 0.4,
-                                    times: [0, 0.4, 0.7, 1],
-                                    ease: 'easeOut',
-                                  },
-                                },
-                                tap: { x: -3, scale: 0.92 },
-                              }}
-                              className="flex items-center justify-center"
-                            >
-                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.4} stroke="currentColor" className="w-[18px] h-[18px] sm:w-5 sm:h-5 pointer-events-none">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                              </svg>
-                            </motion.div>
-                          </motion.button>
-                        </div>
-                      </div>
-
                       {/* Form Content: Tái sử dụng đồng nhất */}
                       <div className="w-full">
                         {renderFormContent()}
@@ -1386,13 +1292,13 @@ export default function SpotlightBar({
               opacity: 0,
               height: 0,
               transition: {
-                height: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
-                opacity: { duration: 0.16, ease: [0.22, 1, 0.36, 1] },
+                height: { duration: 0.46, ease: [0.16, 1, 0.3, 1] },
+                opacity: { duration: 0.26, ease: [0.16, 1, 0.3, 1] },
               },
             }}
             transition={{
-              height: { duration: 0.36, ease: [0.22, 1, 0.36, 1] },
-              opacity: { duration: 0.26, delay: 0.06, ease: [0.22, 1, 0.36, 1] },
+              height: { duration: 0.52, ease: [0.16, 1, 0.3, 1] },
+              opacity: { duration: 0.38, delay: 0.06, ease: [0.16, 1, 0.3, 1] },
             }}
             className="w-full overflow-hidden"
           >
@@ -1410,17 +1316,17 @@ export default function SpotlightBar({
                           handleSelectDegreeType(targetDeg, true);
                         }
                       }}
-                      className="group w-full sm:w-[152px] md:w-[164px] min-h-[108px] sm:min-h-[135px] py-3.5 sm:py-5.5 px-1.5 sm:px-4 rounded-[20px] sm:rounded-[26px] bg-white/80 hover:bg-white backdrop-blur-2xl border-0 outline-none ring-0 shadow-[0_8px_24px_-6px_rgba(0,0,0,0.06),0_2px_6px_-1px_rgba(0,0,0,0.03)] hover:shadow-[0_14px_32px_-6px_rgba(0,0,0,0.10),0_4px_10px_-2px_rgba(0,0,0,0.04)] hover:-translate-y-1 active:translate-y-0 active:scale-[0.98] transition-all duration-200 flex flex-col items-center justify-center text-center cursor-pointer select-none isolate [-webkit-tap-highlight-color:transparent]"
+                      className="group w-full sm:w-[156px] md:w-[170px] min-h-[114px] sm:min-h-[142px] py-4 sm:py-5.5 px-2 sm:px-4 rounded-[22px] sm:rounded-[28px] bg-white/80 hover:bg-white backdrop-blur-2xl border-0 outline-none ring-0 shadow-[0_8px_24px_-6px_rgba(0,0,0,0.06),0_2px_6px_-1px_rgba(0,0,0,0.03)] hover:shadow-[0_14px_32px_-6px_rgba(0,0,0,0.10),0_4px_10px_-2px_rgba(0,0,0,0.04)] hover:-translate-y-1 active:translate-y-0 active:scale-[0.98] transition-all duration-200 flex flex-col items-center justify-center text-center cursor-pointer select-none isolate [-webkit-tap-highlight-color:transparent]"
                     >
                       {/* Squircle Icon Apple: Tỷ lệ hài hòa cho cả mobile và desktop */}
                       <div
-                        className={`w-[44px] h-[44px] sm:w-[62px] sm:h-[62px] rounded-[14px] sm:rounded-[19px] bg-gradient-to-br ${item.gradient} text-white flex items-center justify-center shadow-md ${item.shadow} group-hover:scale-105 transition-transform duration-200`}
+                        className={`relative overflow-hidden w-[50px] h-[50px] sm:w-[68px] sm:h-[68px] rounded-[16px] sm:rounded-[22px] bg-gradient-to-br ${item.gradient} text-white flex items-center justify-center ${item.shadow} ring-1 ring-inset ring-white/20 group-hover:scale-105 group-hover:shadow-[0_4px_14px_rgba(0,0,0,0.10)] transition-all duration-200 shrink-0`}
                       >
-                        <IconComponent className="w-5 h-5 sm:w-8 sm:h-8 stroke-[2.2]" />
+                        <IconComponent className="w-6 h-6 sm:w-8 sm:h-8 stroke-[2] relative z-10" />
                       </div>
 
-                      {/* Tiêu đề: Mobile 13.5px, Web 15px chuẩn xác theo yêu cầu */}
-                      <span className="w-full mt-2 sm:mt-2.5 text-[13.5px] sm:text-[15px] font-semibold text-[#1D1D1F] tracking-tight text-center leading-[1.25] sm:leading-snug break-words">
+                      {/* Tiêu đề: Mobile 14px, Web 16px chuẩn xác theo yêu cầu */}
+                      <span className="w-full mt-2.5 sm:mt-3 text-[14px] sm:text-[16px] font-semibold text-[#1D1D1F] tracking-tight text-center leading-[1.25] sm:leading-snug break-words">
                         {item.title}
                       </span>
                     </button>
@@ -1445,7 +1351,7 @@ export default function SpotlightBar({
         >
           {/* Lớp Backdrop làm mờ toàn màn hình chuẩn khung kết quả */}
           <div
-            className="absolute inset-0 bg-slate-950/50 backdrop-blur-[6px] cursor-pointer select-none no-print"
+            className="absolute inset-0 bg-slate-900/22 backdrop-blur-[4px] cursor-pointer select-none no-print"
             onClick={() => handleCloseMobileSheet(false)}
             aria-label="Bấm ra ngoài để đóng bảng tra cứu"
           />
@@ -1467,37 +1373,32 @@ export default function SpotlightBar({
 
               <div className="flex items-center justify-between px-4 min-[380px]:px-5 py-2.5 border-b border-slate-100 shrink-0 gap-3">
                 {/* Cụm Tiêu đề bên trái: squircle icon + Tên loại bằng to rõ */}
-                <div className="flex items-center gap-2.5 min-[380px]:gap-3 min-w-0 flex-1">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
                   <div
-                    className={`w-10 h-10 rounded-xl bg-gradient-to-br ${selectedDegree.gradient} text-white flex items-center justify-center shrink-0 shadow-md ${selectedDegree.shadow}`}
+                    className={`w-[50px] h-[50px] rounded-[16px] bg-gradient-to-br ${selectedDegree.gradient} text-white flex items-center justify-center shrink-0 shadow-md ${selectedDegree.shadow}`}
                   >
                     {(() => {
                       const DegreeHeaderIcon = selectedDegree.icon || GraduationCap;
-                      return <DegreeHeaderIcon className="w-5.5 h-5.5 stroke-[2.2]" />;
+                      return <DegreeHeaderIcon className="w-[28px] h-[28px] stroke-[2.2]" />;
                     })()}
                   </div>
 
-                  <div className="min-w-0 text-left flex-1">
-                    <h2 className="text-[15px] sm:text-[18px] font-semibold text-[#1D1D1F] tracking-tight leading-snug truncate">
+                  <div className="min-w-0 text-left flex-1 py-0.5">
+                    <h2 className="text-[17px] sm:text-[19px] font-bold text-[#1D1D1F] tracking-tight leading-[1.25] truncate">
                       Tra cứu {selectedDegree.title}
                     </h2>
-                    <p className="text-[13px] sm:text-[14px] text-[#1D1D1F] truncate leading-tight mt-0.5">
-                      {selectedDegree.kindLabel} — {selectedDegree.subTitle}
-                    </p>
                   </div>
                 </div>
 
-                {/* Nút dấu mũi tên quay lại/đổi loại (bỏ chữ, dạng nút tròn ở góc phải) */}
+                {/* Nút dấu chevron < quay lại/đổi loại (Chuẩn Apple: Nền xám #F5F5F7, to rõ dễ chạm) */}
                 <button
                   type="button"
                   onClick={() => handleCloseMobileSheet(!isOpenedFromShortcut)}
-                  className="w-9 h-9 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] text-[#1D1D1F] transition-colors shrink-0 select-none border-0 outline-none cursor-pointer"
+                  className="w-10 h-10 rounded-full flex items-center justify-center bg-[#F5F5F7] hover:bg-[#E8E8ED] active:bg-[#DFDFE4] text-[#1D1D1F] transition-colors shrink-0 select-none border-0 outline-none cursor-pointer"
                   title={isOpenedFromShortcut ? "Đóng (Quay lại trang chủ)" : "Đổi loại bằng (Quay lại)"}
                   aria-label={isOpenedFromShortcut ? "Đóng (Quay lại trang chủ)" : "Đổi loại bằng (Quay lại)"}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.4} stroke="currentColor" className="w-5 h-5">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                  </svg>
+                  <ChevronLeft className="w-5 h-5 stroke-[2.4]" />
                 </button>
               </div>
 

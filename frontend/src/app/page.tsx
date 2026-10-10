@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { RotateCcw, ArrowDown, X } from 'lucide-react';
+import { RotateCcw, ArrowDown, X, ArrowRight, GraduationCap, Search, QrCode } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -36,7 +36,6 @@ export default function Home() {
   const [result, setResult] = useState<any | null>(null);
   const [resultType, setResultType] = useState<'vanbang' | 'cntt' | 'vstep'>('vanbang');
   const [isResultVisible, setIsResultVisible] = useState(false);
-  const [isClosingResult, setIsClosingResult] = useState(false);
   const [resetKey, setResetKey] = useState(0);
   const [isResetting, setIsResetting] = useState(false);
   const [isCardExpanded, setIsCardExpanded] = useState(false);
@@ -76,6 +75,25 @@ export default function Home() {
     setIsCardRevealed(true);
   }, []);
 
+  // ══ SCROLL-REVEAL KIỂU APPLE: IntersectionObserver nhẹ, trigger 1 lần ══
+  useEffect(() => {
+    const els = document.querySelectorAll('.reveal-on-scroll, .reveal-scale-on-scroll');
+    if (!els.length) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
   const handleScrollToHero = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -98,14 +116,8 @@ export default function Home() {
   const overlayOpenedAtRef = useRef<number>(0);
 
   const handleResetResult = () => {
-    setIsClosingResult(true);
-    // Giữ nguyên form nhập liệu, không tự động thu lại khi đóng kết quả
-    setTimeout(() => {
-      setResult(null);
-      setIsResultVisible(false);
-      setIsClosingResult(false);
-      setIsCardExpanded(false);
-    }, 280);
+    setIsResultVisible(false);
+    setIsCardExpanded(false);
   };
 
   const handleBackdropClick = (e: React.MouseEvent) => {
@@ -213,21 +225,16 @@ export default function Home() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isResultVisible]);
 
+  // Chặn cuộn nền bằng overscroll containment của overlay, không đổi body.style.overflow để tránh reflow giật trang
   useEffect(() => {
-    if (result && isResultVisible) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
     return () => {
       document.body.style.overflow = '';
     };
-  }, [result, isResultVisible]);
+  }, []);
 
   const handleLookupSuccess = (type: 'vanbang' | 'cntt' | 'vstep', data: any) => {
     setResultType(type);
     setResult(data);
-    setIsClosingResult(false);
     overlayOpenedAtRef.current = Date.now();
     setIsResultVisible(true);
   };
@@ -235,7 +242,6 @@ export default function Home() {
   const handleLookupNotFound = (type: 'vanbang' | 'cntt' | 'vstep', notFoundData: { query?: any; message?: string }) => {
     setResultType(type);
     setResult({ notFound: true, ...notFoundData });
-    setIsClosingResult(false);
     overlayOpenedAtRef.current = Date.now();
     setIsResultVisible(true);
   };
@@ -290,7 +296,7 @@ export default function Home() {
       {/* 1. NAVBAR CHÍNH THỨC CỦA TRƯỜNG ĐẠI HỌC NAM CẦN THƠ */}
       <Navbar activeTab={activeTab} onTabChange={handleTabChange} />
 
-      {/* 2. HERO — SÂN KHẤU TRA CỨU NỀN SÁNG + CHÙM SÁNG HỔ PHÁCH TINH TẾ */}
+      {/* 2. HERO — SÂN KHẤU TRA CỨU NỀN SÁNG CHUẨN APPLE MINIMALIST */}
       <section className="degree-lookup-hero no-print">
         <div className="degree-lookup-hero__copy degree-lookup-wrap">
 
@@ -331,68 +337,170 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. MAIN ANCHOR */}
+      {/* 3. THÔNG TIN HƯỚNG DẪN QUY TRÌNH TRA CỨU CHÍNH THỨC (BỐ CỤC MỞ, TRỰC QUAN HIỆN ĐẠI, BỀ NGANG THOÁNG ĐÃNG) */}
       <main
         id="khung-tra-cuu"
         ref={cardSectionRef}
-        className="flex-1 min-h-0 no-print"
-      />
+        className="flex-1 min-h-0 no-print w-full max-w-[1140px] lg:max-w-[1180px] mx-auto px-4 sm:px-6 pt-6 sm:pt-8 pb-12 sm:pb-16 select-none"
+      >
+        {/* Tiêu đề phân khu — scroll reveal */}
+        <div className="reveal-on-scroll flex items-baseline justify-between border-b border-black/10 pb-3.5 mb-7 sm:mb-9">
+          <h2 className="text-[18px] font-bold text-[#1D1D1F] tracking-tight">
+            Quy trình tra cứu
+          </h2>
+          <span className="text-[16px] font-medium text-[#1D1D1F]">
+            3 bước xác thực trực tuyến
+          </span>
+        </div>
 
-      {/* 4. KẾT QUẢ TRA CỨU: DRAWER TRÊN MOBILE, POPUP OMNINOTCH TRÊN DESKTOP */}
-      {result && isResultVisible && (
-        <div
-          id="omninotch-overlay"
-          className={`fixed inset-0 z-[1000] flex flex-col justify-end sm:justify-center items-center p-0 sm:p-5 md:p-6 overflow-hidden sm:overflow-y-auto no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-colors duration-300 ${isCardExpanded ? 'bg-slate-950/60 backdrop-blur-[6px]' : 'bg-slate-950/50 backdrop-blur-[6px]'
-            } ${isClosingResult ? 'animate-omninotch-backdrop-exit' : 'animate-omninotch-backdrop-enter'}`}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              handleBackdropClick(e);
-            }
-          }}
-        >
-          {/* Lớp Backdrop bấm ra ngoài để đóng */}
-          <div
-            className="absolute inset-0 z-0 cursor-pointer select-none no-print"
-            onClick={handleBackdropClick}
-            aria-label="Bấm ra ngoài để đóng"
-          />
+        {/* 3 bước quy trình trải ngang tuần tự dạng thẻ bề mặt xám #F5F5F7 chuẩn Apple */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 lg:gap-7 relative">
+          {/* Bước 1 */}
+          <div className="reveal-scale-on-scroll reveal-d1 group flex flex-col justify-between bg-[#F5F5F7] rounded-[22px] sm:rounded-[24px] p-6 sm:p-7 transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1.5 hover:shadow-[0_4px_20px_-2px_rgba(0,0,0,0.08)]">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-[14px] bg-white text-[#1D1D1F] flex items-center justify-center shadow-xs shrink-0 group-hover:scale-[1.06] transition-transform duration-[350ms] ease-[cubic-bezier(0.32,0.72,0,1)]">
+                    <GraduationCap className="w-5.5 h-5.5 stroke-[1.9]" />
+                  </div>
+                  <span className="text-[13px] font-bold text-[#1D1D1F] tracking-wider uppercase">
+                    Bước 01
+                  </span>
+                </div>
+                <ArrowRight className="hidden md:inline-block w-4.5 h-4.5 text-[#1D1D1F]/30 group-hover:text-[#1D1D1F] group-hover:translate-x-1 transition-all duration-[350ms] ease-[cubic-bezier(0.32,0.72,0,1)] stroke-[2.2] select-none" aria-hidden="true" />
+              </div>
+              <h3 className="text-[18px] font-bold text-[#1D1D1F] tracking-tight mb-2">
+                Chọn loại văn bằng
+              </h3>
+              <p className="text-[15.5px] sm:text-[16px] text-[#1D1D1F] leading-[1.6] font-normal">
+                Chọn trình độ đào tạo (Đại học, Thạc sĩ, Tiến sĩ) hoặc loại chứng chỉ (CNTT, VSTEP) cần xác thực.
+              </p>
+            </div>
+          </div>
 
-          <div
-            className={`w-full flex justify-center mt-auto sm:my-auto relative z-10 pointer-events-none ${isClosingResult
-              ? 'mobile-drawer-exit sm:animate-omninotch-exit'
-              : 'mobile-drawer-enter sm:animate-omninotch-enter'
-              }`}
-          >
-            <div
-              className={`w-full relative certificate-expand-shell pointer-events-auto ${result?.notFound
-                ? 'max-w-[540px]'
-                : 'max-w-4xl lg:max-w-5xl xl:max-w-[1100px] 2xl:max-w-[1160px]'
-                } ${isCardExpanded
-                  ? 'sm:scale-[1.02] lg:scale-[1.05]'
-                  : 'scale-100'
-                }`}
-            >
-              {result?.notFound ? (
-                <NotFoundResultCard
-                  type={resultType}
-                  data={result}
-                  onClose={handleResetResult}
-                  onReset={handleResetResult}
-                />
-              ) : result ? (
-                <CertificateCard
-                  type={resultType}
-                  data={result}
-                  isExpanded={isCardExpanded}
-                  onToggleExpand={() => setIsCardExpanded((prev) => !prev)}
-                  onReset={handleResetResult}
-                  onClose={handleResetResult}
-                />
-              ) : null}
+          {/* Bước 2 */}
+          <div className="reveal-scale-on-scroll reveal-d2 group flex flex-col justify-between bg-[#F5F5F7] rounded-[22px] sm:rounded-[24px] p-6 sm:p-7 transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1.5 hover:shadow-[0_4px_20px_-2px_rgba(0,0,0,0.08)]">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-[14px] bg-white text-[#1D1D1F] flex items-center justify-center shadow-xs shrink-0 group-hover:scale-[1.06] transition-transform duration-[350ms] ease-[cubic-bezier(0.32,0.72,0,1)]">
+                    <Search className="w-5 h-5 stroke-[2.1]" />
+                  </div>
+                  <span className="text-[13px] font-bold text-[#1D1D1F] tracking-wider uppercase">
+                    Bước 02
+                  </span>
+                </div>
+                <ArrowRight className="hidden md:inline-block w-4.5 h-4.5 text-[#1D1D1F]/30 group-hover:text-[#1D1D1F] group-hover:translate-x-1 transition-all duration-[350ms] ease-[cubic-bezier(0.32,0.72,0,1)] stroke-[2.2] select-none" aria-hidden="true" />
+              </div>
+              <h3 className="text-[18px] font-bold text-[#1D1D1F] tracking-tight mb-2">
+                Nhập thông tin tra cứu
+              </h3>
+              <p className="text-[15.5px] sm:text-[16px] text-[#1D1D1F] leading-[1.6] font-normal">
+                Điền chính xác Họ tên, Ngày sinh, Số hiệu phôi văn bằng và Số vào sổ cấp bằng của người học.
+              </p>
+            </div>
+          </div>
+
+          {/* Bước 3 */}
+          <div className="reveal-scale-on-scroll reveal-d3 group flex flex-col justify-between bg-[#F5F5F7] rounded-[22px] sm:rounded-[24px] p-6 sm:p-7 transition-[transform,box-shadow] duration-[400ms] ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-1.5 hover:shadow-[0_4px_20px_-2px_rgba(0,0,0,0.08)]">
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-[14px] bg-white text-[#1D1D1F] flex items-center justify-center shadow-xs shrink-0 group-hover:scale-[1.06] transition-transform duration-[350ms] ease-[cubic-bezier(0.32,0.72,0,1)]">
+                    <QrCode className="w-5 h-5 stroke-[2.1]" />
+                  </div>
+                  <span className="text-[13px] font-bold text-[#1D1D1F] tracking-wider uppercase">
+                    Bước 03
+                  </span>
+                </div>
+              </div>
+              <h3 className="text-[18px] font-bold text-[#1D1D1F] tracking-tight mb-2">
+                Xem kết quả xác thực
+              </h3>
+              <p className="text-[15.5px] sm:text-[16px] text-[#1D1D1F] leading-[1.6] font-normal">
+                Hệ thống đối soát dữ liệu gốc, hiển thị văn bằng điện tử chi tiết kèm mã QR xác thực trực tuyến.
+              </p>
             </div>
           </div>
         </div>
-      )}
+      </main>
+
+      {/* 4. KẾT QUẢ TRA CỨU: DRAWER TRÊN MOBILE, POPUP OMNINOTCH TRÊN DESKTOP */}
+      <AnimatePresence>
+        {result && isResultVisible && (
+          <div
+            id="omninotch-overlay"
+            className="fixed inset-0 z-[1000] flex flex-col justify-end sm:justify-center items-center p-0 sm:p-5 md:p-6 overflow-hidden sm:overflow-y-auto no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                handleBackdropClick(e);
+              }
+            }}
+          >
+            {/* Lớp Backdrop bấm ra ngoài để đóng: Fade-in 1 nhịp êm ái, loại bỏ transform-gpu để tránh hiện tượng GPU Chromium chớp/giật 2 lần */}
+            <motion.div
+              key="omninotch-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
+              className={`absolute inset-0 z-0 cursor-pointer select-none no-print backdrop-blur-[4px] ${
+                isCardExpanded ? 'bg-slate-900/35' : 'bg-slate-900/22'
+              }`}
+              onClick={handleBackdropClick}
+              aria-label="Bấm ra ngoài để đóng"
+            />
+
+            {/* Popup Card: Đục đặc 100% ngay từ Frame 0 (không xuyên thấu chữ nền), bung mở êm ái chuẩn Apple Critically Damped Spring */}
+            <motion.div
+              key="omninotch-card-wrapper"
+              initial={isMobile ? { y: '100%' } : { scale: 0.94, y: 14 }}
+              animate={isMobile ? { y: 0 } : { scale: 1, y: 0 }}
+              exit={
+                isMobile
+                  ? { y: '100%' }
+                  : { scale: 0.95, y: 12, opacity: 0 }
+              }
+              transition={
+                isMobile
+                  ? { type: 'spring', bounce: 0, duration: 0.36 }
+                  : { type: 'spring', bounce: 0, duration: 0.38 }
+              }
+              className="w-full flex justify-center mt-auto sm:my-auto relative z-10 pointer-events-none"
+            >
+              <div
+                className={`w-full relative pointer-events-auto transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                  result?.notFound
+                    ? 'max-w-[540px]'
+                    : 'max-w-4xl lg:max-w-5xl xl:max-w-[1100px] 2xl:max-w-[1160px]'
+                } ${
+                  isCardExpanded
+                    ? 'sm:scale-[1.02] lg:scale-[1.05]'
+                    : 'scale-100'
+                }`}
+              >
+                {result?.notFound ? (
+                  <NotFoundResultCard
+                    type={resultType}
+                    data={result}
+                    onClose={handleResetResult}
+                    onReset={handleResetResult}
+                  />
+                ) : result ? (
+                  <CertificateCard
+                    type={resultType}
+                    data={result}
+                    isExpanded={isCardExpanded}
+                    onToggleExpand={() => setIsCardExpanded((prev) => !prev)}
+                    onReset={handleResetResult}
+                    onClose={handleResetResult}
+                  />
+                ) : null}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* FLOATING ACTION BUTTON & PANEL: HỒ SƠ MẪU TEST NHANH Ở GÓC MÀN HÌNH */}
       <QuickSampleWidget

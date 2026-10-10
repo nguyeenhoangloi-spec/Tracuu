@@ -34,7 +34,7 @@ function AppleMenuButton({
               ? { y: 5.5, rotate: 45, backgroundColor: '#EC1E24' }
               : { y: 0, rotate: 0, backgroundColor: '#1d1d1f' }
           }
-          transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
           className="w-full h-[2px] rounded-full origin-center block"
         />
         {/* Thanh gạch dưới: khi mở trượt lên -5.5px và xoay -45 độ */}
@@ -44,7 +44,7 @@ function AppleMenuButton({
               ? { y: -5.5, rotate: -45, backgroundColor: '#EC1E24' }
               : { y: 0, rotate: 0, backgroundColor: '#1d1d1f' }
           }
-          transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
           className="w-full h-[2px] rounded-full origin-center block"
         />
       </div>
@@ -63,10 +63,10 @@ const NAV_LINKS = [
 
 const menuListVariants: Variants = {
   open: {
-    transition: { staggerChildren: 0.05, delayChildren: 0.06 },
+    transition: { staggerChildren: 0.055, delayChildren: 0.05 },
   },
   closed: {
-    transition: { staggerChildren: 0.025, staggerDirection: -1 },
+    transition: { staggerChildren: 0.02, staggerDirection: -1 },
   },
 };
 
@@ -75,16 +75,16 @@ const menuItemVariants: Variants = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.38,
-      ease: [0.16, 1, 0.3, 1], // Chuẩn Apple WWDC Fluid Curve: đồng bộ chuyển động xuôi chiều mượt mà
+      duration: 0.42,
+      ease: [0.22, 1, 0.36, 1],
     },
   },
   closed: {
     opacity: 0,
-    y: -14,
+    y: -12,
     transition: {
-      duration: 0.24,
-      ease: [0.32, 0.72, 0, 1],
+      duration: 0.22,
+      ease: [0.32, 0, 0.67, 0],
     },
   },
 };
@@ -268,7 +268,7 @@ export default function Navbar({ activeTab = 'vanbang', onTabChange }: NavbarPro
           willChange: 'transform, opacity',
           transform: 'translateZ(0)',
         }}
-        className={`sticky top-0 w-full z-[210] no-print antialiased select-none border-none shadow-none transition-colors ${
+        className={`sticky top-0 w-full z-[210] no-print antialiased select-none border-b-0 shadow-none transition-colors ${
           mobileMenuOpen ? 'bg-white' : 'bg-white/95 backdrop-blur-md'
         }`}
       >
@@ -369,7 +369,7 @@ export default function Navbar({ activeTab = 'vanbang', onTabChange }: NavbarPro
                   y: 0,
                   transition: {
                     duration: 0.36,
-                    ease: [0.16, 1, 0.3, 1], // Chuẩn Apple WWDC Fluid Curve: bung mở đồng bộ liền mạch
+                    ease: [0.22, 1, 0.36, 1],
                   },
                 }}
                 exit={{
@@ -377,7 +377,7 @@ export default function Navbar({ activeTab = 'vanbang', onTabChange }: NavbarPro
                   y: -20,
                   transition: {
                     duration: 0.32,
-                    ease: [0.32, 0.72, 0, 1], // Chuẩn Apple WWDC Fluid Curve: trượt thu lại êm dịu, không giật
+                    ease: [0.32, 0, 0.67, 0],
                   },
                 }}
                 className="fixed top-[58px] sm:top-[68px] inset-x-0 bottom-0 z-[200] bg-white text-[#1d1d1f] flex flex-col justify-between overflow-y-auto overscroll-contain touch-pan-y lg:hidden"

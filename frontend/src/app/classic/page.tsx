@@ -36,7 +36,6 @@ export default function Home() {
   const [result, setResult] = useState<any | null>(null);
   const [resultType, setResultType] = useState<'vanbang' | 'cntt' | 'vstep'>('vanbang');
   const [isResultVisible, setIsResultVisible] = useState(false);
-  const [isClosingResult, setIsClosingResult] = useState(false);
   const [resetKey, setResetKey] = useState(0);
   const [isResetting, setIsResetting] = useState(false);
   const [isCardExpanded, setIsCardExpanded] = useState(false);
@@ -133,15 +132,9 @@ export default function Home() {
   // Thời điểm mở modal gần nhất để chống ghost-click trên mobile khi vừa chạm mở
   const overlayOpenedAtRef = useRef<number>(0);
 
-  // Đóng hoàn toàn và reset kết quả tra cứu
   const handleResetResult = () => {
-    setIsClosingResult(true);
-    setTimeout(() => {
-      setResult(null);
-      setIsResultVisible(false);
-      setIsClosingResult(false);
-      setIsCardExpanded(false);
-    }, 320);
+    setIsResultVisible(false);
+    setIsCardExpanded(false);
   };
 
   // Xử lý bấm ra ngoài nền (Backdrop click) với chốt chống ghost-click an toàn 100% trên mobile
@@ -256,17 +249,12 @@ export default function Home() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isResultVisible]);
 
-  // Khóa cuộn trang nền khi OmniNotch đang mở để tạo cảm giác app native
+  // Chặn cuộn nền bằng overscroll containment của overlay, không đổi body.style.overflow để tránh reflow giật trang
   useEffect(() => {
-    if (result && isResultVisible) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
     return () => {
       document.body.style.overflow = '';
     };
-  }, [result, isResultVisible]);
+  }, []);
 
   const handleLookupSuccess = (type: 'vanbang' | 'cntt' | 'vstep', data: any) => {
     setResultType(type);
@@ -434,63 +422,81 @@ export default function Home() {
       />
 
       {/* 4. KẾT QUẢ TRA CỨU: TRÊN MOBILE LÀ CỬA SỔ DRAWER VUỐT TỪ DƯỚI LÊN, TRÊN PC LÀ POPUP OMNINOTCH */}
-      {result && isResultVisible && (
-        <div
-          id="omninotch-overlay"
-          className={`fixed inset-0 z-[1000] flex flex-col justify-end sm:justify-center items-center p-0 sm:p-5 md:p-6 overflow-hidden sm:overflow-y-auto no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-colors duration-300 ${isCardExpanded ? 'bg-slate-950/60 backdrop-blur-[6px]' : 'bg-slate-950/50 backdrop-blur-[6px]'
-            } ${isClosingResult ? 'animate-omninotch-backdrop-exit' : 'animate-omninotch-backdrop-enter'
-            }`}
-          onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              handleBackdropClick(e);
-            }
-          }}
-        >
-          {/* LỚP BACKDROP BẤM RA NGOÀI ĐỂ ĐÓNG (BẢO ĐẢM 100% HOẠT ĐỘNG CẢ MOBILE VÀ DESKTOP, CÓ CHỐNG GHOST-CLICK) */}
+      <AnimatePresence>
+        {result && isResultVisible && (
           <div
-            className="absolute inset-0 z-0 cursor-pointer select-none no-print"
-            onClick={handleBackdropClick}
-            aria-label="Bấm ra ngoài để đóng"
-          />
-
-          {/* KHUNG THẺ DRAWER / OMNINOTCH: MOBILE TRƯỢT TỪ ĐÁY LÊN, DESKTOP BUNG MỞ TỪ NEO */}
-          <div
-            className={`w-full flex justify-center mt-auto sm:my-auto relative z-10 pointer-events-none ${isClosingResult
-              ? 'mobile-drawer-exit sm:animate-omninotch-exit'
-              : 'mobile-drawer-enter sm:animate-omninotch-enter'
-              }`}
+            id="omninotch-overlay"
+            className="fixed inset-0 z-[1000] flex flex-col justify-end sm:justify-center items-center p-0 sm:p-5 md:p-6 overflow-hidden sm:overflow-y-auto no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) {
+                handleBackdropClick(e);
+              }
+            }}
           >
-            {/* SHELL PHÓNG TO / THU NHỎ ĐỘC LẬP SIÊU MƯỢT (RỘNG RÃI THOÁNG ĐÃNG CHỨA ĐỦ CỠ CHỮ 20PX) */}
-            <div
-              className={`w-full relative certificate-expand-shell pointer-events-auto ${result?.notFound
-                ? 'max-w-[540px]'
-                : 'max-w-4xl lg:max-w-5xl xl:max-w-[1100px] 2xl:max-w-[1160px]'
-                } ${isCardExpanded
-                  ? 'sm:scale-[1.02] lg:scale-[1.05]'
-                  : 'scale-100'
-                }`}
+            {/* Lớp Backdrop bấm ra ngoài để đóng: Fade-in 1 nhịp êm ái, không giật nấc */}
+            <motion.div
+              key="omninotch-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.26, ease: [0.16, 1, 0.3, 1] }}
+              className={`absolute inset-0 z-0 cursor-pointer select-none no-print backdrop-blur-[4px] ${
+                isCardExpanded ? 'bg-slate-900/35' : 'bg-slate-900/22'
+              }`}
+              onClick={handleBackdropClick}
+              aria-label="Bấm ra ngoài để đóng"
+            />
+
+            {/* Popup Card: Đục đặc 100% ngay từ Frame 0 (không xuyên thấu chữ nền), bung mở êm ái chuẩn Apple Critically Damped Spring */}
+            <motion.div
+              key="omninotch-card-wrapper"
+              initial={isMobile ? { y: '100%' } : { scale: 0.94, y: 14 }}
+              animate={isMobile ? { y: 0 } : { scale: 1, y: 0 }}
+              exit={
+                isMobile
+                  ? { y: '100%' }
+                  : { scale: 0.95, y: 12, opacity: 0 }
+              }
+              transition={
+                isMobile
+                  ? { type: 'spring', bounce: 0, duration: 0.36 }
+                  : { type: 'spring', bounce: 0, duration: 0.38 }
+              }
+              className="w-full flex justify-center mt-auto sm:my-auto relative z-10 pointer-events-none"
             >
-              {result?.notFound ? (
-                <NotFoundResultCard
-                  type={resultType}
-                  data={result}
-                  onClose={handleResetResult}
-                  onReset={handleResetResult}
-                />
-              ) : result ? (
-                <CertificateCard
-                  type={resultType}
-                  data={result}
-                  isExpanded={isCardExpanded}
-                  onToggleExpand={() => setIsCardExpanded((prev) => !prev)}
-                  onReset={handleResetResult}
-                  onClose={handleResetResult}
-                />
-              ) : null}
-            </div>
+              <div
+                className={`w-full relative pointer-events-auto transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                  result?.notFound
+                    ? 'max-w-[540px]'
+                    : 'max-w-4xl lg:max-w-5xl xl:max-w-[1100px] 2xl:max-w-[1160px]'
+                } ${
+                  isCardExpanded
+                    ? 'sm:scale-[1.02] lg:scale-[1.05]'
+                    : 'scale-100'
+                }`}
+              >
+                {result?.notFound ? (
+                  <NotFoundResultCard
+                    type={resultType}
+                    data={result}
+                    onClose={handleResetResult}
+                    onReset={handleResetResult}
+                  />
+                ) : result ? (
+                  <CertificateCard
+                    type={resultType}
+                    data={result}
+                    isExpanded={isCardExpanded}
+                    onToggleExpand={() => setIsCardExpanded((prev) => !prev)}
+                    onReset={handleResetResult}
+                    onClose={handleResetResult}
+                  />
+                ) : null}
+              </div>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
 
       {/* FLOATING ACTION BUTTON & PANEL: HỒ SƠ MẪU TEST NHANH Ở GÓC MÀN HÌNH */}
       <QuickSampleWidget
